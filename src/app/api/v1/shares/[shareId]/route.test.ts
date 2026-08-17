@@ -69,6 +69,27 @@ describe("manage /api/v1/shares/[shareId]", () => {
     expect(await unknown.json()).toEqual(await wrong.json());
   });
 
+  it("prefers the bearer token when a query token is also present", async () => {
+    const shares = installTestShareService();
+    await shares.create({ html: "<p>Live</p>" });
+    const wrongBearer = await GET(
+      request("GET", "shareid1", {
+        token: "managetoken1",
+        bearer: "nope",
+      }),
+      { params },
+    );
+    expect(wrongBearer.status).toBe(404);
+    const rightBearer = await GET(
+      request("GET", "shareid1", {
+        token: "nope",
+        bearer: "managetoken1",
+      }),
+      { params },
+    );
+    expect(rightBearer.status).toBe(200);
+  });
+
   it("accepts the manage token from a bearer header", async () => {
     const shares = installTestShareService();
     await shares.create({ html: "<p>Live</p>" });

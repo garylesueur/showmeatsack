@@ -7,6 +7,7 @@
 # Leave Redis/R2 empty on the Development item to use in-memory stores.
 
 PUBLIC_BASE_URL=http://localhost:3000
+VIEW_PUBLIC_BASE_URL=http://localhost:3000
 KV_REST_API_URL=op://${OP_VAULT:-mep374l3cpdtzwibf5fswsimbi}/showmeatsack.com Development/KV_REST_API_URL
 KV_REST_API_TOKEN=op://${OP_VAULT:-mep374l3cpdtzwibf5fswsimbi}/showmeatsack.com Development/KV_REST_API_TOKEN
 R2_ACCOUNT_ID=op://${OP_VAULT:-mep374l3cpdtzwibf5fswsimbi}/showmeatsack.com Development/R2_ACCOUNT_ID

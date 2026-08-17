@@ -1,4 +1,10 @@
 import { afterEach, describe, expect, it } from "vitest";
+import { createMemoryCounterStore } from "@/lib/counter-store";
+import {
+  clearInstalledCreateRateLimiter,
+  createCreateRateLimiter,
+  installTestCreateRateLimiter,
+} from "@/lib/create-rate-limit";
 import { installTestShareService, zipBase64 } from "@/lib/share-test-helpers";
 import { POST } from "./route";
 
@@ -22,6 +28,7 @@ async function create(body: unknown): Promise<Response> {
 describe("POST /api/v1/shares", () => {
   afterEach(() => {
     clearInstalledService();
+    clearInstalledCreateRateLimiter();
   });
 
   it("publishes HTML and does not put the manage secret on the view URL", async () => {
@@ -35,7 +42,10 @@ describe("POST /api/v1/shares", () => {
     };
     expect(payload.viewUrl).toBe("https://showmeatsack.com/s/shareid1/");
     expect(payload.viewUrl).not.toContain("token=");
-    expect(payload.manageUrl).toContain("token=managetoken1");
+    expect(payload.manageUrl).toBe(
+      "https://showmeatsack.com/api/v1/shares/shareid1",
+    );
+    expect(payload.manageUrl).not.toContain("token=");
     expect(payload.manageToken).toBe("managetoken1");
   });
 
@@ -55,6 +65,25 @@ describe("POST /api/v1/shares", () => {
       zipBase64: zipBase64({ "index.html": "x" }),
     });
     expect(both.status).toBe(400);
+  });
+
+  it("B15 — refuses a flood of creates from one address", async () => {
+    installTestShareService();
+    installTestCreateRateLimiter(
+      createCreateRateLimiter({
+        store: createMemoryCounterStore(),
+        max: 1,
+        windowSeconds: 60,
+      }),
+    );
+    const first = await create({ html: "<p>One</p>" });
+    expect(first.status).toBe(201);
+    const second = await create({ html: "<p>Two</p>" });
+    expect(second.status).toBe(429);
+    expect(await second.json()).toMatchObject({
+      error: { code: "rate_limited" },
+    });
+    expect(second.headers.get("Retry-After")).toBeTruthy();
   });
 
   it("refuses a zip without index.html", async () => {

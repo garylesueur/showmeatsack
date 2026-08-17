@@ -1,6 +1,6 @@
 import { blobStoreAvailable, createBlobFileStore } from "./blob-file-store";
 import { createMemoryFileStore, type FileStore } from "./file-store";
-import { publicOrigin } from "./public-origin";
+import { publicOrigin, viewPublicOrigin } from "./public-origin";
 import { createR2FileStoreFromEnv } from "./r2-file-store";
 import {
   createMemoryShareStore,
@@ -38,6 +38,7 @@ export function getDefaultShareService(): ShareService {
     createId: createShareId,
     createToken: createShareToken,
     publicBaseUrl: publicOrigin(),
+    viewPublicBaseUrl: viewPublicOrigin(),
   });
 
   if (process.env.NODE_ENV !== "production") {
@@ -57,8 +58,12 @@ export function jsonError(
   status: number,
   code: string,
   message: string,
+  headers?: HeadersInit,
 ): Response {
-  return Response.json({ error: { code, message } }, { status });
+  return Response.json(
+    { error: { code, message } },
+    { status, headers },
+  );
 }
 
 export function jsonFromError(error: ShareServiceError): Response {

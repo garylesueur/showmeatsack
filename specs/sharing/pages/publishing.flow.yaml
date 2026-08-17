@@ -24,13 +24,19 @@ flows:
         event: Publish
         to: live
         guard: The payload is usable HTML or a zip with index.html, and is at most 5 MB.
-        covers: [B1, B3, B4, B11, B12]
+        covers: [B1, B3, B4, B11, B12, B16]
       - id: F1.T2
         from: publish
         event: Publish
         to: refused
         guard: The payload is empty, too large, not HTML or a zip, or a zip with no index.html.
         covers: [B9]
+      - id: F1.T11
+        from: publish
+        event: Publish
+        to: refused
+        guard: This caller has already published too many pages.
+        covers: [B15]
       - id: F1.T3
         from: live
         event: Replace
@@ -108,7 +114,7 @@ flows:
         event: Open
         to: page
         guard: The view link matches and the share is still live.
-        covers: [B2, B3, B4, B5]
+        covers: [B2, B3, B4, B5, B14]
       - id: F2.T2
         from: open
         event: Open

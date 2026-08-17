@@ -25,7 +25,7 @@ On Vercel, each environment needs its own Redis (`KV_REST_API_*` or Upstash) and
 
 An agent posts HTML, or a small static-site zip, and gets a showmeatsack.com view link to share. The same create call also returns a manage link to replace or delete that share. Anyone with the view link sees the page itself. Shares expire. Posting the view link to Slack or anywhere else is the calling agent’s job.
 
-Always call the product **showmeatsack.com** in user-facing copy. The agent tool is named `showmeatsack.com`. View links are `https://showmeatsack.com/…`.
+Always call the product **showmeatsack.com** in user-facing copy. The agent tool is named `showmeatsack.com`. View links are `https://s.showmeatsack.com/s/…`. The product origin stays `https://showmeatsack.com`. Add `s.showmeatsack.com` on the Vercel project so that host reaches this app.
 
 ## Where things live
 

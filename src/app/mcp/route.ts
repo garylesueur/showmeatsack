@@ -7,6 +7,7 @@ import {
   mcpGuideMarkdown,
 } from "@/lib/agent-docs";
 import { getDefaultShareService } from "@/lib/app-shares";
+import { runWithIncomingRequest } from "@/lib/incoming-request";
 import {
   SHOWMEATSACK_TOOL_NAME,
   createShowmeatsackTool,
@@ -67,7 +68,9 @@ function withMcpCors(response: Response): Response {
 }
 
 export async function POST(request: Request): Promise<Response> {
-  return withMcpCors(await mcpHandler(request));
+  return runWithIncomingRequest(request, async () =>
+    withMcpCors(await mcpHandler(request)),
+  );
 }
 
 export async function GET(request: Request): Promise<Response> {
@@ -78,11 +81,15 @@ export async function GET(request: Request): Promise<Response> {
   if (kind === "html") {
     return htmlDocumentResponse(mcpGuideHtml());
   }
-  return withMcpCors(await mcpHandler(request));
+  return runWithIncomingRequest(request, async () =>
+    withMcpCors(await mcpHandler(request)),
+  );
 }
 
 export async function DELETE(request: Request): Promise<Response> {
-  return withMcpCors(await mcpHandler(request));
+  return runWithIncomingRequest(request, async () =>
+    withMcpCors(await mcpHandler(request)),
+  );
 }
 
 export async function OPTIONS(): Promise<Response> {
