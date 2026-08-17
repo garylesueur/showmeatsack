@@ -1,6 +1,7 @@
 import { blobStoreAvailable, createBlobFileStore } from "./blob-file-store";
-import { createMemoryFileStore } from "./file-store";
+import { createMemoryFileStore, type FileStore } from "./file-store";
 import { publicOrigin } from "./public-origin";
+import { createR2FileStoreFromEnv } from "./r2-file-store";
 import {
   createMemoryShareStore,
   createRedisShareStore,
@@ -32,9 +33,7 @@ export function getDefaultShareService(): ShareService {
 
   const service = createShareService({
     store,
-    files: blobStoreAvailable()
-      ? createBlobFileStore()
-      : createMemoryFileStore(),
+    files: createConfiguredFileStore(),
     now,
     createId: createShareId,
     createToken: createShareToken,
@@ -45,6 +44,13 @@ export function getDefaultShareService(): ShareService {
     globalForShares.showmeatsackShares = service;
   }
   return service;
+}
+
+export function createConfiguredFileStore(): FileStore {
+  return (
+    createR2FileStoreFromEnv() ??
+    (blobStoreAvailable() ? createBlobFileStore() : createMemoryFileStore())
+  );
 }
 
 export function jsonError(
