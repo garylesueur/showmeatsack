@@ -3,13 +3,14 @@ import type { ViewResult } from "./shares";
 export const VIEW_CACHE_HEADERS = {
   "Cache-Control": "private, no-cache, must-revalidate",
   "X-Content-Type-Options": "nosniff",
+  "X-Robots-Tag": "noindex, nofollow",
 };
 
 export const EXPIRED_SHARE_HTML =
-  `<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><title>This share has expired</title></head><body><p>This share has expired.</p></body></html>`;
+  `<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><title>This share has expired</title></head><body><p>This share has expired.</p></body></html>`;
 
 export const NOT_FOUND_SHARE_HTML =
-  `<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><title>Not found</title></head><body><p>Not found.</p></body></html>`;
+  `<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><title>Not found</title></head><body><p>Not found.</p></body></html>`;
 
 function htmlPage(status: number, body: string): Response {
   return new Response(body, {

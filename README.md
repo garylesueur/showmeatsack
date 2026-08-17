@@ -2,7 +2,7 @@
 
 An agent posts HTML or a small static-site zip and gets a shareable view link.
 
-See `AGENTS.md` and `specs/sharing/pages/publishing.md`.
+See `AGENTS.md`, `specs/sharing/pages/publishing.md`, and `specs/site/discoverability.md`.
 
 ```bash
 pnpm install

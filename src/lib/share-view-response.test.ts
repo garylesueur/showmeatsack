@@ -23,6 +23,7 @@ describe("responseForView", () => {
       "text/html; charset=utf-8",
     );
     expect(response.headers.get("X-Content-Type-Options")).toBe("nosniff");
+    expect(response.headers.get("X-Robots-Tag")).toBe("noindex, nofollow");
     expect(response.headers.get("Cache-Control")).toContain("no-cache");
     expect(await readText(response)).toBe(html);
   });
@@ -45,8 +46,10 @@ describe("responseForView", () => {
     expect(response.status).toBe(410);
     expect(response.headers.get("Content-Type")).toContain("text/html");
     expect(response.headers.get("X-Content-Type-Options")).toBe("nosniff");
+    expect(response.headers.get("X-Robots-Tag")).toBe("noindex, nofollow");
     const body = await readText(response);
     expect(body).toBe(EXPIRED_SHARE_HTML);
+    expect(body).toContain('name="robots" content="noindex, nofollow"');
     expect(body).toContain("This share has expired.");
     expect(body).not.toContain("Not found.");
   });
@@ -57,6 +60,7 @@ describe("responseForView", () => {
       expect(response.status).toBe(404);
       const body = await readText(response);
       expect(body).toBe(NOT_FOUND_SHARE_HTML);
+      expect(body).toContain('name="robots" content="noindex, nofollow"');
       expect(body).toContain("Not found.");
       expect(body).not.toContain("expired");
       expect(body).not.toContain("shareid");

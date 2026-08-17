@@ -215,3 +215,30 @@ export function plainTextResponse(body: string, contentType: string): Response {
     },
   });
 }
+
+export function siteJsonLd(origin = publicOrigin()) {
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        name: SITE_TITLE,
+        url: origin,
+        description: SITE_DESCRIPTION,
+      },
+      {
+        "@type": "SoftwareApplication",
+        name: SITE_TITLE,
+        url: origin,
+        applicationCategory: "DeveloperApplication",
+        operatingSystem: "Web",
+        description: `${SITE_TAGLINE} ${SITE_DESCRIPTION}`,
+        offers: {
+          "@type": "Offer",
+          price: "0",
+          priceCurrency: "GBP",
+        },
+      },
+    ],
+  };
+}

@@ -30,7 +30,7 @@ Always call the product **showmeatsack.com** in user-facing copy. The agent tool
 ## Where things live
 
 - `.engineering/config.yaml` is the contract calm-craft skills read — paths, gates, tickets. Re-run `engineering-setup` after the toolchain lands.
-- Specs live in `specs/`. Format: `specs/README.md`. Start with `specs/sharing/pages/publishing.md` for the product.
+- Specs live in `specs/`. Format: `specs/README.md`. Start with `specs/sharing/pages/publishing.md` for the product, and `specs/site/discoverability.md` for SEO, Open Graph, sitemap, robots, and llms.txt.
 - Conventions will live in `.engineering/conventions.yaml` once `conventions-decide` has been run. Do not invent a parallel rule list here.
 - calm-craft is vendored as a submodule at `.agents/plugins/calm-craft`.
 - The showmeatsack skill is `.cursor/skills/showmeatsack/SKILL.md` (create → paste view link). The same instructions ship as the Agent Plugin skill at `skills/showmeatsack/SKILL.md`.
