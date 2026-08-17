@@ -1,32 +1,14 @@
-import { zipSync, strToU8 } from "fflate";
 import { describe, expect, it } from "vitest";
 import { createMemoryFileStore } from "./file-store";
+import { SHARE_MAX_BYTES } from "./schema";
 import { createMemoryShareStore } from "./share-store";
-import {
-  createShareService,
-  isShareServiceError,
-  type ShareServiceDeps,
-} from "./shares";
+import { testShareService, zipBase64 } from "./share-test-helpers";
+import { createShareService, isShareServiceError } from "./shares";
 
-function zipBase64(files: Record<string, string>): string {
-  const encoded: Record<string, Uint8Array> = {};
-  for (const [path, text] of Object.entries(files)) {
-    encoded[path] = strToU8(text);
-  }
-  return Buffer.from(zipSync(encoded)).toString("base64");
-}
-
-function service(overrides: Partial<ShareServiceDeps> = {}) {
-  const nowMs = Date.parse("2026-08-17T10:00:00.000Z");
-  return createShareService({
-    store: createMemoryShareStore(),
-    files: createMemoryFileStore(),
-    now: () => new Date(nowMs),
-    createId: () => "shareid1",
-    createToken: () => "managetoken1",
-    publicBaseUrl: "https://showmeatsack.com",
-    ...overrides,
-  });
+function service(
+  overrides: Parameters<typeof testShareService>[0] = {},
+) {
+  return testShareService(overrides);
 }
 
 describe("publishing a page", () => {
@@ -226,5 +208,104 @@ describe("publishing a page", () => {
     await shares.create({ html: "<p>Live</p>" });
     const live = await shares.status("shareid1", "managetoken1");
     expect(live).toMatchObject({ status: "live", shareId: "shareid1" });
+  });
+
+  it("B2 — scripts and event handlers in uploaded HTML are kept", async () => {
+    const html =
+      `<!doctype html><script>window.stolen = document.cookie</script><img src=x onerror="alert(1)"><p>Live page</p>`;
+    const shares = service();
+    const created = await shares.create({ html });
+    expect(isShareServiceError(created)).toBe(false);
+    const viewed = await shares.view("shareid1", "");
+    expect(viewed.kind).toBe("file");
+    if (viewed.kind !== "file") {
+      return;
+    }
+    const body = new TextDecoder().decode(viewed.bytes);
+    expect(body).toBe(html);
+    expect(body).toContain("<script>");
+    expect(body).toContain("onerror=");
+    expect(viewed.contentType).toBe("text/html; charset=utf-8");
+  });
+
+  it("B5 — the viewed page does not contain the manage secret", async () => {
+    const shares = service();
+    await shares.create({ html: "<p>Public</p>" });
+    const viewed = await shares.view("shareid1", "");
+    if (viewed.kind !== "file") {
+      throw new Error("expected file");
+    }
+    const body = new TextDecoder().decode(viewed.bytes);
+    expect(body).not.toContain("managetoken1");
+    expect(body).not.toContain("manageUrl");
+    expect(body).not.toContain("token=");
+  });
+
+  it("B8 B10 — expired, deleted, and unknown views stay distinct", async () => {
+    let nowMs = Date.parse("2026-08-17T10:00:00.000Z");
+    const shares = createShareService({
+      store: createMemoryShareStore(),
+      files: createMemoryFileStore(),
+      now: () => new Date(nowMs),
+      createId: () => "shareid1",
+      createToken: () => "managetoken1",
+      publicBaseUrl: "https://showmeatsack.com",
+    });
+    await shares.create({ html: "<p>Temp</p>", expiresInSeconds: 60 });
+    expect(await shares.view("missing", "")).toEqual({ kind: "not_found" });
+    nowMs += 61_000;
+    expect(await shares.view("shareid1", "")).toEqual({ kind: "expired" });
+
+    const other = service({ createId: () => "shareid2" });
+    await other.create({ html: "<p>Other</p>" });
+    await other.remove("shareid2", "managetoken1");
+    expect(await other.view("shareid2", "")).toEqual({ kind: "not_found" });
+  });
+
+  it("B9 — HTML or zip larger than 5 MB is refused", async () => {
+    const shares = service();
+    const hugeHtml = "x".repeat(SHARE_MAX_BYTES + 1);
+    const htmlResult = await shares.create({ html: hugeHtml });
+    expect(isShareServiceError(htmlResult)).toBe(true);
+    if (isShareServiceError(htmlResult)) {
+      expect(htmlResult.code).toBe("too_large");
+    }
+
+    const zipResult = await shares.create({
+      zipBase64: zipBase64({
+        "index.html": "<p>ok</p>",
+        "blob.bin": new Uint8Array(SHARE_MAX_BYTES + 1),
+      }),
+    });
+    expect(isShareServiceError(zipResult)).toBe(true);
+    if (isShareServiceError(zipResult)) {
+      expect(zipResult.code).toBe("too_large");
+    }
+  });
+
+  it("B10 — a missing file on a live share is not found, not another file", async () => {
+    const shares = service();
+    await shares.create({
+      zipBase64: zipBase64({
+        "index.html": "<p>Home</p>",
+        "style.css": "p{color:red}",
+      }),
+    });
+    expect(await shares.view("shareid1", "missing.js")).toEqual({
+      kind: "not_found",
+    });
+    const css = await shares.view("shareid1", "style.css");
+    expect(css.kind).toBe("file");
+  });
+
+  it("B4 — an HTML share has no extra files", async () => {
+    const shares = service();
+    await shares.create({ html: "<p>Only this</p>" });
+    expect(await shares.view("shareid1", "style.css")).toEqual({
+      kind: "not_found",
+    });
+    expect(await shares.view("shareid1", "index.htm")).toEqual({
+      kind: "not_found",
+    });
   });
 });
