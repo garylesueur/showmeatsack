@@ -7,18 +7,19 @@ Greenfield Next.js App Router project. TypeScript, Tailwind, pnpm. Merge gates l
 ## Commands
 
 ```bash
-pnpm env         # Write .env.local from 1Password (.env.tpl)
+pnpm env         # Write .env.local from the Development vault
 pnpm dev         # Dev server (reads .env.local)
-pnpm dev:op      # Dev server with secrets injected in-process, nothing on disk
+pnpm dev:op      # Dev server with Development secrets in-process, nothing on disk
+pnpm env:vercel preview|production  # Push that vault to the matching Vercel env
 pnpm typecheck   # TypeScript
 pnpm lint        # ESLint
 pnpm test        # Vitest
 pnpm build       # Production build
 ```
 
-Secrets live in a 1Password item named `showmeatsack.com` (vault `Development`, or set `OP_VAULT`). `.env.tpl` holds `op://` references only. Prefer `pnpm dev:op` so values never land on disk; `pnpm env` writes `.env.local` when a file is needed. `.env.example` is the empty placeholder for people without 1Password. Never print `.env` contents, never commit secrets.
+1Password holds three isolated sets — vaults `Development`, `Preview`, and `Production` — each with an item named `showmeatsack.com` and the same field names. Local commands pin `Development`. Preview and Production are pushed to Vercel; they are not for a laptop. Marketplace KV on Vercel can still inject `KV_REST_API_*` for that environment; put the matching values in that vault if you want 1Password to be the source of truth. Leave Development Redis and R2 empty to stay on in-memory stores. `.env.tpl` holds `op://` references only. `.env.example` is the empty placeholder. Never print `.env` contents, never commit secrets.
 
-Locally, shares live in memory if Redis and object storage are unset. On Vercel, set `KV_REST_API_*` (or Upstash Redis) for share metadata, and R2 (`R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`) for the uploaded files, so shares survive across instances. `BLOB_READ_WRITE_TOKEN` remains a fallback if R2 is unset.
+On Vercel, each environment needs its own Redis (`KV_REST_API_*` or Upstash) and its own R2 bucket (`R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`) so shares survive across instances. `BLOB_READ_WRITE_TOKEN` remains a fallback if R2 is unset.
 
 ## What this is
 
