@@ -7,14 +7,16 @@ Greenfield Next.js App Router project. TypeScript, Tailwind, pnpm. Merge gates l
 ## Commands
 
 ```bash
-pnpm dev         # Dev server
+pnpm env         # Write .env.local from 1Password (.env.tpl)
+pnpm dev         # Dev server (reads .env.local)
+pnpm dev:op      # Dev server with secrets injected in-process, nothing on disk
 pnpm typecheck   # TypeScript
 pnpm lint        # ESLint
 pnpm test        # Vitest
 pnpm build       # Production build
 ```
 
-Copy `.env.example` to `.env.local`. Never print `.env` contents, never commit secrets.
+Secrets live in a 1Password item named `showmeatsack.com` (vault `Development`, or set `OP_VAULT`). `.env.tpl` holds `op://` references only. Prefer `pnpm dev:op` so values never land on disk; `pnpm env` writes `.env.local` when a file is needed. `.env.example` is the empty placeholder for people without 1Password. Never print `.env` contents, never commit secrets.
 
 Locally, shares live in memory if Redis and object storage are unset. On Vercel, set `KV_REST_API_*` (or Upstash Redis) for share metadata, and R2 (`R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`) for the uploaded files, so shares survive across instances. `BLOB_READ_WRITE_TOKEN` remains a fallback if R2 is unset.
 
