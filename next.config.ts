@@ -2,6 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   agentRules: false,
+  serverExternalPackages: ["@sparticuz/chromium", "puppeteer-core"],
   async rewrites() {
     return {
       beforeFiles: [

@@ -76,4 +76,95 @@ describe("responseForView", () => {
     expect(expired).not.toContain("Authorization");
     expect(missing).not.toContain("Authorization");
   });
+
+  it("B17 — a person receives the uploaded HTML unchanged", async () => {
+    const html = "<h1>Hello</h1>";
+    const response = responseForView(
+      {
+        kind: "file",
+        path: "index.html",
+        bytes: new TextEncoder().encode(html),
+        contentType: "text/html; charset=utf-8",
+      },
+      {
+        request: new Request("https://s.showmeatsack.com/s/shareid1/", {
+          headers: { "user-agent": "Mozilla/5.0 Safari/605.1.15" },
+        }),
+        shareId: "shareid1",
+      },
+    );
+    expect(await readText(response)).toBe(html);
+  });
+
+  it("B17 — a link-preview crawler gets an image of this share", async () => {
+    const response = responseForView(
+      {
+        kind: "file",
+        path: "index.html",
+        bytes: new TextEncoder().encode("<h1>Hello</h1>"),
+        contentType: "text/html; charset=utf-8",
+      },
+      {
+        request: new Request("https://s.showmeatsack.com/s/shareid1/", {
+          headers: { "user-agent": "Slackbot-LinkExpanding 1.0" },
+        }),
+        shareId: "shareid1",
+      },
+    );
+    const body = await readText(response);
+    expect(body).toContain("<h1>Hello</h1>");
+    expect(body).toContain("/s/shareid1/opengraph-image");
+    expect(body).toContain('property="og:image"');
+    expect(response.headers.get("X-Robots-Tag")).toBe("noindex, nofollow");
+  });
+
+  it("B17 — CSS is not rewritten for crawlers", async () => {
+    const css = "p{color:red}";
+    const response = responseForView(
+      {
+        kind: "file",
+        path: "style.css",
+        bytes: new TextEncoder().encode(css),
+        contentType: "text/css; charset=utf-8",
+      },
+      {
+        request: new Request("https://s.showmeatsack.com/s/shareid1/style.css", {
+          headers: { "user-agent": "Slackbot-LinkExpanding 1.0" },
+        }),
+        shareId: "shareid1",
+      },
+    );
+    expect(await readText(response)).toBe(css);
+  });
+
+  it("B10 B17 — expired and unknown shares do not preview another page", async () => {
+    const expired = responseForView(
+      { kind: "expired" },
+      {
+        request: new Request("https://s.showmeatsack.com/s/shareid1/", {
+          headers: { "user-agent": "Slackbot-LinkExpanding 1.0" },
+        }),
+        shareId: "shareid1",
+      },
+    );
+    const expiredBody = await readText(expired);
+    expect(expired.status).toBe(410);
+    expect(expiredBody).toBe(EXPIRED_SHARE_HTML);
+    expect(expiredBody).not.toContain("opengraph-image");
+
+    const missing = responseForView(
+      { kind: "not_found" },
+      {
+        request: new Request("https://s.showmeatsack.com/s/shareid1/", {
+          headers: { "user-agent": "Slackbot-LinkExpanding 1.0" },
+        }),
+        shareId: "shareid1",
+      },
+    );
+    expect(missing.status).toBe(404);
+    const missingBody = await readText(missing);
+    expect(missingBody).toBe(NOT_FOUND_SHARE_HTML);
+    expect(missingBody).not.toContain("opengraph-image");
+    expect(missingBody).not.toContain("Hello");
+  });
 });

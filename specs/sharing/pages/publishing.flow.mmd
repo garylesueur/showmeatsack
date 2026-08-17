@@ -23,6 +23,7 @@ flowchart TD
     F2_gone(["Share expired"])
     F2_unknown(["Unknown link"])
     F2_open -->|"F2.T1: Open [The view link matches and the share is still live.]"| F2_page
+    F2_open -->|"F2.T10: Fetch for a link preview [The view link matches, the share is still live, and the fetcher is a link-preview crawler.]"| F2_page
     F2_open -->|"F2.T2: Open [The expiry time has passed and the share was not deleted.]"| F2_gone
     F2_open -->|"F2.T3: Open [The share is unknown, deleted, or the secret does not match.]"| F2_unknown
     F2_page -->|"F2.T4: Open a file [The path stays inside this share.]"| F2_page

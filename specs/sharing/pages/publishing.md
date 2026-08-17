@@ -74,6 +74,10 @@ Create stays open and still needs no account. A flood of creates from one caller
 
 Create and replace return a manage URL that names the share and a manage token that is not in that URL. Agents send the token as a bearer secret. A query-string token is still accepted so an old caller keeps working. The viewed page never includes the token.
 
+### B17 — A link preview shows the page 🟢 implemented
+
+When the view link is pasted into Slack or another app that fetches a link preview, the preview image is a picture of that share’s uploaded page — not the showmeatsack.com homepage, and not another share. A person who opens the same link in a browser still sees the uploaded page, with no extra chrome around it.
+
 ## Rules (Invariants)
 
 - The view link never grants replace or delete.
@@ -86,6 +90,8 @@ Create and replace return a manage URL that names the share and a manage token t
 - The agent tool is named **showmeatsack.com**. View links are on `https://s.showmeatsack.com`. The product stays on `https://showmeatsack.com`.
 - User-facing copy calls the product **showmeatsack.com**.
 - A zip’s homepage is `index.html` at the zip root, or inside a single wrapping folder (the usual “zip a folder” case). Relative files in that zip are part of the same share.
+- A person opening the view link receives the uploaded page as published. Extra Open Graph tags are only for link-preview crawlers, and they do not change how the page looks.
+- A link preview for one view link never shows another share’s page.
 - Replace changes the files only. Expiry stays as it was at create.
 - After a successful replace, the next open of the view link shows the new page.
 - An expired view link shows a short “this share has expired” page. An unknown or deleted link shows a generic not-found. Neither reveals another share.
@@ -106,6 +112,14 @@ Create and replace return a manage URL that names the share and a manage token t
 | Larger than 5 MB | Refused; nothing published or changed |
 | Neither HTML nor a zip | Refused; nothing published or changed |
 | Usable payload, but this caller has published too many pages | Refused; nothing published; agent is told to wait |
+
+### Link preview
+
+| Who fetches the view link | Outcome |
+| --- | --- |
+| A person in a browser | The uploaded page, unchanged |
+| A link-preview crawler, share still live | Preview image is a picture of that share’s page |
+| A link-preview crawler, expired, deleted, or unknown | No preview of another share |
 
 ### What each doorway may do
 
@@ -148,7 +162,7 @@ Create and replace return a manage URL that names the share and a manage token t
 ## User Flows
 
 - **F1 — Publish and manage:** [contract](./publishing.flow.yaml) · [diagram](./publishing.flow.mmd) — covers B1, B5–B12, B15, B16
-- **F2 — Visitor opens the view link:** [contract](./publishing.flow.yaml) · [diagram](./publishing.flow.mmd) — covers B2–B5, B8, B10, B13, B14
+- **F2 — Visitor opens the view link:** [contract](./publishing.flow.yaml) · [diagram](./publishing.flow.mmd) — covers B2–B5, B8, B10, B13, B14, B17
 
 ## Open Questions
 
@@ -159,6 +173,7 @@ Create and replace return a manage URL that names the share and a manage token t
 - **Settled:** A zip with `index.html` inside a single wrapping folder is accepted as that site. Recorded as B3 and the invariants.
 - **Settled:** Untrusted HTML is isolated on a separate view origin. Recorded as B14.
 - **Settled:** The manage secret is a bearer token, not a query string on the manage URL. Recorded as B16.
+- **Settled:** Pasting the view link into Slack or similar should unfurl a picture of that uploaded page, not the product homepage. Recorded as B17.
 
 ## Future Considerations
 
