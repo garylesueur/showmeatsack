@@ -62,6 +62,10 @@ Publishing a page does not need an account or a shared API key. Anyone who can c
 
 A visitor cannot use the view link to see files from another share, or files that were not in this share. A path that tries to leave the share is refused. Only that share’s files are shown.
 
+### B14 — A link preview shows the page 🟢 implemented
+
+When the view link is pasted into Slack or another app that fetches a link preview, the preview image is a picture of that share’s uploaded page — not the showmeatsack.com homepage, and not another share. A person who opens the same link in a browser still sees the uploaded page, with no extra chrome around it.
+
 ## Rules (Invariants)
 
 - The view link never grants replace or delete.
@@ -74,6 +78,8 @@ A visitor cannot use the view link to see files from another share, or files tha
 - The agent tool is named **showmeatsack.com**. View links are on `https://showmeatsack.com`.
 - User-facing copy calls the product **showmeatsack.com**.
 - A zip’s homepage is `index.html` at the zip root, or inside a single wrapping folder (the usual “zip a folder” case). Relative files in that zip are part of the same share.
+- A person opening the view link receives the uploaded page as published. Extra Open Graph tags are only for link-preview crawlers, and they do not change how the page looks.
+- A link preview for one view link never shows another share’s page.
 - Replace changes the files only. Expiry stays as it was at create.
 - After a successful replace, the next open of the view link shows the new page.
 - An expired view link shows a short “this share has expired” page. An unknown or deleted link shows a generic not-found. Neither reveals another share.
@@ -92,6 +98,14 @@ A visitor cannot use the view link to see files from another share, or files tha
 | Empty HTML or empty zip | Refused; nothing published or changed |
 | Larger than 5 MB | Refused; nothing published or changed |
 | Neither HTML nor a zip | Refused; nothing published or changed |
+
+### Link preview
+
+| Who fetches the view link | Outcome |
+| --- | --- |
+| A person in a browser | The uploaded page, unchanged |
+| A link-preview crawler, share still live | Preview image is a picture of that share’s page |
+| A link-preview crawler, expired, deleted, or unknown | No preview of another share |
 
 ### What each doorway may do
 
@@ -126,7 +140,7 @@ A visitor cannot use the view link to see files from another share, or files tha
 ## User Flows
 
 - **F1 — Publish and manage:** [contract](./publishing.flow.yaml) · [diagram](./publishing.flow.mmd) — covers B1, B5–B12
-- **F2 — Visitor opens the view link:** [contract](./publishing.flow.yaml) · [diagram](./publishing.flow.mmd) — covers B2–B5, B8, B10, B13
+- **F2 — Visitor opens the view link:** [contract](./publishing.flow.yaml) · [diagram](./publishing.flow.mmd) — covers B2–B5, B8, B10, B13–B14
 
 ## Open Questions
 
@@ -135,6 +149,7 @@ A visitor cannot use the view link to see files from another share, or files tha
 - **Settled:** Replace does not change expiry. Life stays as it was at create. Recorded as B6 and the invariants.
 - **Settled:** The product is **showmeatsack.com**. The domain is live. The agent tool is named **showmeatsack.com**. View links are on `https://showmeatsack.com`. Recorded as B1 and the invariants.
 - **Settled:** A zip with `index.html` inside a single wrapping folder is accepted as that site. Recorded as B3 and the invariants.
+- **Settled:** Pasting the view link into Slack or similar should unfurl a picture of that uploaded page, not the product homepage. Recorded as B14.
 
 ## Future Considerations
 
