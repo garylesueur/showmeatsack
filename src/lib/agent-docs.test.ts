@@ -7,6 +7,7 @@ import {
   mcpGetDocumentKind,
   mcpGuideHtml,
   mcpGuideMarkdown,
+  siteJsonLd,
   skillMarkdown,
 } from "./agent-docs";
 import { cursorInstallHref, cursorInstallPageHref } from "./cursor-install";
@@ -84,6 +85,27 @@ describe("site agent documents", () => {
     expect(html).toContain('href="https://github.com/garylesueur/showmeatsack"');
     expect(escapeHtml('<script>"x"</script>')).toBe(
       "&lt;script&gt;&quot;x&quot;&lt;/script&gt;",
+    );
+  });
+
+  it("names the product in JSON-LD for search and answer engines", () => {
+    const origin = "https://showmeatsack.com";
+    const jsonLd = siteJsonLd(origin);
+    expect(jsonLd["@context"]).toBe("https://schema.org");
+    expect(jsonLd["@graph"]).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          "@type": "WebSite",
+          name: "showmeatsack.com",
+          url: origin,
+        }),
+        expect.objectContaining({
+          "@type": "SoftwareApplication",
+          name: "showmeatsack.com",
+          url: origin,
+          applicationCategory: "DeveloperApplication",
+        }),
+      ]),
     );
   });
 
