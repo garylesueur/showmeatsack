@@ -13,7 +13,7 @@ const LOCAL_CHROME_PATHS = [
 export async function screenshotHtmlPreview(html: string): Promise<Uint8Array> {
   const executablePath = await chromeExecutablePath();
   const browser = await puppeteer.launch({
-    args: [...chromium.args, "--disable-javascript"],
+    args: chromium.args,
     defaultViewport: {
       width: OPENGRAPH_SIZE.width,
       height: OPENGRAPH_SIZE.height,
@@ -21,6 +21,8 @@ export async function screenshotHtmlPreview(html: string): Promise<Uint8Array> {
     },
     executablePath,
     headless: true,
+    timeout: 10_000,
+    protocolTimeout: 15_000,
   });
   try {
     const page = await browser.newPage();

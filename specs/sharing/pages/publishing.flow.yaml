@@ -120,7 +120,7 @@ flows:
         event: Fetch for a link preview
         to: page
         guard: The view link matches, the share is still live, and the fetcher is a link-preview crawler.
-        outcome: The preview image is a picture of this share’s page. A person in a browser still sees the uploaded page unchanged.
+        outcome: The preview image is a picture of this share’s page. If a picture cannot be taken, the preview names that page from its title or visible text. A person in a browser still sees the uploaded page unchanged.
         covers: [B17]
       - id: F2.T2
         from: open
