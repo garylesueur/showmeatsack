@@ -1,9 +1,9 @@
-export const OP_ITEM_NAME = "showmeatsack.com";
+export const OP_VAULT_DEFAULT = "Development";
 
-export const secretEnvVaults = {
-  development: "Development",
-  preview: "Preview",
-  production: "Production",
+export const secretEnvItems = {
+  development: "showmeatsack.com Development",
+  preview: "showmeatsack.com Preview",
+  production: "showmeatsack.com Production",
 } as const;
 
 export type LocalSecretEnv = "development";
@@ -20,14 +20,20 @@ export const secretKeys = [
   "BLOB_READ_WRITE_TOKEN",
 ] as const;
 
-export function vaultForLocalDev(): (typeof secretEnvVaults)["development"] {
-  return secretEnvVaults.development;
+export const envTemplateFiles = {
+  development: ".env.development.tpl",
+  preview: ".env.preview.tpl",
+  production: ".env.production.tpl",
+} as const;
+
+export function itemForLocalDev(): (typeof secretEnvItems)["development"] {
+  return secretEnvItems.development;
 }
 
-export function vaultForVercelTarget(
+export function itemForVercelTarget(
   target: VercelSecretEnv,
-): (typeof secretEnvVaults)[VercelSecretEnv] {
-  return secretEnvVaults[target];
+): (typeof secretEnvItems)[VercelSecretEnv] {
+  return secretEnvItems[target];
 }
 
 export function parseVercelSecretTarget(value: string): VercelSecretEnv {
@@ -39,6 +45,14 @@ export function parseVercelSecretTarget(value: string): VercelSecretEnv {
   );
 }
 
-export function opSecretReference(vault: string, key: string): string {
-  return `op://${vault}/${OP_ITEM_NAME}/${key}`;
+export function opSecretReference(
+  vault: string,
+  item: string,
+  key: string,
+): string {
+  return `op://${vault}/${item}/${key}`;
+}
+
+export function opTemplateReference(item: string, key: string): string {
+  return `op://\${OP_VAULT:-${OP_VAULT_DEFAULT}}/${item}/${key}`;
 }
