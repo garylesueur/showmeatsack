@@ -28,7 +28,7 @@ Opening `https://showmeatsack.com/mcp` in a browser shows a short HTML page with
 
 ### B5 — The skill is on the site 🟢 implemented
 
-`/skill.md` is the showmeatsack.com skill: create, paste the view link, replace or delete with the manage token. It matches the skill shipped for Cursor.
+`/skill.md` is the showmeatsack.com skill: create, put the view link where the person will open it (this conversation, email, Slack, or anywhere else the agent can already send), replace or delete with the manage token. It matches the skill shipped for Cursor. An agent does not wait for the words "showmeatsack"; a bot acting on its own still publishes, then delivers `viewUrl` itself.
 
 ### B6 — View links are not for search 🟢 implemented
 

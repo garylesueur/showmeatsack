@@ -21,7 +21,7 @@ const mcpHandler = createMcpHandler(
       SHOWMEATSACK_TOOL_NAME,
       {
         description:
-          "Publish HTML or a small static-site zip to showmeatsack.com. Create returns a view URL that is the page and a manage token to replace or delete it. Same as the HTTP API.",
+          "Publish HTML or a small static-site zip to showmeatsack.com. Create returns a view URL that is the page. Put that URL where a person will open it (this chat, email, Slack, or anywhere else you can already send). Also returns a manage token to replace or delete. Same as the HTTP API.",
         inputSchema: showmeatsackToolInputSchema,
       },
       async (args) => {

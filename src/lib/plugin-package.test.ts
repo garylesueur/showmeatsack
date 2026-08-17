@@ -58,6 +58,8 @@ describe("Agent Plugin package", () => {
     );
     expect(onDisk.startsWith("---\n")).toBe(true);
     expect(onDisk).toContain("name: showmeatsack\n");
+    expect(onDisk).toContain("bot running unattended");
+    expect(onDisk).toContain("email this");
     const body = onDisk.replace(/^---\n[\s\S]*?\n---\n\n/, "");
     expect(body).toBe(SHOWMEATSACK_SKILL_MARKDOWN);
   });
