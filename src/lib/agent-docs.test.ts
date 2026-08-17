@@ -65,6 +65,14 @@ describe("site agent documents", () => {
     expect(onDisk).toBe(SHOWMEATSACK_SKILL_MARKDOWN);
   });
 
+  it("tells agents to publish without a meat-sack phrase and to send the view URL themselves", () => {
+    const skill = skillMarkdown();
+    expect(skill).toContain('You do not need the words "showmeatsack"');
+    expect(skill).toContain("bot running on your own");
+    expect(skill).toContain("send that same `viewUrl` by email");
+    expect(skill).toContain("This product does not send mail or");
+  });
+
   it("llms.txt and the MCP guide point at the skill and the markdown URL", () => {
     const origin = "https://showmeatsack.com";
     const index = llmsTxt(origin);
