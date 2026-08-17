@@ -15,7 +15,7 @@ importers:
         specifier: ^1.30.0
         version: 1.30.0(supports-color@7.2.0)(zod@4.4.3)
       '@sparticuz/chromium':
-        specifier: ^149.0.0
+        specifier: 149.0.0
         version: 149.0.0
       '@upstash/redis':
         specifier: ^1.38.2
@@ -33,7 +33,7 @@ importers:
         specifier: 16.3.1
         version: 16.3.1(@babel/core@7.29.7(supports-color@7.2.0))(@types/node@20.19.43)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       puppeteer-core:
-        specifier: ^25.7.0
+        specifier: 25.7.0
         version: 25.7.0
       react:
         specifier: 19.2.8

@@ -1,5 +1,4 @@
 import { describe, expect, it } from "vitest";
-import { SITE_TITLE } from "./agent-docs";
 import {
   descriptionFromHtml,
   inlineLocalShareAssets,
@@ -24,7 +23,8 @@ describe("share Open Graph", () => {
   it("B17 — prefers the page title, then an h1", () => {
     expect(titleFromHtml("<title>Report</title><h1>Other</h1>")).toBe("Report");
     expect(titleFromHtml("<h1>Chart</h1>")).toBe("Chart");
-    expect(titleFromHtml("<p>No title</p>")).toBe(SITE_TITLE);
+    expect(titleFromHtml("<p>No title</p>")).toBe("No title");
+    expect(titleFromHtml("<div></div>")).toBe("Shared page");
   });
 
   it("B17 — wraps a fragment so crawlers can read the tags", () => {
@@ -62,6 +62,18 @@ describe("share Open Graph", () => {
     expect(html).not.toContain('href="style.css"');
     expect(html).toContain("data:image/png;base64,");
     expect(html).not.toContain('src="pic.png"');
+  });
+
+  it("loads a repeated local asset once", async () => {
+    const loads: string[] = [];
+    await inlineLocalShareAssets(
+      `<img src="pic.png"><img src="pic.png">`,
+      async (path) => {
+        loads.push(path);
+        return png;
+      },
+    );
+    expect(loads).toEqual(["pic.png"]);
   });
 
   it("does not fetch remote assets", async () => {

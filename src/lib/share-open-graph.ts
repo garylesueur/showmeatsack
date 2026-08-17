@@ -1,3 +1,4 @@
+import { SHARE_MAX_BYTES } from "./schema";
 import { SITE_TAGLINE, SITE_TITLE } from "./agent-docs";
 import type { StoredFile } from "./file-store";
 import { normalizeSharePath } from "./site-paths";
@@ -41,7 +42,16 @@ export function titleFromHtml(html: string): string {
   if (fromHeading) {
     return fromHeading;
   }
-  return SITE_TITLE;
+  const visible = html
+    .replace(/<script\b[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style\b[\s\S]*?<\/style>/gi, " ")
+    .replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (visible) {
+    return visible.slice(0, 120);
+  }
+  return "Shared page";
 }
 
 export function descriptionFromHtml(html: string): string {
@@ -93,6 +103,35 @@ export async function inlineLocalShareAssets(
   html: string,
   load: (path: string) => Promise<StoredFile | null>,
 ): Promise<string> {
+  const cache = new Map<string, Promise<StoredFile | null>>();
+  const skipped = new Set<string>();
+  const counted = new Set<string>();
+  let inlinedBytes = 0;
+
+  async function loadOnce(path: string): Promise<StoredFile | null> {
+    if (skipped.has(path)) {
+      return null;
+    }
+    let pending = cache.get(path);
+    if (!pending) {
+      pending = load(path);
+      cache.set(path, pending);
+    }
+    const file = await pending;
+    if (!file) {
+      return null;
+    }
+    if (!counted.has(path)) {
+      if (inlinedBytes + file.bytes.byteLength > SHARE_MAX_BYTES) {
+        skipped.add(path);
+        return null;
+      }
+      counted.add(path);
+      inlinedBytes += file.bytes.byteLength;
+    }
+    return file;
+  }
+
   const withSheets = await replaceAsync(
     html,
     /<link\b[^>]*>/gi,
@@ -105,11 +144,11 @@ export async function inlineLocalShareAssets(
       if (!path) {
         return tag;
       }
-      const file = await load(path);
+      const file = await loadOnce(path);
       if (!file) {
         return tag;
       }
-      const css = await inlineCssUrls(new TextDecoder().decode(file.bytes), load);
+      const css = await inlineCssUrls(new TextDecoder().decode(file.bytes), loadOnce);
       return `<style>${css}</style>`;
     },
   );
@@ -123,7 +162,7 @@ export async function inlineLocalShareAssets(
       if (!path) {
         return tag;
       }
-      const file = await load(path);
+      const file = await loadOnce(path);
       if (!file) {
         return tag;
       }
@@ -134,7 +173,7 @@ export async function inlineLocalShareAssets(
     },
   );
 
-  return inlineCssUrls(withImages, load);
+  return inlineCssUrls(withImages, loadOnce);
 }
 
 async function inlineCssUrls(
