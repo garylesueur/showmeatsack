@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
+import {
+  SITE_DESCRIPTION,
+  SITE_TAGLINE,
+  SITE_TITLE,
+} from "@/lib/agent-docs";
+import { publicOrigin } from "@/lib/public-origin";
 import "./globals.css";
 
 const geistSans = Geist({
@@ -13,10 +19,24 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const origin = publicOrigin();
+
 export const metadata: Metadata = {
-  title: "showmeatsack.com",
-  description:
-    "An agent posts HTML or a small static site and gets a showmeatsack.com link to share.",
+  metadataBase: new URL(origin),
+  title: {
+    default: SITE_TITLE,
+    template: `%s · ${SITE_TITLE}`,
+  },
+  description: `${SITE_TAGLINE} ${SITE_DESCRIPTION}`,
+  applicationName: SITE_TITLE,
+  keywords: ["showmeatsack.com", "MCP", "HTML", "share", "agent"],
+  alternates: {
+    canonical: "/",
+    types: {
+      "text/markdown": "/mcp.md",
+      "text/plain": "/llms.txt",
+    },
+  },
 };
 
 export default function RootLayout({

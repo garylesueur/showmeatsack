@@ -1,6 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
+import { SHOWMEATSACK_SKILL_MARKDOWN } from "./showmeatsack-skill";
 
 const root = process.cwd();
 
@@ -50,13 +51,14 @@ describe("Agent Plugin package", () => {
     );
   });
 
-  it("ships the plugin skill with frontmatter", () => {
+  it("ships the plugin skill with the same instructions as /skill.md", () => {
     const onDisk = readFileSync(
       join(root, "skills/showmeatsack/SKILL.md"),
       "utf8",
     );
     expect(onDisk.startsWith("---\n")).toBe(true);
     expect(onDisk).toContain("name: showmeatsack\n");
-    expect(onDisk).toContain("showmeatsack.com");
+    const body = onDisk.replace(/^---\n[\s\S]*?\n---\n\n/, "");
+    expect(body).toBe(SHOWMEATSACK_SKILL_MARKDOWN);
   });
 });

@@ -1,4 +1,11 @@
 import { createMcpHandler } from "mcp-handler";
+import {
+  htmlDocumentResponse,
+  markdownResponse,
+  mcpGetDocumentKind,
+  mcpGuideHtml,
+  mcpGuideMarkdown,
+} from "@/lib/agent-docs";
 import { getDefaultShareService } from "@/lib/app-shares";
 import {
   SHOWMEATSACK_TOOL_NAME,
@@ -64,6 +71,13 @@ export async function POST(request: Request): Promise<Response> {
 }
 
 export async function GET(request: Request): Promise<Response> {
+  const kind = mcpGetDocumentKind(request);
+  if (kind === "markdown") {
+    return markdownResponse(mcpGuideMarkdown());
+  }
+  if (kind === "html") {
+    return htmlDocumentResponse(mcpGuideHtml());
+  }
   return withMcpCors(await mcpHandler(request));
 }
 
