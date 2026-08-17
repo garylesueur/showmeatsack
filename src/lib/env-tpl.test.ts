@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import {
+  OP_VAULT_DEFAULT,
   envTemplateFiles,
   itemForLocalDev,
   itemForVercelTarget,
@@ -78,6 +79,7 @@ describe("1Password env templates", () => {
     expect(sync).toContain(`item="${secretEnvItems.preview}"`);
     expect(sync).toContain(`item="${secretEnvItems.production}"`);
     expect(sync).not.toContain(`item="${secretEnvItems.development}"`);
+    expect(sync).toContain(`OP_VAULT:-${OP_VAULT_DEFAULT}`);
     expect(sync).toContain("Development stays in 1Password");
   });
 });

@@ -1,4 +1,5 @@
-export const OP_VAULT_DEFAULT = "Development";
+export const OP_VAULT_NAME = "Agents";
+export const OP_VAULT_DEFAULT = "mep374l3cpdtzwibf5fswsimbi";
 
 export const secretEnvItems = {
   development: "showmeatsack.com Development",
