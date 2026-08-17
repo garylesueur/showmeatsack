@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "dev:op": "op run --env-file=.env.tpl -- next dev",
+    "env": "op inject -i .env.tpl -o .env.local",
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
