@@ -16,7 +16,7 @@ pnpm build       # Production build
 
 Copy `.env.example` to `.env.local`. Never print `.env` contents, never commit secrets.
 
-Locally, shares live in memory if Redis and Blob are unset. On Vercel, set `KV_REST_API_*` (or Upstash Redis) and `BLOB_READ_WRITE_TOKEN` so shares survive across instances.
+Locally, shares live in memory if Redis and object storage are unset. On Vercel, set `KV_REST_API_*` (or Upstash Redis) for share metadata, and R2 (`R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`) for the uploaded files, so shares survive across instances. `BLOB_READ_WRITE_TOKEN` remains a fallback if R2 is unset.
 
 ## What this is
 
