@@ -4,8 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "dev:op": "OP_VAULT=Development op run --env-file=.env.tpl -- next dev",
-    "env": "OP_VAULT=Development op inject -i .env.tpl -o .env.local",
+    "dev:op": "op run --env-file=.env.development.tpl -- next dev",
+    "env": "op inject -i .env.development.tpl -o .env.local",
     "env:vercel": "bash scripts/sync-vercel-env.sh",
     "build": "next build",
     "start": "next start",

@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
-# Push one 1Password vault to the matching Vercel environment.
+# Push one 1Password item to the matching Vercel environment.
 # Development is local-only and is not accepted here.
 set -euo pipefail
 
 target="${1:-}"
 case "$target" in
-  preview) vault=Preview ;;
-  production) vault=Production ;;
+  preview) item="showmeatsack.com Preview" ;;
+  production) item="showmeatsack.com Production" ;;
   *)
     echo "Usage: pnpm env:vercel preview|production" >&2
     echo "Development stays in 1Password and is loaded with pnpm env / pnpm dev:op." >&2
@@ -24,7 +24,7 @@ if ! command -v vercel >/dev/null 2>&1; then
   exit 1
 fi
 
-item="showmeatsack.com"
+vault="${OP_VAULT:-Development}"
 keys=(
   KV_REST_API_URL
   KV_REST_API_TOKEN
@@ -35,7 +35,7 @@ keys=(
   BLOB_READ_WRITE_TOKEN
 )
 
-echo "Pushing 1Password vault ${vault} → Vercel ${target}" >&2
+echo "Pushing 1Password item ${item} → Vercel ${target}" >&2
 
 for key in "${keys[@]}"; do
   if ! value="$(op read "op://${vault}/${item}/${key}" 2>/dev/null)"; then

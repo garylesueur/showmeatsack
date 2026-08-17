@@ -1,31 +1,40 @@
 import { describe, expect, it } from "vitest";
 import {
-  OP_ITEM_NAME,
+  OP_VAULT_DEFAULT,
+  envTemplateFiles,
+  itemForLocalDev,
+  itemForVercelTarget,
   opSecretReference,
+  opTemplateReference,
   parseVercelSecretTarget,
-  secretEnvVaults,
+  secretEnvItems,
   secretKeys,
-  vaultForLocalDev,
-  vaultForVercelTarget,
 } from "./secret-envs";
 
 describe("secret environments", () => {
-  it("uses one item name across Development, Preview, and Production vaults", () => {
-    expect(OP_ITEM_NAME).toBe("showmeatsack.com");
-    expect(secretEnvVaults).toEqual({
-      development: "Development",
-      preview: "Preview",
-      production: "Production",
+  it("uses three items in one vault", () => {
+    expect(OP_VAULT_DEFAULT).toBe("Development");
+    expect(secretEnvItems).toEqual({
+      development: "showmeatsack.com Development",
+      preview: "showmeatsack.com Preview",
+      production: "showmeatsack.com Production",
+    });
+    expect(envTemplateFiles).toEqual({
+      development: ".env.development.tpl",
+      preview: ".env.preview.tpl",
+      production: ".env.production.tpl",
     });
   });
 
-  it("pins local work to the Development vault", () => {
-    expect(vaultForLocalDev()).toBe("Development");
+  it("pins local work to the Development item", () => {
+    expect(itemForLocalDev()).toBe("showmeatsack.com Development");
   });
 
-  it("maps Vercel targets to their own vaults and refuses Development", () => {
-    expect(vaultForVercelTarget("preview")).toBe("Preview");
-    expect(vaultForVercelTarget("production")).toBe("Production");
+  it("maps Vercel targets to their own items and refuses Development", () => {
+    expect(itemForVercelTarget("preview")).toBe("showmeatsack.com Preview");
+    expect(itemForVercelTarget("production")).toBe(
+      "showmeatsack.com Production",
+    );
     expect(parseVercelSecretTarget("preview")).toBe("preview");
     expect(parseVercelSecretTarget("production")).toBe("production");
     expect(() => parseVercelSecretTarget("development")).toThrow(
@@ -34,8 +43,15 @@ describe("secret environments", () => {
   });
 
   it("builds op:// references without embedding values", () => {
-    expect(opSecretReference("Preview", "R2_BUCKET_NAME")).toBe(
-      "op://Preview/showmeatsack.com/R2_BUCKET_NAME",
+    expect(
+      opSecretReference(
+        "Development",
+        "showmeatsack.com Preview",
+        "R2_BUCKET_NAME",
+      ),
+    ).toBe("op://Development/showmeatsack.com Preview/R2_BUCKET_NAME");
+    expect(opTemplateReference(secretEnvItems.development, "R2_ACCOUNT_ID")).toBe(
+      "op://${OP_VAULT:-Development}/showmeatsack.com Development/R2_ACCOUNT_ID",
     );
     expect(secretKeys).toContain("R2_SECRET_ACCESS_KEY");
     expect(secretKeys).not.toContain("PUBLIC_BASE_URL");
