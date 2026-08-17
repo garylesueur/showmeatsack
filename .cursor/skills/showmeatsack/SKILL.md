@@ -2,9 +2,9 @@
 
 Publish a page, put the view link where the human will see it. Do not invent another host, a gist, or a file-share of your own.
 
-The product is **showmeatsack.com**. The tool is named `showmeatsack.com`. HTTP and the tool are the same share. View links look like `https://showmeatsack.com/s/…`.
+The product is **showmeatsack.com**. The tool is named `showmeatsack.com`. HTTP and the tool are the same share. View links look like `https://s.showmeatsack.com/s/…`.
 
-There is no API key and no account. Create is open. After create, keep `manageToken` (or `manageUrl`) for replace, delete, and status.
+There is no API key and no account. Create is open. After create, keep `manageToken` for replace, delete, and status. Send it as `Authorization: Bearer`. Do not put it in the URL.
 
 ## In this conversation
 

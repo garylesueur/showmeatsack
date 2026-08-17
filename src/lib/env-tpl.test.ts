@@ -42,6 +42,7 @@ describe("1Password env templates", () => {
       "utf8",
     );
     expect(development).toContain("PUBLIC_BASE_URL=http://localhost:3000");
+    expect(development).toContain("VIEW_PUBLIC_BASE_URL=http://localhost:3000");
     expect(development).toContain(secretEnvItems.development);
     expect(development).toContain(secretEnvItems.preview);
     expect(development).toContain(secretEnvItems.production);
@@ -57,6 +58,9 @@ describe("1Password env templates", () => {
       "utf8",
     );
     expect(production).toContain("PUBLIC_BASE_URL=https://showmeatsack.com");
+    expect(production).toContain(
+      "VIEW_PUBLIC_BASE_URL=https://s.showmeatsack.com",
+    );
     for (const key of secretKeys) {
       expect(preview).toContain(
         `${key}=${opTemplateReference(itemForVercelTarget("preview"), key)}`,

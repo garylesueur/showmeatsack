@@ -59,5 +59,6 @@ describe("secret environments", () => {
     );
     expect(secretKeys).toContain("R2_SECRET_ACCESS_KEY");
     expect(secretKeys).not.toContain("PUBLIC_BASE_URL");
+    expect(secretKeys).not.toContain("VIEW_PUBLIC_BASE_URL");
   });
 });

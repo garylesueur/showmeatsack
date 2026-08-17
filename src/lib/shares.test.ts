@@ -20,10 +20,29 @@ describe("publishing a page", () => {
       return;
     }
     expect(created.viewUrl).toBe("https://showmeatsack.com/s/shareid1/");
-    expect(created.manageUrl).toContain("token=managetoken1");
+    expect(created.manageUrl).toBe(
+      "https://showmeatsack.com/api/v1/shares/shareid1",
+    );
+    expect(created.manageUrl).not.toContain("token=");
     expect(created.manageToken).toBe("managetoken1");
     expect(created.expiresAt).toBe("2026-09-16T10:00:00.000Z");
     expect(created.status).toBe("live");
+  });
+
+  it("B14 B16 — view URL uses the view origin and manage URL has no token", async () => {
+    const shares = service({
+      viewPublicBaseUrl: "https://s.showmeatsack.com",
+    });
+    const created = await shares.create({ html: "<p>Isolated</p>" });
+    expect(isShareServiceError(created)).toBe(false);
+    if (isShareServiceError(created)) {
+      return;
+    }
+    expect(created.viewUrl).toBe("https://s.showmeatsack.com/s/shareid1/");
+    expect(created.manageUrl).toBe(
+      "https://showmeatsack.com/api/v1/shares/shareid1",
+    );
+    expect(created.manageUrl).not.toContain(created.manageToken);
   });
 
   it("B2 B4 — view link is the HTML itself", async () => {

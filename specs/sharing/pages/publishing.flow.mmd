@@ -7,6 +7,7 @@ flowchart TD
     F1_refused(["Refused"])
     F1_publish -->|"F1.T1: Publish [The payload is usable HTML or a zip with index.html, and is at most 5 MB.]"| F1_live
     F1_publish -->|"F1.T2: Publish [The payload is empty, too large, not HTML or a zip, or a zip with no index.html.]"| F1_refused
+    F1_publish -->|"F1.T11: Publish [This caller has already published too many pages.]"| F1_refused
     F1_live -->|"F1.T3: Replace [The manage secret matches and the payload would be accepted on create.]"| F1_live
     F1_live -->|"F1.T4: Replace [The manage secret matches and the payload would be refused on create.]"| F1_live
     F1_live -->|"F1.T5: Replace [The caller has only the view link, or the secret does not match.]"| F1_live
