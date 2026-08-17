@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import {
   OP_VAULT_DEFAULT,
+  OP_VAULT_NAME,
   envTemplateFiles,
   itemForLocalDev,
   itemForVercelTarget,
@@ -13,7 +14,8 @@ import {
 
 describe("secret environments", () => {
   it("uses three items in one vault", () => {
-    expect(OP_VAULT_DEFAULT).toBe("Development");
+    expect(OP_VAULT_NAME).toBe("Agents");
+    expect(OP_VAULT_DEFAULT).toBe("mep374l3cpdtzwibf5fswsimbi");
     expect(secretEnvItems).toEqual({
       development: "showmeatsack.com Development",
       preview: "showmeatsack.com Preview",
@@ -45,13 +47,15 @@ describe("secret environments", () => {
   it("builds op:// references without embedding values", () => {
     expect(
       opSecretReference(
-        "Development",
+        OP_VAULT_DEFAULT,
         "showmeatsack.com Preview",
         "R2_BUCKET_NAME",
       ),
-    ).toBe("op://Development/showmeatsack.com Preview/R2_BUCKET_NAME");
+    ).toBe(
+      "op://mep374l3cpdtzwibf5fswsimbi/showmeatsack.com Preview/R2_BUCKET_NAME",
+    );
     expect(opTemplateReference(secretEnvItems.development, "R2_ACCOUNT_ID")).toBe(
-      "op://${OP_VAULT:-Development}/showmeatsack.com Development/R2_ACCOUNT_ID",
+      "op://${OP_VAULT:-mep374l3cpdtzwibf5fswsimbi}/showmeatsack.com Development/R2_ACCOUNT_ID",
     );
     expect(secretKeys).toContain("R2_SECRET_ACCESS_KEY");
     expect(secretKeys).not.toContain("PUBLIC_BASE_URL");

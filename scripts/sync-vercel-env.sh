@@ -24,7 +24,7 @@ if ! command -v vercel >/dev/null 2>&1; then
   exit 1
 fi
 
-vault="${OP_VAULT:-Development}"
+vault="${OP_VAULT:-mep374l3cpdtzwibf5fswsimbi}"
 keys=(
   KV_REST_API_URL
   KV_REST_API_TOKEN
