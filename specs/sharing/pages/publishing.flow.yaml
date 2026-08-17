@@ -1,0 +1,160 @@
+version: 1
+flows:
+  - id: F1
+    name: Publish and manage
+    start: publish
+    states:
+      - id: publish
+        kind: action
+        label: Publish a page
+      - id: live
+        kind: screen
+        label: Share is live
+      - id: gone
+        kind: terminal
+        label: Share gone
+        outcome: The view link no longer shows the uploaded page. Replace is refused. Delete still succeeds as gone.
+      - id: refused
+        kind: terminal
+        label: Refused
+        outcome: Nothing is published. The agent does not receive a view link.
+    transitions:
+      - id: F1.T1
+        from: publish
+        event: Publish
+        to: live
+        guard: The payload is usable HTML or a zip with index.html, and is at most 5 MB.
+        covers: [B1, B3, B4, B11, B12]
+      - id: F1.T2
+        from: publish
+        event: Publish
+        to: refused
+        guard: The payload is empty, too large, not HTML or a zip, or a zip with no index.html.
+        covers: [B9]
+      - id: F1.T3
+        from: live
+        event: Replace
+        to: live
+        outcome: The view link stays the same. Visitors see the new page.
+        guard: The manage secret matches and the payload would be accepted on create.
+        covers: [B6, B11]
+      - id: F1.T4
+        from: live
+        event: Replace
+        to: live
+        outcome: Replace is refused. The live page is unchanged.
+        guard: The manage secret matches and the payload would be refused on create.
+        covers: [B6, B9]
+      - id: F1.T5
+        from: live
+        event: Replace
+        to: live
+        outcome: Replace is refused. The live page is unchanged.
+        guard: The caller has only the view link, or the secret does not match.
+        covers: [B5, B10]
+      - id: F1.T6
+        from: live
+        event: Delete
+        to: gone
+        guard: The manage secret matches.
+        covers: [B7, B11]
+      - id: F1.T7
+        from: live
+        event: Delete
+        to: live
+        outcome: Delete is refused. The live page is unchanged.
+        guard: The caller has only the view link, or the secret does not match.
+        covers: [B5, B10]
+      - id: F1.T8
+        from: live
+        event: Check status
+        to: live
+        outcome: The agent sees that the share is live and when it expires.
+        guard: The manage secret matches.
+        covers: [B5, B11]
+      - id: F1.T9
+        from: live
+        event: Check status
+        to: live
+        outcome: Status is refused. Another share is not revealed.
+        guard: The secret does not match.
+        covers: [B5, B10]
+      - id: F1.T10
+        from: live
+        event: Time runs out
+        to: gone
+        covers: [B8]
+  - id: F2
+    name: Visitor opens the view link
+    start: open
+    states:
+      - id: open
+        kind: action
+        label: Open the view link
+      - id: page
+        kind: screen
+        label: The uploaded page
+      - id: gone
+        kind: terminal
+        label: Share expired
+        outcome: The uploaded page is not shown. The visitor does not see another share.
+      - id: unknown
+        kind: terminal
+        label: Unknown link
+        outcome: No page is shown. No replace or delete is accepted. Another share is not revealed.
+    transitions:
+      - id: F2.T1
+        from: open
+        event: Open
+        to: page
+        guard: The view link matches and the share is still live.
+        covers: [B2, B3, B4, B5]
+      - id: F2.T2
+        from: open
+        event: Open
+        to: gone
+        guard: The expiry time has passed and the share was not deleted.
+        covers: [B8, B10]
+      - id: F2.T3
+        from: open
+        event: Open
+        to: unknown
+        guard: The share is unknown, deleted, or the secret does not match.
+        covers: [B10]
+      - id: F2.T4
+        from: page
+        event: Open a file
+        to: page
+        outcome: That file from this share is shown, or this share has no such file.
+        guard: The path stays inside this share.
+        covers: [B3, B13]
+      - id: F2.T5
+        from: page
+        event: Open a file
+        to: page
+        outcome: The path is refused. Another share is not shown.
+        guard: The path would leave this share.
+        covers: [B13]
+      - id: F2.T6
+        from: page
+        event: Time runs out
+        to: gone
+        covers: [B8]
+      - id: F2.T7
+        from: page
+        event: Leave and return
+        to: page
+        guard: The same view link is opened again and the share is still live.
+        covers: [B2]
+      - id: F2.T8
+        from: page
+        event: Leave and return
+        to: gone
+        guard: The expiry time has passed and the share was not deleted.
+        covers: [B8, B10]
+      - id: F2.T9
+        from: page
+        event: Leave and return
+        to: unknown
+        guard: The share has been deleted.
+        covers: [B7, B10]

@@ -1,0 +1,4 @@
+neverBuiltDependencies:
+  - unrs-resolver
+verifyDepsBeforeRun: false
+strictDepBuilds: false

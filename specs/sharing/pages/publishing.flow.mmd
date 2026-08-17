@@ -1,0 +1,33 @@
+%% Generated from publishing.flow.yaml. Do not edit directly.
+flowchart TD
+  subgraph F1["F1: Publish and manage"]
+    F1_publish{{"Publish a page"}}
+    F1_live["Share is live"]
+    F1_gone(["Share gone"])
+    F1_refused(["Refused"])
+    F1_publish -->|"F1.T1: Publish [The payload is usable HTML or a zip with index.html, and is at most 5 MB.]"| F1_live
+    F1_publish -->|"F1.T2: Publish [The payload is empty, too large, not HTML or a zip, or a zip with no index.html.]"| F1_refused
+    F1_live -->|"F1.T3: Replace [The manage secret matches and the payload would be accepted on create.]"| F1_live
+    F1_live -->|"F1.T4: Replace [The manage secret matches and the payload would be refused on create.]"| F1_live
+    F1_live -->|"F1.T5: Replace [The caller has only the view link, or the secret does not match.]"| F1_live
+    F1_live -->|"F1.T6: Delete [The manage secret matches.]"| F1_gone
+    F1_live -->|"F1.T7: Delete [The caller has only the view link, or the secret does not match.]"| F1_live
+    F1_live -->|"F1.T8: Check status [The manage secret matches.]"| F1_live
+    F1_live -->|"F1.T9: Check status [The secret does not match.]"| F1_live
+    F1_live -->|"F1.T10: Time runs out"| F1_gone
+  end
+  subgraph F2["F2: Visitor opens the view link"]
+    F2_open{{"Open the view link"}}
+    F2_page["The uploaded page"]
+    F2_gone(["Share expired"])
+    F2_unknown(["Unknown link"])
+    F2_open -->|"F2.T1: Open [The view link matches and the share is still live.]"| F2_page
+    F2_open -->|"F2.T2: Open [The expiry time has passed and the share was not deleted.]"| F2_gone
+    F2_open -->|"F2.T3: Open [The share is unknown, deleted, or the secret does not match.]"| F2_unknown
+    F2_page -->|"F2.T4: Open a file [The path stays inside this share.]"| F2_page
+    F2_page -->|"F2.T5: Open a file [The path would leave this share.]"| F2_page
+    F2_page -->|"F2.T6: Time runs out"| F2_gone
+    F2_page -->|"F2.T7: Leave and return [The same view link is opened again and the share is still live.]"| F2_page
+    F2_page -->|"F2.T8: Leave and return [The expiry time has passed and the share was not deleted.]"| F2_gone
+    F2_page -->|"F2.T9: Leave and return [The share has been deleted.]"| F2_unknown
+  end
