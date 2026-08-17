@@ -1,0 +1,16 @@
+{
+  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
+  "name": "showmeatsack.com",
+  "version": "0.1.0",
+  "description": "An agent posts HTML or a small static-site zip and gets a showmeatsack.com view link. No accounts. No API key.",
+  "homepage": "https://showmeatsack.com",
+  "repository": "https://github.com/garylesueur/showmeatsack",
+  "license": "MIT",
+  "keywords": [
+    "showmeatsack",
+    "html",
+    "share",
+    "mcp",
+    "static-site"
+  ]
+}

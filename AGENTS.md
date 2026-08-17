@@ -30,6 +30,8 @@ Always call the product **showmeatsack.com** in user-facing copy. The agent tool
 - Specs live in `specs/`. Format: `specs/README.md`. Start with `specs/sharing/pages/publishing.md` for the product.
 - Conventions will live in `.engineering/conventions.yaml` once `conventions-decide` has been run. Do not invent a parallel rule list here.
 - calm-craft is vendored as a submodule at `.agents/plugins/calm-craft`.
+- The showmeatsack skill is `.cursor/skills/showmeatsack/SKILL.md` (create → paste view link). The same instructions ship as the Agent Plugin skill at `skills/showmeatsack/SKILL.md`.
+- The repository root is an [Agent Plugin](https://agent-plugins.org/): `plugin.json`, `mcp.json`, and `skills/`. `.mcp.json` is for [cursor.directory](https://cursor.directory/plugins/new) detection.
 - Implementation plans and review reports go in `.plans/` and `.reports/` (gitignored).
 
 ## Secrets
