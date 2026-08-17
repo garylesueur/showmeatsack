@@ -7,6 +7,7 @@ import {
   mcpGetDocumentKind,
   mcpGuideHtml,
   mcpGuideMarkdown,
+  siteJsonLd,
   skillMarkdown,
 } from "./agent-docs";
 import { cursorInstallHref, cursorInstallPageHref } from "./cursor-install";
@@ -64,6 +65,14 @@ describe("site agent documents", () => {
     expect(onDisk).toBe(SHOWMEATSACK_SKILL_MARKDOWN);
   });
 
+  it("tells agents to publish without a meat-sack phrase and to send the view URL themselves", () => {
+    const skill = skillMarkdown();
+    expect(skill).toContain('You do not need the words "showmeatsack"');
+    expect(skill).toContain("bot running on your own");
+    expect(skill).toContain("send that same `viewUrl` by email");
+    expect(skill).toContain("This product does not send mail or");
+  });
+
   it("llms.txt and the MCP guide point at the skill and the markdown URL", () => {
     const origin = "https://showmeatsack.com";
     const index = llmsTxt(origin);
@@ -84,6 +93,27 @@ describe("site agent documents", () => {
     expect(html).toContain('href="https://github.com/garylesueur/showmeatsack"');
     expect(escapeHtml('<script>"x"</script>')).toBe(
       "&lt;script&gt;&quot;x&quot;&lt;/script&gt;",
+    );
+  });
+
+  it("names the product in JSON-LD for search and answer engines", () => {
+    const origin = "https://showmeatsack.com";
+    const jsonLd = siteJsonLd(origin);
+    expect(jsonLd["@context"]).toBe("https://schema.org");
+    expect(jsonLd["@graph"]).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          "@type": "WebSite",
+          name: "showmeatsack.com",
+          url: origin,
+        }),
+        expect.objectContaining({
+          "@type": "SoftwareApplication",
+          name: "showmeatsack.com",
+          url: origin,
+          applicationCategory: "DeveloperApplication",
+        }),
+      ]),
     );
   });
 

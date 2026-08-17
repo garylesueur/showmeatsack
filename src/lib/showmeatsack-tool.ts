@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { limitCreateFromRequest } from "./create-rate-limit";
+import { incomingRequest } from "./incoming-request";
 import { SHARE_MAX_TTL_SECONDS } from "./schema";
 import {
   isShareServiceError,
@@ -52,6 +54,18 @@ export function createShowmeatsackTool(shares: ShowmeatsackToolShares) {
     name: SHOWMEATSACK_TOOL_NAME,
     async invoke(input: z.infer<typeof showmeatsackToolInputSchema>) {
       if (input.action === "create") {
+        const request = incomingRequest();
+        if (request) {
+          const limited = await limitCreateFromRequest(request);
+          if (!limited.ok) {
+            return {
+              code: "rate_limited",
+              message:
+                "Too many pages published from this address. Try again later.",
+              status: 429,
+            };
+          }
+        }
         return await shares.create({
           html: input.html,
           zipBase64: input.zipBase64,

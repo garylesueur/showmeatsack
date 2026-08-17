@@ -62,4 +62,10 @@ if [[ "${target}" == "production" ]]; then
     exit 1
   fi
   echo "set PUBLIC_BASE_URL on Vercel production" >&2
+  vercel env rm VIEW_PUBLIC_BASE_URL production --yes >/dev/null 2>&1 || true
+  if ! printf '%s' 'https://s.showmeatsack.com' | vercel env add VIEW_PUBLIC_BASE_URL production >/dev/null; then
+    echo "failed to set VIEW_PUBLIC_BASE_URL on Vercel production" >&2
+    exit 1
+  fi
+  echo "set VIEW_PUBLIC_BASE_URL on Vercel production" >&2
 fi

@@ -103,11 +103,11 @@ Content-Type: application/json
 
 Or send \`zipBase64\` instead of \`html\`. Optional \`expiresInSeconds\` (default 30 days, never longer). Cap is 5 MB.
 
-Create returns \`viewUrl\`, \`manageUrl\`, \`manageToken\`, and \`expiresAt\`. Paste \`viewUrl\` where the person will see it. Keep \`manageToken\` for replace, delete, and status.
+Create returns \`viewUrl\`, \`manageUrl\`, \`manageToken\`, and \`expiresAt\`. Paste \`viewUrl\` where the person will see it. Keep \`manageToken\` for replace, delete, and status. Send it as \`Authorization: Bearer\`, not in the query string.
 
-- Status: \`GET /api/v1/shares/{shareId}?token=\`
-- Replace: \`PUT /api/v1/shares/{shareId}?token=\`
-- Delete: \`DELETE /api/v1/shares/{shareId}?token=\`
+- Status: \`GET /api/v1/shares/{shareId}\` with \`Authorization: Bearer {manageToken}\`
+- Replace: \`PUT /api/v1/shares/{shareId}\` with \`Authorization: Bearer {manageToken}\`
+- Delete: \`DELETE /api/v1/shares/{shareId}\` with \`Authorization: Bearer {manageToken}\`
 
 ## Do not
 
@@ -214,4 +214,31 @@ export function plainTextResponse(body: string, contentType: string): Response {
       "Cache-Control": "public, max-age=300",
     },
   });
+}
+
+export function siteJsonLd(origin = publicOrigin()) {
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "WebSite",
+        name: SITE_TITLE,
+        url: origin,
+        description: SITE_DESCRIPTION,
+      },
+      {
+        "@type": "SoftwareApplication",
+        name: SITE_TITLE,
+        url: origin,
+        applicationCategory: "DeveloperApplication",
+        operatingSystem: "Web",
+        description: `${SITE_TAGLINE} ${SITE_DESCRIPTION}`,
+        offers: {
+          "@type": "Offer",
+          price: "0",
+          priceCurrency: "GBP",
+        },
+      },
+    ],
+  };
 }

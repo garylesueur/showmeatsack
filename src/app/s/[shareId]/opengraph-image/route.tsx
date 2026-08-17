@@ -1,15 +1,12 @@
 import { ImageResponse } from "next/og";
 import { getDefaultShareService } from "@/lib/app-shares";
 import {
-  expiredSharePage,
-  notFoundSharePage,
-} from "@/lib/share-view-http";
-import {
   OPENGRAPH_SIZE,
   inlineLocalShareAssets,
   titleFromHtml,
 } from "@/lib/share-open-graph";
 import { screenshotHtmlPreview } from "@/lib/share-preview-image";
+import { VIEW_CACHE_HEADERS, responseForView } from "@/lib/share-view-response";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -22,11 +19,8 @@ export async function GET(
   const { shareId } = await context.params;
   const shares = getDefaultShareService();
   const index = await shares.view(shareId, "index.html");
-  if (index.kind === "expired") {
-    return expiredSharePage();
-  }
   if (index.kind !== "file") {
-    return notFoundSharePage();
+    return responseForView(index);
   }
 
   const html = new TextDecoder().decode(index.bytes);
@@ -44,8 +38,7 @@ export async function GET(
       status: 200,
       headers: {
         "Content-Type": "image/png",
-        "Cache-Control": "private, no-cache, must-revalidate",
-        "X-Content-Type-Options": "nosniff",
+        ...VIEW_CACHE_HEADERS,
       },
     });
   } catch {

@@ -36,6 +36,7 @@ export type ShareServiceDeps = {
   createId: () => string;
   createToken: () => string;
   publicBaseUrl: string;
+  viewPublicBaseUrl?: string;
 };
 
 export type CreateShareResult = {
@@ -133,13 +134,13 @@ function payloadToFiles(input: {
 }
 
 function urlsFor(
-  base: string,
+  productBase: string,
+  viewBase: string,
   shareId: string,
-  manageToken: string,
 ): { viewUrl: string; manageUrl: string } {
   return {
-    viewUrl: `${base}/s/${shareId}/`,
-    manageUrl: `${base}/api/v1/shares/${shareId}?token=${manageToken}`,
+    viewUrl: `${viewBase}/s/${shareId}/`,
+    manageUrl: `${productBase}/api/v1/shares/${shareId}`,
   };
 }
 
@@ -190,7 +191,11 @@ export function createShareService(deps: ShareServiceDeps) {
     };
     await writeFiles(deps.files, shareId, siteFiles);
     await deps.store.save(share);
-    const urls = urlsFor(deps.publicBaseUrl, shareId, manageToken);
+    const urls = urlsFor(
+      deps.publicBaseUrl,
+      deps.viewPublicBaseUrl ?? deps.publicBaseUrl,
+      shareId,
+    );
     return {
       shareId,
       viewUrl: urls.viewUrl,
@@ -255,7 +260,11 @@ export function createShareService(deps: ShareServiceDeps) {
 
     await writeFiles(deps.files, share.id, siteFiles);
     await deps.store.save(share);
-    const urls = urlsFor(deps.publicBaseUrl, share.id, share.manageToken);
+    const urls = urlsFor(
+      deps.publicBaseUrl,
+      deps.viewPublicBaseUrl ?? deps.publicBaseUrl,
+      share.id,
+    );
     return {
       shareId: share.id,
       viewUrl: urls.viewUrl,

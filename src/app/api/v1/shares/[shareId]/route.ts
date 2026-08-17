@@ -1,18 +1,6 @@
 import { getDefaultShareService, jsonError, jsonFromError } from "@/lib/app-shares";
+import { manageTokenFrom } from "@/lib/manage-token";
 import { isShareServiceError } from "@/lib/shares";
-
-function manageTokenFrom(request: Request): string | undefined {
-  const url = new URL(request.url);
-  const fromQuery = url.searchParams.get("token");
-  if (fromQuery) {
-    return fromQuery;
-  }
-  const header = request.headers.get("authorization");
-  if (header?.startsWith("Bearer ")) {
-    return header.slice("Bearer ".length);
-  }
-  return undefined;
-}
 
 export async function GET(
   request: Request,

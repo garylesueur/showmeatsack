@@ -4,6 +4,6 @@
 
 | Spec | Covers | Status |
 | --- | --- | --- |
-| [Publishing a page](./pages/publishing.md) | Create, view URL, manage URL, HTML, zip site, replace, delete, expiry, open create, path stay-inside, link preview | implemented |
+| [Publishing a page](./pages/publishing.md) | Create, view URL, manage URL, HTML, zip site, replace, delete, expiry, open create, path stay-inside, view origin, rate limit, bearer token, link preview | implemented |
 
 Read [publishing](./pages/publishing.md) before changing how shares are created, viewed, replaced, deleted, or expired.

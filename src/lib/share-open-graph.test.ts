@@ -14,20 +14,20 @@ const png = {
 };
 
 describe("share Open Graph", () => {
-  it("B14 — preview image URL is on that share, not the homepage", () => {
+  it("B17 — preview image URL is on that share, not the homepage", () => {
     expect(shareOpenGraphUrls("https://showmeatsack.com", "shareid1")).toEqual({
       pageUrl: "https://showmeatsack.com/s/shareid1/",
       imageUrl: "https://showmeatsack.com/s/shareid1/opengraph-image",
     });
   });
 
-  it("B14 — prefers the page title, then an h1", () => {
+  it("B17 — prefers the page title, then an h1", () => {
     expect(titleFromHtml("<title>Report</title><h1>Other</h1>")).toBe("Report");
     expect(titleFromHtml("<h1>Chart</h1>")).toBe("Chart");
     expect(titleFromHtml("<p>No title</p>")).toBe(SITE_TITLE);
   });
 
-  it("B14 — wraps a fragment so crawlers can read the tags", () => {
+  it("B17 — wraps a fragment so crawlers can read the tags", () => {
     const html = withOpenGraphMeta("<h1>Hello</h1>", {
       title: "Hello",
       description: "A page",
@@ -42,7 +42,7 @@ describe("share Open Graph", () => {
     expect(html).toContain('name="twitter:card"');
   });
 
-  it("B14 — inlines local CSS and images before a screenshot", async () => {
+  it("B17 — inlines local CSS and images before a screenshot", async () => {
     const html = await inlineLocalShareAssets(
       `<link rel="stylesheet" href="style.css"><p>Hi</p><img src="pic.png">`,
       async (path) => {

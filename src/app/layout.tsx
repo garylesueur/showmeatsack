@@ -5,6 +5,7 @@ import {
   SITE_DESCRIPTION,
   SITE_TAGLINE,
   SITE_TITLE,
+  siteJsonLd,
 } from "@/lib/agent-docs";
 import { publicOrigin } from "@/lib/public-origin";
 import "./globals.css";
@@ -30,6 +31,7 @@ export const metadata: Metadata = {
   description: `${SITE_TAGLINE} ${SITE_DESCRIPTION}`,
   applicationName: SITE_TITLE,
   keywords: ["showmeatsack.com", "MCP", "HTML", "share", "agent"],
+  authors: [{ name: SITE_TITLE, url: origin }],
   alternates: {
     canonical: "/",
     types: {
@@ -37,17 +39,39 @@ export const metadata: Metadata = {
       "text/plain": "/llms.txt",
     },
   },
+  openGraph: {
+    type: "website",
+    locale: "en_GB",
+    url: origin,
+    siteName: SITE_TITLE,
+    title: SITE_TITLE,
+    description: `${SITE_TAGLINE} ${SITE_DESCRIPTION}`,
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: SITE_TITLE,
+    description: `${SITE_TAGLINE} ${SITE_DESCRIPTION}`,
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
   children,
 }: Readonly<{ children: ReactNode }>) {
+  const jsonLd = siteJsonLd(origin);
   return (
     <html
       lang="en-GB"
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col bg-background text-foreground">
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
         {children}
       </body>
     </html>

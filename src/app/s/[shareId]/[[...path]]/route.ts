@@ -1,5 +1,5 @@
 import { getDefaultShareService } from "@/lib/app-shares";
-import { responseForShareView } from "@/lib/share-view-http";
+import { responseForView } from "@/lib/share-view-response";
 
 export async function GET(
   request: Request,
@@ -8,5 +8,5 @@ export async function GET(
   const { shareId, path } = await context.params;
   const rawPath = path?.join("/") ?? "";
   const result = await getDefaultShareService().view(shareId, rawPath);
-  return responseForShareView(request, shareId, result);
+  return responseForView(result, { request, shareId });
 }
