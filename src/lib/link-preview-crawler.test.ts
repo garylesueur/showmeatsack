@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { isLinkPreviewCrawler } from "./link-preview-crawler";
 
 describe("link-preview crawlers", () => {
-  it("B17 — recognises Slack, iMessage, and Discord fetchers", () => {
+  it("B17 — recognises Slack, Facebot, and Discord fetchers", () => {
     expect(isLinkPreviewCrawler("Slackbot-LinkExpanding 1.0")).toBe(true);
     expect(
       isLinkPreviewCrawler(

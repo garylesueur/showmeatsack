@@ -81,10 +81,9 @@ calling address, so it cannot be shaken off by changing address.
 
 Create and replace return a manage URL that names the share and a manage token that is not in that URL. Agents send the token as a bearer secret and nowhere else — a token in the query string is refused, so it cannot reach an access log or a `Referer` header. The viewed page never includes the token.
 
-### B17 — A link preview shows the page 🟡 partial
-> The image is rebuilt on every request, with no cap on how many can run at once.
+### B17 — A link preview shows the page 🟢 implemented
 
-When the view link is pasted into Slack or another app that fetches a link preview, the preview image is a picture of that share’s uploaded page — not the showmeatsack.com homepage, and not another share. A person who opens the same link in a browser still sees the uploaded page, with no extra chrome around it. Building that image is expensive, so it is built once and reused rather than rebuilt for every crawler that asks.
+When the view link is pasted into Slack or another app that fetches a link preview, the preview image is a picture of that share’s uploaded page — not the showmeatsack.com homepage, and not another share. If a picture cannot be taken, the preview still names that page (its title or visible text), never another share and never the product homepage. A person who opens the same link in a browser still sees the uploaded page, with no extra chrome around it. Building that image is expensive, so it is built once and reused rather than rebuilt for every crawler that asks, and only so many can be built at once.
 
 ### B18 — Trying it on the home page needs no account 🔵 future
 
@@ -137,7 +136,8 @@ are short-lived and limited by calling address.
 | Who fetches the view link | Outcome |
 | --- | --- |
 | A person in a browser | The uploaded page, unchanged |
-| A link-preview crawler, share still live | Preview image is a picture of that share’s page |
+| A link-preview crawler, share still live, picture taken | Preview image is a picture of that share’s page |
+| A link-preview crawler, share still live, picture cannot be taken | Preview names that page from its title or visible text; not the product homepage; not another share |
 | A link-preview crawler, expired, deleted, or unknown | No preview of another share |
 
 ### What each doorway may do
