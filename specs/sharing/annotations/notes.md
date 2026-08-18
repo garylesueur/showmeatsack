@@ -131,6 +131,29 @@ unknown review link, one whose secret does not match, or one for an expired or d
 share does not show another share's page or another share's notes, and does not accept
 feedback for another share.
 
+### B19 — The review surface says where it came from 🔵 future
+
+The review link is a surface this service renders, so it carries the same single mark as a
+document frame (B14 of [publishing a document](../pages/documents.md)) — one line linking
+home, out of the way of the page and out of the way of the feedback. It never sits over
+the published page, and it is the only branding anywhere on the review link. The plain
+view link still has none.
+
+### B20 — The marked-up page can be saved 🔵 future
+
+The agent, and anybody with the review link, can save the page together with its feedback
+as a PDF: the page as it stands, each note beside what it is attached to, who left it and
+when, drawings where they were drawn, and which notes were dealt with. A review that
+mattered survives the share expiring, and the saved copy says which day it was taken so it
+is not mistaken for the live one.
+
+### B21 — A private share can still be reviewed 🔵 future
+
+When a share is private (B19 of [publishing](../pages/publishing.md)), its review link is
+private too: only somebody the owner allows can open it, leave a note, or read what other
+people said. A public share's review link stays as it is — a secret link, and nothing else
+to get through.
+
 ## Rules (Invariants)
 
 - The view link never gains a marking-up control, and the published page is never altered
@@ -152,51 +175,55 @@ feedback for another share.
 - Feedback expires exactly when the share does.
 - Readers have no account, so limits on leaving feedback count against the calling address.
 - Feedback is ephemeral, like the share. This product does not keep a long-term record of
-  what people said.
+  what people said. Somebody who wants to keep a review saves it (B20).
+- The review link carries exactly one mark saying where it came from, and no other
+  branding. The published page inside it is never written over.
+- A private share's review link is as private as the share.
 
 ## Decision Tables
 
 ### What each doorway may do
 
-| Action | View link | Review link | Manage token |
-| --- | --- | --- | --- |
-| See the published page | Yes, that share only | Yes, that share only | No |
-| See the feedback on it | No | Yes, that share only | Yes, that share only |
-| Leave a note, drawing or reply | No | Yes, while feedback is open | Yes, as the publisher |
-| Edit or remove a note | No | Own notes only, from the device that left them | Any note on that share |
-| Mark a note dealt with | No | No | Yes |
-| Open or close feedback | No | No | Yes |
-| Replace or delete the share | No | No | Yes |
+| Action                          | View link            | Review link                                    | Manage token           |
+| ------------------------------- | -------------------- | ---------------------------------------------- | ---------------------- |
+| See the published page          | Yes, that share only | Yes, that share only                           | No                     |
+| See the feedback on it          | No                   | Yes, that share only                           | Yes, that share only   |
+| Leave a note, drawing or reply  | No                   | Yes, while feedback is open                    | Yes, as the publisher  |
+| Edit or remove a note           | No                   | Own notes only, from the device that left them | Any note on that share |
+| Mark a note dealt with          | No                   | No                                             | Yes                    |
+| Open or close feedback          | No                   | No                                             | Yes                    |
+| Replace or delete the share     | No                   | No                                             | Yes                    |
+| Save the page with its feedback | No                   | Yes, that share only                           | Yes, that share only   |
 
 ### Leaving a note
 
-| Situation | Outcome |
-| --- | --- |
-| Review link matches, share live, feedback open | The note is saved and everyone with the review link sees it |
-| Review link matches, share live, feedback closed | Refused; existing feedback stays readable |
-| Share expired or deleted | Refused; the page and its feedback are gone |
-| Review link unknown, or secret does not match | Refused; no other share's page or feedback is shown |
-| This address has left far more notes than a person plausibly would | Refused; nothing saved; told to wait |
-| The note is empty and carries no drawing | Refused; nothing saved |
+| Situation                                                          | Outcome                                                     |
+| ------------------------------------------------------------------ | ----------------------------------------------------------- |
+| Review link matches, share live, feedback open                     | The note is saved and everyone with the review link sees it |
+| Review link matches, share live, feedback closed                   | Refused; existing feedback stays readable                   |
+| Share expired or deleted                                           | Refused; the page and its feedback are gone                 |
+| Review link unknown, or secret does not match                      | Refused; no other share's page or feedback is shown         |
+| This address has left far more notes than a person plausibly would | Refused; nothing saved; told to wait                        |
+| The note is empty and carries no drawing                           | Refused; nothing saved                                      |
 
 ### After the page is replaced
 
-| The note was attached to | Outcome |
-| --- | --- |
-| Words that still appear on the new page | Stays on those words |
-| A part of the page that is still there | Stays where it was |
-| A part of the page that has gone | Still shown, with what it was attached to, marked as left on an earlier version |
-| Anything, when the share is deleted instead | Gone with the share |
+| The note was attached to                    | Outcome                                                                         |
+| ------------------------------------------- | ------------------------------------------------------------------------------- |
+| Words that still appear on the new page     | Stays on those words                                                            |
+| A part of the page that is still there      | Stays where it was                                                              |
+| A part of the page that has gone            | Still shown, with what it was attached to, marked as left on an earlier version |
+| Anything, when the share is deleted instead | Gone with the share                                                             |
 
 ### Kinds of feedback
 
-| Kind | What is kept |
-| --- | --- |
-| A note on a spot | The place on the page, and the written note |
-| A comment on a highlight | The words highlighted, and the written comment |
-| A drawing | The marks, the part of the page they were drawn over, and a note if one was written |
-| A reply | The note it answers, and the written reply |
-| An agreement | Who agreed, and the note they agreed with |
+| Kind                     | What is kept                                                                        |
+| ------------------------ | ----------------------------------------------------------------------------------- |
+| A note on a spot         | The place on the page, and the written note                                         |
+| A comment on a highlight | The words highlighted, and the written comment                                      |
+| A drawing                | The marks, the part of the page they were drawn over, and a note if one was written |
+| A reply                  | The note it answers, and the written reply                                          |
+| An agreement             | Who agreed, and the note they agreed with                                           |
 
 ## User Flows
 
@@ -230,6 +257,12 @@ feedback for another share.
   does not, given that feedback means storing what other people wrote?
 - Can a reader leave feedback on a specific line of a published script or document
   (B5 of documents), and if so is that the same thing as a highlight or its own kind?
+- **Blocks B21:** Does a private share's review link lean on whatever unlocks a private
+  view link, or is it its own thing? The same open question on [publishing](../pages/publishing.md)
+  has to be settled first — there is no point deciding how feedback is gated before it is
+  decided how the page itself is.
+- Is the mark in B19 the same line of copy as the document frame, or does the review
+  surface say something of its own? One line everywhere is easier to defend than two.
 
 ## Future Considerations
 
@@ -242,7 +275,9 @@ feedback for another share.
 - Notes on a region of an image, rather than on the page around it.
 - Composing with [askmeatsack.com](https://askmeatsack.com) so an agent can ask a
   question about a note it received.
-- Exporting the feedback as a document, or as issues in a tracker.
+- Turning feedback into issues in a tracker.
+- A saved review that stays live — a link to the marked-up page that outlives the share.
+  B20 saves a copy; this would be a different, longer-lived product.
 
 ## Out of Scope
 
