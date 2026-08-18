@@ -92,14 +92,29 @@ link they can open and send. The demo publishes a page this service already hold
 cannot supply their own content — so the worst a stranger can do is use capacity. Demo shares
 are short-lived and limited by calling address.
 
+### B19 — A share can be private 🔵 future
+
+An agent that publishes with an account can mark a share private. A private view link
+shows the page only to people the owner allows; anyone else is told they cannot see it,
+and is not told what the page contains. A public share behaves exactly as it does today —
+the link is the page, and nobody signs in. Private is a choice at publish time, and the
+owner can make a live share private or public without the view link changing.
+
+### B20 — The owner can keep a share alive 🔵 future
+
+An agent that owns a share can push its expiry out, or bring it in, for as long as the
+account exists. The view link does not change and the page does not change. A share
+published without an account keeps the 30-day ceiling: the long life is a thing an
+account gets, not a thing anyone can ask for.
+
 ## Rules (Invariants)
 
 - The view link never grants replace or delete.
 - The manage secret never appears in the viewed page, in the manage URL, or in anything the browser is given to run.
 - One share is at most 5 MB, whether it is HTML or a zip, and that limit is enforced before a zip is expanded rather than after. A zip that would expand past it is refused without being unpacked. The submitted payload must also fit within what the platform will carry in one request, so the effective limit is the smaller of the two and the service states the one it actually applies.
-- Default life is 30 days from create. The creator may ask for shorter, never more than 30 days.
+- Default life is 30 days from create. Without an account the creator may ask for shorter, never more than 30 days. With an account, the owner may extend or shorten a live share for as long as the account exists (B20).
 - Expired and deleted shares stay gone without anyone acting.
-- The viewing origin has no account cookies, so a raw page is not sitting next to a sign-in.
+- The viewing origin has no account cookies, so a raw page is not sitting next to a sign-in. Whatever lets somebody open a private share must not break this.
 - Tool and HTTP are equivalent: same payload in, same share, same view link and manage token out.
 - The agent tool is named **showmeatsack.com**. View links are on `https://s.showmeatsack.com`. The product stays on `https://showmeatsack.com`.
 - User-facing copy calls the product **showmeatsack.com**.
@@ -109,7 +124,7 @@ are short-lived and limited by calling address.
 - Replace changes the files only. Expiry stays as it was at create.
 - After a successful replace, the next open of the view link shows the new page.
 - An expired view link shows a short “this share has expired” page. An unknown or deleted link shows a generic not-found. Neither reveals another share.
-- Publishing needs a lanyard token. Manage still needs that share’s own manage secret, sent as a bearer token; a lanyard token does not replace it. Viewing needs nothing.
+- Publishing needs a lanyard token. Manage still needs that share’s own manage secret, sent as a bearer token; a lanyard token does not replace it. Viewing a public share needs nothing; only a private share (B19) ever asks the person who opens it for anything.
 - A share belongs to the account that published it. Deleting that account does not un-publish shares that are already live; they expire as they were going to.
 - Create from one account is limited. A refused create does not publish a page.
 - The home-page demo has no account, so it is limited by calling address instead, and it only
@@ -150,6 +165,16 @@ are short-lived and limited by calling address.
 | Delete this share | No | Yes, that share only | No |
 | See that it is live and when it expires | No | Yes, that share only | No |
 | See the manage secret | No | It *is* the secret | No |
+
+### Who may open a view link
+
+| Share | Who opens it | Outcome |
+| --- | --- | --- |
+| Public | Anyone with the link | The page, and no sign-in (today's behaviour) |
+| Private | Somebody the owner allows | The page |
+| Private | Anyone else | Refused, and not told what the page contains |
+| Private | A link-preview crawler | No preview of the page's content |
+| Either | A link that is unknown, expired or deleted | Another share is not revealed |
 
 ### Origins
 
@@ -193,19 +218,29 @@ are short-lived and limited by calling address.
 - **Settled:** Untrusted HTML is isolated on a separate view origin. Recorded as B14.
 - **Settled:** The manage secret is a bearer token, not a query string on the manage URL. Recorded as B16.
 - **Settled:** Pasting the view link into Slack or similar should unfurl a picture of that uploaded page, not the product homepage. Recorded as B17.
+- **Blocks B19:** How does somebody open a private share without putting a sign-in next to
+  untrusted HTML? The view origin deliberately has no account cookies, and that is what
+  stops a published page sitting beside a session it might reach. Unlocking a private share
+  has to happen somewhere else and hand over something narrow and short-lived that is good
+  for that share only. Until that is decided, B19 is a decision away from being buildable,
+  not a scheduling away — and the visitor flow (F2) gains a refused-and-sign-in branch when
+  it lands.
+- **Blocks B19:** Who counts as allowed on a private share — only the owner, named people,
+  anyone signed in, or anyone holding a link the owner handed out? Each is a different
+  product, and the narrowest one (the owner only) is worth shipping first.
 
 ## Future Considerations
 
 - Large binary files, or a FileSnare-style transfer product.
 - An agent composing with askmeatsack.com to send the view link (no product hook required; the agent already has the URL).
-- Listing every share an account has published, quotas, custom slugs, or a password on the view link. Accounts themselves are no longer future — see B12.
+- Listing every share an account has published, quotas, or custom slugs. Accounts themselves are no longer future — see B12, and private shares are B19.
 - A per-share subdomain, so one uploaded page cannot read another share on the same view origin.
 
 ## Out of Scope
 
 - Running our own sign-in. Accounts live in lanyard; this service only verifies its tokens.
 - Dashboards, or listing all of an account’s shares.
-- Asking the person who opens a view link to sign in. They never do.
+- Asking the person who opens a **public** view link to sign in. They never do. A private share (B19) is the one exception, and it is opt-in by the owner.
 - Email or Slack posting. The calling agent does that with the URL this service already returns.
 - Server-side code, build pipelines, or deploying from git.
 - Big-file transfer.
