@@ -1,7 +1,7 @@
 ---
 id: sharing-pages-publishing
 area: Sharing / Pages
-status: implemented
+status: partial
 ---
 
 # Publishing a page
@@ -54,9 +54,12 @@ An unknown share, a link whose secret does not match, an expired share, or a del
 
 The showmeatsack.com tool and HTTP take the same kind of payload and return the same view link, manage URL, manage token, expiry, and later the same replace, delete, and status result for that share.
 
-### B12 — Create is open 🟢 implemented
+### B12 — Publishing needs an account 🔵 future
 
-Publishing a page does not need an account or a shared API key. Anyone who can call the tool or the HTTP create endpoint can publish and receives that share’s manage token.
+An agent must present a lanyard token to publish. A call without one is refused and told where
+to authorise, so an agent that can complete that journey recovers on its own. The token
+identifies the account the share belongs to. Opening a view link still needs nothing — a person
+sent a link never signs in.
 
 ### B13 — A path cannot leave the share 🟢 implemented
 
@@ -66,23 +69,28 @@ A visitor cannot use the view link to see files from another share, or files tha
 
 The view link is on a different origin from the product site. Opening an old product-origin view path is sent to the view origin. The view origin does not serve the product home, MCP, or manage API. When a separate view origin is not configured (local and preview), the view link stays on the product origin.
 
-### B15 — Open create is rate limited 🟢 implemented
+### B15 — A flood from one account is refused 🔵 future
 
-Create stays open and still needs no account. A flood of creates from one caller is refused, nothing is published for the refused call, and the agent is told to wait. Manage status, replace, and delete are not limited this way.
+Publishing far more pages than a person plausibly would, from one account, is refused for a
+while. Nothing is published for the refused call and the agent is told to wait. Manage status,
+replace, and delete are not limited this way. The limit counts against the account, not the
+calling address, so it cannot be shaken off by changing address.
 
-### B16 — The manage secret is not in the URL 🟢 implemented
+### B16 — The manage secret is not in the URL 🟡 partial
+> A query-string token is still accepted; it should be refused.
 
-Create and replace return a manage URL that names the share and a manage token that is not in that URL. Agents send the token as a bearer secret. A query-string token is still accepted so an old caller keeps working. The viewed page never includes the token.
+Create and replace return a manage URL that names the share and a manage token that is not in that URL. Agents send the token as a bearer secret and nowhere else — a token in the query string is refused, so it cannot reach an access log or a `Referer` header. The viewed page never includes the token.
 
-### B17 — A link preview shows the page 🟢 implemented
+### B17 — A link preview shows the page 🟡 partial
+> The image is rebuilt on every request, with no cap on how many can run at once.
 
-When the view link is pasted into Slack or another app that fetches a link preview, the preview image is a picture of that share’s uploaded page — not the showmeatsack.com homepage, and not another share. A person who opens the same link in a browser still sees the uploaded page, with no extra chrome around it.
+When the view link is pasted into Slack or another app that fetches a link preview, the preview image is a picture of that share’s uploaded page — not the showmeatsack.com homepage, and not another share. A person who opens the same link in a browser still sees the uploaded page, with no extra chrome around it. Building that image is expensive, so it is built once and reused rather than rebuilt for every crawler that asks.
 
 ## Rules (Invariants)
 
 - The view link never grants replace or delete.
 - The manage secret never appears in the viewed page, in the manage URL, or in anything the browser is given to run.
-- One share is at most 5 MB, whether it is HTML or a zip.
+- One share is at most 5 MB, whether it is HTML or a zip, and that limit is enforced before a zip is expanded rather than after. A zip that would expand past it is refused without being unpacked. The submitted payload must also fit within what the platform will carry in one request, so the effective limit is the smaller of the two and the service states the one it actually applies.
 - Default life is 30 days from create. The creator may ask for shorter, never more than 30 days.
 - Expired and deleted shares stay gone without anyone acting.
 - The viewing origin has no account cookies, so a raw page is not sitting next to a sign-in.
@@ -95,8 +103,10 @@ When the view link is pasted into Slack or another app that fetches a link previ
 - Replace changes the files only. Expiry stays as it was at create.
 - After a successful replace, the next open of the view link shows the new page.
 - An expired view link shows a short “this share has expired” page. An unknown or deleted link shows a generic not-found. Neither reveals another share.
-- Create is open. There is no shared bearer to hand out. Manage still needs that share’s manage secret, sent as a bearer token.
-- Create from one caller is limited. A refused create does not publish a page.
+- Publishing needs a lanyard token. Manage still needs that share’s own manage secret, sent as a bearer token; a lanyard token does not replace it. Viewing needs nothing.
+- A share belongs to the account that published it. Deleting that account does not un-publish shares that are already live; they expire as they were going to.
+- Create from one account is limited. A refused create does not publish a page.
+- The manage secret is sent as a bearer token and nowhere else. It is never accepted from a query string.
 - Shares are ephemeral. This product does not keep a long-term archive of pages.
 
 ## Decision Tables
@@ -123,14 +133,14 @@ When the view link is pasted into Slack or another app that fetches a link previ
 
 ### What each doorway may do
 
-| Action | View link | Manage token (showmeatsack.com tool or HTTP bearer) |
-| --- | --- | --- |
-| Publish a new page | No | Yes (create is open; no existing manage secret needed) |
-| See this share’s page and its files | Yes, that share only | No |
-| Replace this share | No | Yes, that share only |
-| Delete this share | No | Yes, that share only |
-| See that it is live and when it expires | No | Yes, that share only |
-| See the manage secret | No | It *is* the secret |
+| Action | View link | Manage token (showmeatsack.com tool or HTTP bearer) | lanyard token |
+| --- | --- | --- | --- |
+| Publish a new page | No | No | Yes (B12) |
+| See this share’s page and its files | Yes, that share only | No | No |
+| Replace this share | No | Yes, that share only | No |
+| Delete this share | No | Yes, that share only | No |
+| See that it is live and when it expires | No | Yes, that share only | No |
+| See the manage secret | No | It *is* the secret | No |
 
 ### Origins
 
@@ -179,12 +189,14 @@ When the view link is pasted into Slack or another app that fetches a link previ
 
 - Large binary files, or a FileSnare-style transfer product.
 - An agent composing with askmeatsack.com to send the view link (no product hook required; the agent already has the URL).
-- Accounts, listing every share, quotas, custom slugs, or a password on the view link.
+- Listing every share an account has published, quotas, custom slugs, or a password on the view link. Accounts themselves are no longer future — see B12.
 - A per-share subdomain, so one uploaded page cannot read another share on the same view origin.
 
 ## Out of Scope
 
-- Sign-in, accounts, dashboards, or listing all shares.
+- Running our own sign-in. Accounts live in lanyard; this service only verifies its tokens.
+- Dashboards, or listing all of an account’s shares.
+- Asking the person who opens a view link to sign in. They never do.
 - Email or Slack posting. The calling agent does that with the URL this service already returns.
 - Server-side code, build pipelines, or deploying from git.
 - Big-file transfer.
