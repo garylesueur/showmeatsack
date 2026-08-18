@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { createMemoryFileStore } from "@/lib/file-store";
 import { createMemoryShareStore } from "@/lib/share-store";
 import {
@@ -7,7 +7,15 @@ import {
 } from "@/lib/share-view-response";
 import { installTestShareService } from "@/lib/share-test-helpers";
 import { createShareService } from "@/lib/shares";
+import { sharePreviewCaptures } from "@/lib/share-preview-limit";
+import { screenshotHtmlPreview } from "@/lib/share-preview-image";
 import { GET } from "./route";
+
+vi.mock("@/lib/share-preview-image", () => ({
+  screenshotHtmlPreview: vi.fn(),
+}));
+
+const capture = vi.mocked(screenshotHtmlPreview);
 
 function clearInstalledService() {
   const globalForShares = globalThis as typeof globalThis & {
@@ -25,6 +33,7 @@ async function preview(shareId: string): Promise<Response> {
 describe("GET /s/[shareId]/opengraph-image", () => {
   afterEach(() => {
     clearInstalledService();
+    capture.mockReset();
   });
 
   it("B17 — expired and unknown shares do not preview another page", async () => {
@@ -62,5 +71,37 @@ describe("GET /s/[shareId]/opengraph-image", () => {
     const response = await preview("shareid1");
     expect(response.status).toBe(404);
     expect(await response.text()).not.toContain("Bye");
+  });
+
+  it("a page that cannot be captured still gets a card, not an error", async () => {
+    const shares = installTestShareService();
+    await shares.create({
+      html: "<html><head><title>Quarterly numbers</title></head><body>hi</body></html>",
+    });
+    capture.mockRejectedValue(new Error("Chromium said no"));
+
+    const response = await preview("shareid1");
+    expect(response.status).toBe(200);
+    expect(response.headers.get("content-type")).toContain("image/png");
+  });
+
+  it("a busy capture queue serves a card rather than a 503 a crawler would drop", async () => {
+    const shares = installTestShareService();
+    await shares.create({ html: "<html><title>Busy</title><body>hi</body></html>" });
+
+    const held: boolean[] = [];
+    while (sharePreviewCaptures.tryEnter()) {
+      held.push(true);
+    }
+    try {
+      const response = await preview("shareid1");
+      expect(response.status).toBe(200);
+      expect(response.headers.get("content-type")).toContain("image/png");
+      expect(capture).not.toHaveBeenCalled();
+    } finally {
+      for (let i = 0; i < held.length; i += 1) {
+        sharePreviewCaptures.leave();
+      }
+    }
   });
 });
