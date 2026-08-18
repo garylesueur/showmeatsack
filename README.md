@@ -79,8 +79,9 @@ remains a fallback if R2 is unset.
 | `src/lib/shares.ts` | Share service — create, replace, delete, view |
 | `src/lib/zip-site.ts` | Unpacking and path-checking an uploaded zip |
 | `.engineering/config.yaml` | Toolchain contract that calm-craft skills read |
-| `skills/showmeatsack/` | The Agent Plugin skill |
-| `.cursor/skills/showmeatsack/` | The same instructions for Cursor |
+| `skills/showmeatsack/` | The skill — **the source of truth**, edit this one |
+| `.cursor/skills/showmeatsack/` | Generated copy for Cursor (`pnpm sync:skill`) |
+| `src/lib/showmeatsack-skill.ts` | Generated constant the site and MCP serve |
 
 ## calm-craft
 
@@ -120,13 +121,25 @@ in config we own, so updating the plugin never clobbers our choices.
 > convention decisions, and `paths.conventions` points at a file that does not
 > exist.
 
-## Agent Plugin
+## Install
 
-This repository is itself an [Agent Plugin](https://agent-plugins.org/):
-`plugin.json`, `mcp.json`, and `skills/`. `.mcp.json` exists for
+This repository is itself an [Agent Plugin](https://agent-plugins.org/) — the
+open standard for packaging agent tooling: `plugin.json`, `mcp.json`, and
+`skills/` in one installable unit. `.mcp.json` exists for
 [cursor.directory](https://cursor.directory/plugins/new) detection.
 
-Install the MCP server directly at `https://showmeatsack.com/mcp`.
+**Install the plugin.** This is the one you want. The plugin carries the MCP
+server *and* `skills/showmeatsack/SKILL.md`, so your agent gets the tool and the
+instructions for when to reach for it:
+
+```
+https://github.com/garylesueur/showmeatsack
+```
+
+**Or install the MCP server on its own** at `https://showmeatsack.com/mcp`. The
+tool works, and the server sends the same skill as its MCP `instructions`, so
+most clients still get the full brief. Clients that ignore `instructions` see
+only the tool description — prefer the plugin where you can.
 
 ## Licence
 
