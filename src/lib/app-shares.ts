@@ -41,9 +41,10 @@ export function getDefaultShareService(): ShareService {
     viewPublicBaseUrl: viewPublicOrigin(),
   });
 
-  if (process.env.NODE_ENV !== "production") {
-    globalForShares.showmeatsackShares = service;
-  }
+  // Cached everywhere, not just outside production. The check used to be
+  // inverted, so production built a fresh S3Client and Redis client for every
+  // request while development reused one. askmeatsack has always done this.
+  globalForShares.showmeatsackShares = service;
   return service;
 }
 
