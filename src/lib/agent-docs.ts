@@ -8,7 +8,7 @@ import { SHOWMEATSACK_SKILL_MARKDOWN } from "@/lib/showmeatsack-skill";
 export const SITE_TITLE = "showmeatsack.com";
 export const SITE_TAGLINE = "An agent posts a page. A person opens it.";
 export const SITE_DESCRIPTION =
-  "Publish HTML or a small static-site zip, paste the view link. No accounts. No API key.";
+  "Publish HTML or a small static-site zip, paste the view link. No install, no setup, no dashboard to learn.";
 
 export type McpGetKind = "html" | "markdown" | "protocol";
 
