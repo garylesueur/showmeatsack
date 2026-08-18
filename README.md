@@ -32,12 +32,14 @@ server. Leave Redis and R2 empty to stay on in-memory stores.
 | `pnpm env`                            | Write `.env.local` from the Development item                |
 | `pnpm env:vercel preview\|production` | Push that item to the matching Vercel env                   |
 | `pnpm typecheck`                      | TypeScript                                                  |
-| `pnpm lint`                           | ESLint                                                      |
-| `pnpm test`                           | Vitest                                                      |
+| `pnpm lint` | oxlint, plus the import-layer check |
+| `pnpm format` | oxfmt |
+| `pnpm test` | Vitest |
 | `pnpm build`                          | Production build                                            |
 
-`pnpm typecheck`, `pnpm lint`, and `pnpm test` are the merge gates — see
-`.engineering/config.yaml`.
+`pnpm typecheck`, `pnpm format:check`, `pnpm lint`, `pnpm test` and `pnpm build`
+are the merge gates — see `.engineering/config.yaml`, and
+`.engineering/conventions.md` for the conventions they enforce.
 
 ## Hosts
 
