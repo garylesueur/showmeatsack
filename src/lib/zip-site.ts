@@ -1,4 +1,4 @@
-import { unzipSync } from "fflate";
+import { unzipSync, type UnzipFileInfo } from "fflate";
 import { SHARE_MAX_BYTES } from "./schema";
 import { normalizeSharePath } from "./site-paths";
 
@@ -49,6 +49,38 @@ function stripWrappingFolder(paths: string[]): string[] | null {
   return stripped;
 }
 
+/**
+ * Refuses an archive that would expand past the cap, *before* anything is
+ * decompressed.
+ *
+ * fflate calls this against the central directory, so a 5 MB archive claiming
+ * to hold gigabytes never has a byte expanded. The check used to run after
+ * `unzipSync` had already built the whole thing in memory, which meant the cap
+ * produced the right error message and none of the protection.
+ *
+ * The declared sizes come from the archive, and an attacker writes those, so
+ * `unpackZipSite` counts the real expanded bytes as well.
+ */
+export function createCapFilter(limit: number = SHARE_MAX_BYTES) {
+  let declared = 0;
+  let exceeded = false;
+  return {
+    filter(file: UnzipFileInfo): boolean {
+      if (exceeded || shouldSkipEntry(file.name)) {
+        return false;
+      }
+      declared += file.originalSize;
+      if (declared > limit) {
+        exceeded = true;
+        return false;
+      }
+      return true;
+    },
+    exceeded: () => exceeded,
+    declared: () => declared,
+  };
+}
+
 export function htmlAsSite(html: string): UnpackResult {
   const bytes = new TextEncoder().encode(html);
   if (bytes.byteLength === 0) {
@@ -68,11 +100,17 @@ export function unpackZipSite(zipBytes: Uint8Array): UnpackResult {
     return { ok: false, message: "Share is larger than 5 MB." };
   }
 
+  const cap = createCapFilter();
+
   let extracted: Record<string, Uint8Array>;
   try {
-    extracted = unzipSync(zipBytes);
+    extracted = unzipSync(zipBytes, { filter: cap.filter });
   } catch {
     return { ok: false, message: "That is not a usable zip." };
+  }
+
+  if (cap.exceeded()) {
+    return { ok: false, message: "Share is larger than 5 MB." };
   }
 
   const rawPaths: string[] = [];
@@ -82,6 +120,8 @@ export function unpackZipSite(zipBytes: Uint8Array): UnpackResult {
     if (shouldSkipEntry(name)) {
       continue;
     }
+    // Second gate. The declared sizes above come from the archive itself and an
+    // attacker writes those, so the real expanded bytes are counted too.
     uncompressed += bytes.byteLength;
     if (uncompressed > SHARE_MAX_BYTES) {
       return { ok: false, message: "Share is larger than 5 MB." };
