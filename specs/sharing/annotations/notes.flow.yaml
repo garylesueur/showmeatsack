@@ -1,0 +1,199 @@
+version: 1
+flows:
+  - id: F1
+    name: A reader leaves feedback
+    start: open
+    states:
+      - id: open
+        kind: action
+        label: Open the review link
+      - id: page
+        kind: screen
+        label: The page and its feedback
+      - id: compose
+        kind: screen
+        label: Writing a note
+      - id: gone
+        kind: terminal
+        label: Share gone
+        outcome: The page and its feedback are no longer shown. Nothing new is accepted. Another share is not revealed.
+      - id: unknown
+        kind: terminal
+        label: Unknown review link
+        outcome: No page and no feedback are shown. Nothing is accepted. Another share is not revealed.
+    transitions:
+      - id: F1.T1
+        from: open
+        event: Open
+        to: page
+        guard: The review link matches and the share is still live.
+        outcome: The reader sees the published page, everything left on it so far, and who left it.
+        covers: [B3, B7, B18]
+      - id: F1.T2
+        from: open
+        event: Open
+        to: gone
+        guard: The share has expired or been deleted.
+        covers: [B14, B18]
+      - id: F1.T3
+        from: open
+        event: Open
+        to: unknown
+        guard: The review link is unknown, or its secret does not match.
+        covers: [B18]
+      - id: F1.T4
+        from: page
+        event: Start a note
+        to: compose
+        guard: Feedback is open.
+        outcome: The reader marks a spot, highlights words, or draws, and is told where what they write will go.
+        covers: [B3, B4, B5, B16]
+      - id: F1.T5
+        from: page
+        event: Start a note
+        to: page
+        guard: Feedback has been closed by the agent.
+        outcome: Nothing new is accepted. Existing feedback stays readable.
+        covers: [B13]
+      - id: F1.T6
+        from: compose
+        event: Send
+        to: page
+        guard: The note has something in it, and this address is within the limit.
+        outcome: The note is saved against the part of the page it was left on, attributed to the name the reader gave, and visible to everyone with the review link.
+        covers: [B3, B4, B5, B6, B7]
+      - id: F1.T7
+        from: compose
+        event: Send
+        to: compose
+        guard: The note is empty and carries no drawing, or this address has left far more notes than a person plausibly would.
+        outcome: Nothing is saved. The reader is told why, keeps what they wrote, and can try again.
+        covers: [B17]
+      - id: F1.T8
+        from: compose
+        event: Cancel
+        to: page
+        outcome: Nothing is saved.
+        covers: [B3]
+      - id: F1.T9
+        from: page
+        event: Reply or agree
+        to: page
+        guard: Feedback is open.
+        outcome: The reply or agreement is saved against that note and everyone with the review link sees it.
+        covers: [B7]
+      - id: F1.T10
+        from: page
+        event: Reply or agree
+        to: page
+        guard: Feedback has been closed by the agent.
+        outcome: Nothing new is accepted. Existing feedback stays readable.
+        covers: [B13]
+      - id: F1.T11
+        from: page
+        event: Change or remove a note
+        to: page
+        guard: The note was left by this reader, from this device.
+        outcome: The note is changed or removed, and its replies go with it.
+        covers: [B12]
+      - id: F1.T12
+        from: page
+        event: Change or remove a note
+        to: page
+        guard: The note was left by somebody else.
+        outcome: Refused. The note is unchanged.
+        covers: [B12]
+      - id: F1.T13
+        from: page
+        event: The agent replaces the page
+        to: page
+        outcome: The new page is shown. Notes that still fit stay where they were; the rest are shown with what they were attached to, marked as left on an earlier version.
+        covers: [B11]
+      - id: F1.T14
+        from: page
+        event: Time runs out
+        to: gone
+        covers: [B14]
+      - id: F1.T15
+        from: page
+        event: The agent deletes the share
+        to: gone
+        covers: [B14]
+  - id: F2
+    name: The agent collects it
+    start: check
+    states:
+      - id: check
+        kind: action
+        label: Check a share for feedback
+      - id: feedback
+        kind: screen
+        label: The feedback so far
+      - id: refused
+        kind: terminal
+        label: Refused
+        outcome: No feedback is shown. Another share is not revealed.
+      - id: gone
+        kind: terminal
+        label: Share gone
+        outcome: The share and its feedback are gone together.
+    transitions:
+      - id: F2.T1
+        from: check
+        event: Ask for feedback
+        to: feedback
+        guard: The manage secret matches and the share is still live.
+        outcome: The agent sees how much feedback there is, when the most recent arrived, and every note, reply and drawing with who left it and what it is attached to.
+        covers: [B8, B9]
+      - id: F2.T2
+        from: check
+        event: Ask for feedback
+        to: refused
+        guard: The caller does not hold this share's manage secret.
+        covers: [B18]
+      - id: F2.T3
+        from: check
+        event: Ask for feedback
+        to: gone
+        guard: The share has expired or been deleted.
+        covers: [B14]
+      - id: F2.T4
+        from: feedback
+        event: Answer a note
+        to: feedback
+        outcome: The answer appears under that note for anyone who comes back to the review link.
+        covers: [B10]
+      - id: F2.T5
+        from: feedback
+        event: Mark a note dealt with
+        to: feedback
+        outcome: The reader who left it sees that it was acted on.
+        covers: [B10]
+      - id: F2.T6
+        from: feedback
+        event: Replace the page
+        to: feedback
+        outcome: The review link shows the new page. Existing feedback is kept, marked against the version it was left on where it no longer fits.
+        covers: [B11]
+      - id: F2.T7
+        from: feedback
+        event: Close feedback
+        to: feedback
+        outcome: Nothing new is accepted. Existing feedback stays readable to the agent and to everyone with the review link.
+        covers: [B13]
+      - id: F2.T8
+        from: feedback
+        event: Open feedback again
+        to: feedback
+        outcome: New notes are accepted again.
+        covers: [B13]
+      - id: F2.T9
+        from: feedback
+        event: Delete the share
+        to: gone
+        covers: [B14]
+      - id: F2.T10
+        from: feedback
+        event: Time runs out
+        to: gone
+        covers: [B14]
