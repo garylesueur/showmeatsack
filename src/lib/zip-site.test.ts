@@ -1,7 +1,7 @@
 import { zipSync, strToU8 } from "fflate";
 import { describe, expect, it } from "vitest";
 import { SHARE_MAX_BYTES } from "./schema";
-import { htmlAsSite, unpackZipSite } from "./zip-site";
+import { createCapFilter, htmlAsSite, unpackZipSite } from "./zip-site";
 
 function zipBytes(files: Record<string, string | Uint8Array>): Uint8Array {
   const encoded: Record<string, Uint8Array> = {};
@@ -196,5 +196,85 @@ describe("unpackZipSite", () => {
     const script = result.files.find((file) => file.path === "app.js");
     expect(script).toBeDefined();
     expect(new TextDecoder().decode(script?.bytes)).toBe("document.cookie");
+  });
+});
+
+describe("A zip bomb is refused before it is expanded", () => {
+  it("refuses an archive that would expand past the cap", () => {
+    // Highly compressible: ~40 MB of zeroes packs down to a few kilobytes, so
+    // the archive itself passes the byte-length check and only the declared
+    // size gives it away.
+    const bomb = zipBytes({
+      "index.html": "<h1>Hi</h1>",
+      "payload.bin": new Uint8Array(SHARE_MAX_BYTES * 8),
+    });
+    expect(bomb.byteLength).toBeLessThan(SHARE_MAX_BYTES);
+
+    const result = unpackZipSite(bomb);
+    expect(result).toEqual({
+      ok: false,
+      message: "Share is larger than 5 MB.",
+    });
+  });
+
+  it("refuses when many small entries add up past the cap", () => {
+    const files: Record<string, Uint8Array | string> = {
+      "index.html": "<h1>Hi</h1>",
+    };
+    for (let n = 0; n < 12; n += 1) {
+      files[`chunk-${n}.bin`] = new Uint8Array(SHARE_MAX_BYTES / 2);
+    }
+    expect(unpackZipSite(zipBytes(files))).toEqual({
+      ok: false,
+      message: "Share is larger than 5 MB.",
+    });
+  });
+
+  it("still accepts a site that fits", () => {
+    const result = unpackZipSite(
+      zipBytes({
+        "index.html": "<h1>Hi</h1>",
+        "style.css": "body{color:red}",
+      }),
+    );
+    expect(result.ok).toBe(true);
+  });
+});
+
+describe("The cap is applied before anything is decompressed", () => {
+  function entry(name: string, originalSize: number) {
+    return { name, size: 1, originalSize, compression: 8 } as Parameters<
+      ReturnType<typeof createCapFilter>["filter"]
+    >[0];
+  }
+
+  it("lets entries through while they fit", () => {
+    const cap = createCapFilter(1000);
+    expect(cap.filter(entry("a.bin", 400))).toBe(true);
+    expect(cap.filter(entry("b.bin", 400))).toBe(true);
+    expect(cap.exceeded()).toBe(false);
+  });
+
+  it("refuses the entry that crosses the cap, and every one after it", () => {
+    const cap = createCapFilter(1000);
+    expect(cap.filter(entry("a.bin", 900))).toBe(true);
+    expect(cap.filter(entry("b.bin", 200))).toBe(false);
+    expect(cap.exceeded()).toBe(true);
+    // Nothing more is decompressed once the archive is known to be over.
+    expect(cap.filter(entry("c.bin", 1))).toBe(false);
+  });
+
+  it("refuses a single entry that is over the cap on its own", () => {
+    const cap = createCapFilter(1000);
+    expect(cap.filter(entry("bomb.bin", 5_000_000_000))).toBe(false);
+    expect(cap.exceeded()).toBe(true);
+  });
+
+  it("does not count entries it would skip anyway", () => {
+    const cap = createCapFilter(1000);
+    expect(cap.filter(entry("__MACOSX/junk", 5000))).toBe(false);
+    expect(cap.filter(entry(".DS_Store", 5000))).toBe(false);
+    expect(cap.exceeded()).toBe(false);
+    expect(cap.declared()).toBe(0);
   });
 });
