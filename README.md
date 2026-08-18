@@ -132,7 +132,7 @@ open standard for packaging agent tooling: `plugin.json`, `mcp.json`, and
 server *and* `skills/showmeatsack/SKILL.md`, so your agent gets the tool and the
 instructions for when to reach for it:
 
-```
+```text
 https://github.com/garylesueur/showmeatsack
 ```
 
