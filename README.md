@@ -25,16 +25,16 @@ server. Leave Redis and R2 empty to stay on in-memory stores.
 
 ## Commands
 
-| Command | Does |
-| --- | --- |
-| `pnpm dev` | Dev server, reads `.env.local` |
-| `pnpm dev:op` | Dev server with secrets in-process, nothing written to disk |
-| `pnpm env` | Write `.env.local` from the Development item |
-| `pnpm env:vercel preview\|production` | Push that item to the matching Vercel env |
-| `pnpm typecheck` | TypeScript |
-| `pnpm lint` | ESLint |
-| `pnpm test` | Vitest |
-| `pnpm build` | Production build |
+| Command                               | Does                                                        |
+| ------------------------------------- | ----------------------------------------------------------- |
+| `pnpm dev`                            | Dev server, reads `.env.local`                              |
+| `pnpm dev:op`                         | Dev server with secrets in-process, nothing written to disk |
+| `pnpm env`                            | Write `.env.local` from the Development item                |
+| `pnpm env:vercel preview\|production` | Push that item to the matching Vercel env                   |
+| `pnpm typecheck`                      | TypeScript                                                  |
+| `pnpm lint`                           | ESLint                                                      |
+| `pnpm test`                           | Vitest                                                      |
+| `pnpm build`                          | Production build                                            |
 
 `pnpm typecheck`, `pnpm lint`, and `pnpm test` are the merge gates — see
 `.engineering/config.yaml`.
@@ -44,9 +44,9 @@ server. Leave Redis and R2 empty to stay on in-memory stores.
 Two origins, on purpose. Published pages are untrusted HTML, so they are served
 from a separate host and never share an origin with the product site.
 
-| Origin | Serves |
-| --- | --- |
-| `https://showmeatsack.com` | The product site and the API |
+| Origin                       | Serves                                      |
+| ---------------------------- | ------------------------------------------- |
+| `https://showmeatsack.com`   | The product site and the API                |
 | `https://s.showmeatsack.com` | View links — the published pages themselves |
 
 Add `s.showmeatsack.com` to the Vercel project so that host reaches this app.
@@ -69,18 +69,18 @@ remains a fallback if R2 is unset.
 
 ## Where things live
 
-| Path | What |
-| --- | --- |
-| `specs/` | Product intent. Start at `specs/sharing/pages/publishing.md` |
-| `specs/site/discoverability.md` | SEO, Open Graph, sitemap, robots, llms.txt |
-| `src/app/api/v1/shares/` | The HTTP API |
-| `src/app/mcp/` | The MCP server |
-| `src/app/s/[shareId]/` | Serving a published page |
-| `src/lib/shares.ts` | Share service — create, replace, delete, view |
-| `src/lib/zip-site.ts` | Unpacking and path-checking an uploaded zip |
-| `.engineering/config.yaml` | Toolchain contract that calm-craft skills read |
-| `skills/showmeatsack/` | The Agent Plugin skill |
-| `.cursor/skills/showmeatsack/` | The same instructions for Cursor |
+| Path                            | What                                                         |
+| ------------------------------- | ------------------------------------------------------------ |
+| `specs/`                        | Product intent. Start at `specs/sharing/pages/publishing.md` |
+| `specs/site/discoverability.md` | SEO, Open Graph, sitemap, robots, llms.txt                   |
+| `src/app/api/v1/shares/`        | The HTTP API                                                 |
+| `src/app/mcp/`                  | The MCP server                                               |
+| `src/app/s/[shareId]/`          | Serving a published page                                     |
+| `src/lib/shares.ts`             | Share service — create, replace, delete, view                |
+| `src/lib/zip-site.ts`           | Unpacking and path-checking an uploaded zip                  |
+| `.engineering/config.yaml`      | Toolchain contract that calm-craft skills read               |
+| `skills/showmeatsack/`          | The Agent Plugin skill                                       |
+| `.cursor/skills/showmeatsack/`  | The same instructions for Cursor                             |
 
 ## calm-craft
 

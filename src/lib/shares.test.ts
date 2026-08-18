@@ -5,9 +5,7 @@ import { createMemoryShareStore } from "./share-store";
 import { testShareService, zipBase64 } from "./share-test-helpers";
 import { createShareService, isShareServiceError } from "./shares";
 
-function service(
-  overrides: Parameters<typeof testShareService>[0] = {},
-) {
+function service(overrides: Parameters<typeof testShareService>[0] = {}) {
   return testShareService(overrides);
 }
 
@@ -20,9 +18,7 @@ describe("publishing a page", () => {
       return;
     }
     expect(created.viewUrl).toBe("https://showmeatsack.com/s/shareid1/");
-    expect(created.manageUrl).toBe(
-      "https://showmeatsack.com/api/v1/shares/shareid1",
-    );
+    expect(created.manageUrl).toBe("https://showmeatsack.com/api/v1/shares/shareid1");
     expect(created.manageUrl).not.toContain("token=");
     expect(created.manageToken).toBe("managetoken1");
     expect(created.expiresAt).toBe("2026-09-16T10:00:00.000Z");
@@ -39,9 +35,7 @@ describe("publishing a page", () => {
       return;
     }
     expect(created.viewUrl).toBe("https://s.showmeatsack.com/s/shareid1/");
-    expect(created.manageUrl).toBe(
-      "https://showmeatsack.com/api/v1/shares/shareid1",
-    );
+    expect(created.manageUrl).toBe("https://showmeatsack.com/api/v1/shares/shareid1");
     expect(created.manageUrl).not.toContain(created.manageToken);
   });
 
@@ -198,9 +192,7 @@ describe("publishing a page", () => {
       ),
     ).toBe(true);
     expect(
-      isShareServiceError(
-        await shares.create({ zipBase64: zipBase64({ "readme.txt": "hi" }) }),
-      ),
+      isShareServiceError(await shares.create({ zipBase64: zipBase64({ "readme.txt": "hi" }) })),
     ).toBe(true);
   });
 
@@ -230,8 +222,7 @@ describe("publishing a page", () => {
   });
 
   it("B2 — scripts and event handlers in uploaded HTML are kept", async () => {
-    const html =
-      `<!doctype html><script>window.stolen = document.cookie</script><img src=x onerror="alert(1)"><p>Live page</p>`;
+    const html = `<!doctype html><script>window.stolen = document.cookie</script><img src=x onerror="alert(1)"><p>Live page</p>`;
     const shares = service();
     const created = await shares.create({ html });
     expect(isShareServiceError(created)).toBe(false);

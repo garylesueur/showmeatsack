@@ -1,0 +1,3 @@
+{
+  "ignorePatterns": ["**/*.md", ".next/**", "build/**", "out/**", "pnpm-lock.yaml"]
+}

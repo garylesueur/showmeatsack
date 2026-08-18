@@ -28,6 +28,9 @@ export function createMemoryFileStore(): FileStore {
     },
     async deleteAll(shareId: string): Promise<void> {
       const prefix = `${shareId}:`;
+      // The spread is doing real work: the loop deletes from the same Map it
+      // is walking, so the keys have to be snapshotted first.
+      // oxlint-disable-next-line unicorn/no-useless-spread
       for (const fileKey of [...files.keys()]) {
         if (fileKey.startsWith(prefix)) {
           files.delete(fileKey);

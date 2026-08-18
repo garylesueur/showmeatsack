@@ -16,9 +16,7 @@ describe("Agent Plugin package", () => {
       name: string;
       homepage: string;
     };
-    expect(manifest.$schema).toBe(
-      "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
-    );
+    expect(manifest.$schema).toBe("https://agent-plugins.org/schemas/1.0.0/plugin.schema.json");
     expect(manifest.name).toBe("showmeatsack.com");
     expect(manifest.homepage).toBe("https://showmeatsack.com");
   });
@@ -30,9 +28,7 @@ describe("Agent Plugin package", () => {
         "showmeatsack.com": { type: string; url: string };
       };
     };
-    expect(mcp.$schema).toBe(
-      "https://agent-plugins.org/schemas/1.0.0/mcp.schema.json",
-    );
+    expect(mcp.$schema).toBe("https://agent-plugins.org/schemas/1.0.0/mcp.schema.json");
     expect(mcp.mcpServers["showmeatsack.com"]).toEqual({
       type: "streamable-http",
       url: "https://showmeatsack.com/mcp",
@@ -52,10 +48,7 @@ describe("Agent Plugin package", () => {
   });
 
   it("ships the plugin skill with the same instructions as /skill.md", () => {
-    const onDisk = readFileSync(
-      join(root, "skills/showmeatsack/SKILL.md"),
-      "utf8",
-    );
+    const onDisk = readFileSync(join(root, "skills/showmeatsack/SKILL.md"), "utf8");
     expect(onDisk.startsWith("---\n")).toBe(true);
     expect(onDisk).toContain("name: showmeatsack\n");
     expect(onDisk).toContain("bot running unattended");

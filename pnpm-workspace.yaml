@@ -1,3 +1,8 @@
+# Refuse any package published less than a day ago. A compromised
+# release is usually caught within hours, so waiting one day blocks
+# most supply-chain attacks at no real cost.
+minimumReleaseAge: 1440
+
 neverBuiltDependencies:
   - unrs-resolver
 verifyDepsBeforeRun: false
