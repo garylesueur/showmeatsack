@@ -86,6 +86,13 @@ Create and replace return a manage URL that names the share and a manage token t
 
 When the view link is pasted into Slack or another app that fetches a link preview, the preview image is a picture of that share’s uploaded page — not the showmeatsack.com homepage, and not another share. A person who opens the same link in a browser still sees the uploaded page, with no extra chrome around it. Building that image is expensive, so it is built once and reused rather than rebuilt for every crawler that asks.
 
+### B18 — Trying it on the home page needs no account 🔵 future
+
+Anyone can publish a demo page from the home page without signing in, and gets back a real view
+link they can open and send. The demo publishes a page this service already holds — a visitor
+cannot supply their own content — so the worst a stranger can do is use capacity. Demo shares
+are short-lived and limited by calling address.
+
 ## Rules (Invariants)
 
 - The view link never grants replace or delete.
@@ -106,6 +113,8 @@ When the view link is pasted into Slack or another app that fetches a link previ
 - Publishing needs a lanyard token. Manage still needs that share’s own manage secret, sent as a bearer token; a lanyard token does not replace it. Viewing needs nothing.
 - A share belongs to the account that published it. Deleting that account does not un-publish shares that are already live; they expire as they were going to.
 - Create from one account is limited. A refused create does not publish a page.
+- The home-page demo has no account, so it is limited by calling address instead, and it only
+  ever publishes pages this service already holds.
 - The manage secret is sent as a bearer token and nowhere else. It is never accepted from a query string.
 - Shares are ephemeral. This product does not keep a long-term archive of pages.
 
