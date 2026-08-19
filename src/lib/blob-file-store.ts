@@ -5,9 +5,7 @@ function pathnameFor(shareId: string, path: string): string {
   return `showmeatsack/${shareId}/${path}`;
 }
 
-async function streamToBytes(
-  stream: ReadableStream<Uint8Array>,
-): Promise<Uint8Array> {
+async function streamToBytes(stream: ReadableStream<Uint8Array>): Promise<Uint8Array> {
   const reader = stream.getReader();
   const chunks: Uint8Array[] = [];
   let total = 0;
@@ -56,11 +54,19 @@ export function createBlobFileStore(): FileStore {
       };
     },
     async deleteAll(shareId: string): Promise<void> {
-      const listed = await list({ prefix: `showmeatsack/${shareId}/` });
-      const urls = listed.blobs.map((blob) => blob.url);
-      if (urls.length > 0) {
-        await del(urls);
-      }
+      // Listing is paged, so one call is not the whole share. Stopping after
+      // the first page left the remainder behind on a delete or a replace,
+      // which is the opposite of what a delete is for.
+      const prefix = `showmeatsack/${shareId}/`;
+      let cursor: string | undefined;
+      do {
+        const page = await list({ prefix, cursor });
+        const urls = page.blobs.map((blob) => blob.url);
+        if (urls.length > 0) {
+          await del(urls);
+        }
+        cursor = page.hasMore ? page.cursor : undefined;
+      } while (cursor);
     },
   };
 }

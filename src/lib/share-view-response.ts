@@ -14,11 +14,9 @@ export const VIEW_CACHE_HEADERS = {
   "X-Robots-Tag": "noindex, nofollow",
 };
 
-export const EXPIRED_SHARE_HTML =
-  `<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><title>This share has expired</title></head><body><p>This share has expired.</p></body></html>`;
+export const EXPIRED_SHARE_HTML = `<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><title>This share has expired</title></head><body><p>This share has expired.</p></body></html>`;
 
-export const NOT_FOUND_SHARE_HTML =
-  `<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><title>Not found</title></head><body><p>Not found.</p></body></html>`;
+export const NOT_FOUND_SHARE_HTML = `<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><title>Not found</title></head><body><p>Not found.</p></body></html>`;
 
 export type ViewResponseContext = {
   request: Request;
@@ -35,10 +33,7 @@ function htmlPage(status: number, body: string): Response {
   });
 }
 
-export function responseForView(
-  result: ViewResult,
-  context?: ViewResponseContext,
-): Response {
+export function responseForView(result: ViewResult, context?: ViewResponseContext): Response {
   if (result.kind === "expired") {
     return htmlPage(410, EXPIRED_SHARE_HTML);
   }
@@ -47,11 +42,7 @@ export function responseForView(
   }
 
   const isHtml = result.contentType.toLowerCase().includes("text/html");
-  if (
-    context &&
-    isHtml &&
-    isLinkPreviewCrawler(context.request.headers.get("user-agent"))
-  ) {
+  if (context && isHtml && isLinkPreviewCrawler(context.request.headers.get("user-agent"))) {
     const html = new TextDecoder().decode(result.bytes);
     const urls = shareOpenGraphUrls(viewPublicOrigin(), context.shareId);
     const withMeta = withOpenGraphMeta(html, {

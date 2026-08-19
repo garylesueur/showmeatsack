@@ -30,7 +30,10 @@ export function shareOpenGraphUrls(
 
 export function titleFromHtml(html: string): string {
   const titled = html.match(/<title[^>]*>([\s\S]*?)<\/title>/i);
-  const fromTitle = titled?.[1]?.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+  const fromTitle = titled?.[1]
+    ?.replace(/<[^>]+>/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
   if (fromTitle) {
     return fromTitle;
   }
@@ -55,12 +58,8 @@ export function titleFromHtml(html: string): string {
 }
 
 export function descriptionFromHtml(html: string): string {
-  const meta = html.match(
-    /<meta\b[^>]*\bname\s*=\s*["']description["'][^>]*>/i,
-  );
-  const fromName = meta?.[0]
-    ? attributeValue(meta[0], "content")
-    : null;
+  const meta = html.match(/<meta\b[^>]*\bname\s*=\s*["']description["'][^>]*>/i);
+  const fromName = meta?.[0] ? attributeValue(meta[0], "content") : null;
   if (fromName?.trim()) {
     return fromName.trim();
   }
@@ -132,46 +131,35 @@ export async function inlineLocalShareAssets(
     return file;
   }
 
-  const withSheets = await replaceAsync(
-    html,
-    /<link\b[^>]*>/gi,
-    async (tag) => {
-      if (!/\brel\s*=\s*["']?stylesheet["']?/i.test(tag)) {
-        return tag;
-      }
-      const href = attributeValue(tag, "href");
-      const path = href ? localSharePath(href) : null;
-      if (!path) {
-        return tag;
-      }
-      const file = await loadOnce(path);
-      if (!file) {
-        return tag;
-      }
-      const css = await inlineCssUrls(new TextDecoder().decode(file.bytes), loadOnce);
-      return `<style>${css}</style>`;
-    },
-  );
+  const withSheets = await replaceAsync(html, /<link\b[^>]*>/gi, async (tag) => {
+    if (!/\brel\s*=\s*["']?stylesheet["']?/i.test(tag)) {
+      return tag;
+    }
+    const href = attributeValue(tag, "href");
+    const path = href ? localSharePath(href) : null;
+    if (!path) {
+      return tag;
+    }
+    const file = await loadOnce(path);
+    if (!file) {
+      return tag;
+    }
+    const css = await inlineCssUrls(new TextDecoder().decode(file.bytes), loadOnce);
+    return `<style>${css}</style>`;
+  });
 
-  const withImages = await replaceAsync(
-    withSheets,
-    /<img\b[^>]*>/gi,
-    async (tag) => {
-      const src = attributeValue(tag, "src");
-      const path = src ? localSharePath(src) : null;
-      if (!path) {
-        return tag;
-      }
-      const file = await loadOnce(path);
-      if (!file) {
-        return tag;
-      }
-      return tag.replace(
-        /\bsrc\s*=\s*["'][^"']*["']/i,
-        `src="${asDataUri(file)}"`,
-      );
-    },
-  );
+  const withImages = await replaceAsync(withSheets, /<img\b[^>]*>/gi, async (tag) => {
+    const src = attributeValue(tag, "src");
+    const path = src ? localSharePath(src) : null;
+    if (!path) {
+      return tag;
+    }
+    const file = await loadOnce(path);
+    if (!file) {
+      return tag;
+    }
+    return tag.replace(/\bsrc\s*=\s*["'][^"']*["']/i, `src="${asDataUri(file)}"`);
+  });
 
   return inlineCssUrls(withImages, loadOnce);
 }
@@ -217,9 +205,7 @@ function asDataUri(file: StoredFile): string {
 }
 
 function attributeValue(tag: string, name: string): string | null {
-  const quoted = tag.match(
-    new RegExp(`\\b${name}\\s*=\\s*["']([^"']*)["']`, "i"),
-  );
+  const quoted = tag.match(new RegExp(`\\b${name}\\s*=\\s*["']([^"']*)["']`, "i"));
   return quoted?.[1] ?? null;
 }
 

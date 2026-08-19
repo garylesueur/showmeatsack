@@ -1,11 +1,8 @@
-export const CURSOR_PLUGIN_HREF =
-  "https://github.com/garylesueur/showmeatsack";
+export const CURSOR_PLUGIN_HREF = "https://github.com/garylesueur/showmeatsack";
 
 function encodeConfig(mcpUrl: string): string {
   const json = JSON.stringify({ url: mcpUrl });
-  return typeof Buffer === "undefined"
-    ? btoa(json)
-    : Buffer.from(json).toString("base64");
+  return typeof Buffer === "undefined" ? btoa(json) : Buffer.from(json).toString("base64");
 }
 
 export function cursorInstallHref(mcpUrl: string): string {
