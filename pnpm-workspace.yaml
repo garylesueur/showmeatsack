@@ -3,7 +3,9 @@
 # most supply-chain attacks at no real cost.
 minimumReleaseAge: 1440
 
-neverBuiltDependencies:
-  - unrs-resolver
+# unrs-resolver ships a postinstall that fetches a native binary. Nothing
+# here needs it, so it never gets to run a build script.
+allowBuilds:
+  unrs-resolver: false
 verifyDepsBeforeRun: false
 strictDepBuilds: false
