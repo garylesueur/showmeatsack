@@ -16,72 +16,63 @@ const ACCENT = "#5ecfbc";
 const TITLE_LIMIT = 110;
 const DESCRIPTION_LIMIT = 160;
 
-export function shareFallbackCard(input: {
-  title: string;
-  description?: string;
-}): ImageResponse {
+export function shareFallbackCard(input: { title: string; description?: string }): ImageResponse {
   const title = clamp(input.title, TITLE_LIMIT);
-  const description = input.description
-    ? clamp(input.description, DESCRIPTION_LIMIT)
-    : null;
+  const description = input.description ? clamp(input.description, DESCRIPTION_LIMIT) : null;
 
   return new ImageResponse(
-    (
+    <div
+      style={{
+        width: "100%",
+        height: "100%",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        padding: 80,
+        background: INK,
+        color: PAPER,
+      }}
+    >
+      <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
+        <div
+          style={{
+            display: "flex",
+            width: 14,
+            height: 14,
+            borderRadius: 7,
+            background: ACCENT,
+          }}
+        />
+        <div style={{ display: "flex", fontSize: 28, color: MUTED }}>{SITE_TITLE}</div>
+      </div>
+
       <div
         style={{
-          width: "100%",
-          height: "100%",
           display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          padding: 80,
-          background: INK,
-          color: PAPER,
+          marginTop: 28,
+          fontSize: title.length > 60 ? 56 : 68,
+          fontWeight: 500,
+          letterSpacing: "-0.03em",
+          lineHeight: 1.15,
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-          <div
-            style={{
-              display: "flex",
-              width: 14,
-              height: 14,
-              borderRadius: 7,
-              background: ACCENT,
-            }}
-          />
-          <div style={{ display: "flex", fontSize: 28, color: MUTED }}>
-            {SITE_TITLE}
-          </div>
-        </div>
+        {title}
+      </div>
 
+      {description ? (
         <div
           style={{
             display: "flex",
             marginTop: 28,
-            fontSize: title.length > 60 ? 56 : 68,
-            fontWeight: 500,
-            letterSpacing: "-0.03em",
-            lineHeight: 1.15,
+            fontSize: 30,
+            lineHeight: 1.35,
+            color: MUTED,
           }}
         >
-          {title}
+          {description}
         </div>
-
-        {description ? (
-          <div
-            style={{
-              display: "flex",
-              marginTop: 28,
-              fontSize: 30,
-              lineHeight: 1.35,
-              color: MUTED,
-            }}
-          >
-            {description}
-          </div>
-        ) : null}
-      </div>
-    ),
+      ) : null}
+    </div>,
     { width: OPENGRAPH_SIZE.width, height: OPENGRAPH_SIZE.height },
   );
 }

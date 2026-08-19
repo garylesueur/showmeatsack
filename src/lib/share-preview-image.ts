@@ -96,7 +96,5 @@ function desktopChromePath(): string {
       return chromePath;
     }
   }
-  throw new Error(
-    "No local Chrome found. Install Chrome or set CHROME_PATH to capture previews.",
-  );
+  throw new Error("No local Chrome found. Install Chrome or set CHROME_PATH to capture previews.");
 }

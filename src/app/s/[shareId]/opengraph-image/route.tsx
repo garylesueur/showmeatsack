@@ -1,10 +1,6 @@
 import { getDefaultShareService } from "@/lib/app-shares";
 import { shareFallbackCard } from "@/lib/share-fallback-card";
-import {
-  descriptionFromHtml,
-  inlineLocalShareAssets,
-  titleFromHtml,
-} from "@/lib/share-open-graph";
+import { descriptionFromHtml, inlineLocalShareAssets, titleFromHtml } from "@/lib/share-open-graph";
 import { screenshotHtmlPreview } from "@/lib/share-preview-image";
 import { sharePreviewCaptures } from "@/lib/share-preview-limit";
 import { responseForView } from "@/lib/share-view-response";
