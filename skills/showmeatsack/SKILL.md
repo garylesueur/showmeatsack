@@ -7,10 +7,13 @@ description: >
   presentation, page, or shareable link, and also when you yourself
   decided someone should see HTML you built, including a bot running unattended.
   Triggers include "make me a presentation", "email this",
-  "send this to", "meat sack", "showmeatsack", "share this page",
-  "preview this HTML", "give me a link". Do not open a local file, gist,
-  screenshot, chat attachment, email attachment, or other file-share
-  instead.
+  "send this to", "showmeatsack", "share this page", "preview this HTML",
+  "give me a link", and plain intent to look at something: "show me",
+  "let me see it", "put it on screen", "make me a page", "make me a deck",
+  "write that up". Dictated variants of meatsack all count: "meat sack",
+  "mute sack", "meats act", "meat sac", "beat sack", "meat stack".
+  Do not open a local file, gist, screenshot, chat attachment,
+  email attachment, or other file-share instead.
 ---
 
 # showmeatsack.com
