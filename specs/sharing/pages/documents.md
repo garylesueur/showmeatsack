@@ -84,9 +84,9 @@ lands in the same place.
 ### B10 — It looks published, not dumped 🔵 future
 
 The document is set to a comfortable reading width, is legible on a phone, and follows
-the light or dark setting the reader's device already has. Nothing around it advertises
-showmeatsack.com or claims the content — the only thing the service adds is the switch
-between reading and source.
+the light or dark setting the reader's device already has. The frame around it stays out of
+the way: the switch between reading and source, and one small mark saying where the page
+came from (B14). Nothing claims the content as ours.
 
 ### B11 — The agent says what it published, or we work it out 🔵 future
 
@@ -108,6 +108,23 @@ B17 of publishing describes for a page. When a picture cannot be taken, the prev
 the document from its title, its first heading, or the filename it was given — never
 another share and never the product homepage.
 
+### B14 — The frame says where the page came from 🔵 future
+
+Because a document is shown inside a frame this service renders, that frame carries one
+small mark — a line of text linking back to the showmeatsack.com home page — so a person
+who was sent a document can find out what this is and use it themselves. It is one line,
+it sits out of the way of the content, it never appears over the content, and it is the
+only thing in the frame besides the read/source switch. A published HTML page or static
+site has no frame, so it carries no mark.
+
+### B15 — A reader can save the document 🔵 future
+
+A person reading a document can save it as a PDF that looks like the document they were
+reading: the formatting, the drawn diagrams, the coloured code, and a line saying where it
+came from and when it was taken. A share expires; something a person saved does not, and
+the saved copy says which page and which day it came from so it is not mistaken for the
+live one.
+
 ## Rules (Invariants)
 
 - A document is a share like any other: same create call, same view link and manage
@@ -119,8 +136,11 @@ another share and never the product homepage.
   and a reader can always get back to it.
 - The read view and the source view of the same document have different addresses, and
   both are on the view origin.
-- The service adds one control — the switch between reading and source — and no other
-  chrome, branding or navigation around the published content.
+- The frame around a document is two things: the switch between reading and source, and
+  one small mark linking home. No menus, no navigation, no advertising, nothing that claims
+  the content, and nothing that follows the reader.
+- A published HTML page and a static site have no frame at all. Only surfaces this service
+  renders itself carry the mark.
 - Whether a document is shown as markdown or as a source listing never changes what the
   source view returns.
 - A diagram that cannot be drawn degrades to its own source. One bad block never costs
@@ -133,36 +153,36 @@ another share and never the product homepage.
 
 ### How a payload is shown
 
-| What the agent publishes | What the view link shows |
-| --- | --- |
-| Markdown | The formatted document, with a switch to source |
-| A source file with a filename | A numbered, coloured listing of that file, with a switch to source |
-| Text the service does not recognise | A plain numbered listing, with a switch to source |
-| HTML | The page itself, as today (B2, B4 of publishing) — not a document |
-| A zip containing `index.html` | The static site, as today (B3 of publishing) |
-| A zip of markdown, no `index.html` | A small linked set of documents, front page as B8 |
-| A zip with neither | Refused; nothing published |
-| Not text and not a zip | Refused; nothing published |
-| Empty, or larger than 5 MB | Refused; nothing published |
+| What the agent publishes            | What the view link shows                                           |
+| ----------------------------------- | ------------------------------------------------------------------ |
+| Markdown                            | The formatted document, with a switch to source                    |
+| A source file with a filename       | A numbered, coloured listing of that file, with a switch to source |
+| Text the service does not recognise | A plain numbered listing, with a switch to source                  |
+| HTML                                | The page itself, as today (B2, B4 of publishing) — not a document  |
+| A zip containing `index.html`       | The static site, as today (B3 of publishing)                       |
+| A zip of markdown, no `index.html`  | A small linked set of documents, front page as B8                  |
+| A zip with neither                  | Refused; nothing published                                         |
+| Not text and not a zip              | Refused; nothing published                                         |
+| Empty, or larger than 5 MB          | Refused; nothing published                                         |
 
 ### Blocks inside a markdown document
 
-| Block | Outcome |
-| --- | --- |
-| Fenced code naming a language | Coloured, exact text kept, copyable |
-| Fenced code naming no language | Shown plain, exact text kept, copyable |
-| A diagram block that can be drawn | Shown as a diagram |
-| A diagram block that cannot be drawn | Shown as its own source, with a short note; document otherwise unaffected |
-| Markup, a script, or a form written inside the document | Shown as text; nothing runs |
-| An image beside the document in the same zip | Shown |
-| An image somewhere else on the internet | Not fetched when the document is opened |
+| Block                                                   | Outcome                                                                   |
+| ------------------------------------------------------- | ------------------------------------------------------------------------- |
+| Fenced code naming a language                           | Coloured, exact text kept, copyable                                       |
+| Fenced code naming no language                          | Shown plain, exact text kept, copyable                                    |
+| A diagram block that can be drawn                       | Shown as a diagram                                                        |
+| A diagram block that cannot be drawn                    | Shown as its own source, with a short note; document otherwise unaffected |
+| Markup, a script, or a form written inside the document | Shown as text; nothing runs                                               |
+| An image beside the document in the same zip            | Shown                                                                     |
+| An image somewhere else on the internet                 | Not fetched when the document is opened                                   |
 
 ### The two views
 
-| Doorway | Read view | Source view | Replace or delete |
-| --- | --- | --- | --- |
-| View link | Yes, that share only | Yes, that share only | No |
-| Manage token | No | No | Yes, that share only |
+| Doorway      | Read view            | Source view          | Replace or delete    |
+| ------------ | -------------------- | -------------------- | -------------------- |
+| View link    | Yes, that share only | Yes, that share only | No                   |
+| Manage token | No                   | No                   | Yes, that share only |
 
 ## User Flows
 
@@ -183,13 +203,18 @@ step and constrains nothing.
   to include and awkward to retrofit, but it is a second dialect to keep working.
 - Should a document carry a title given by the agent, separate from its first heading,
   for the link preview in B13 to use?
+- **Blocks B14:** What does the mark actually say? It is the first showmeatsack.com copy a
+  person meets who was only ever sent a link, so it is doing real work. Candidates, all
+  short enough for one line: "Shown to you by showmeatsack.com", "Written by silicon, read
+  by meatsacks", "Made of silicon, made for meatsacks", "Powered by showmeatsack.com". The
+  pun earns its place only if it survives being read by somebody who has no idea what any
+  of this is.
 
 ## Future Considerations
 
 - Notebooks, CSV and other structured files shown as themselves rather than as text.
 - A rendered difference between two versions of the same document, so a reader coming
   back to a replaced share can see what changed.
-- Saving a document as a PDF from the read view.
 - Mathematical notation, if it is not in B2.
 - Search across a multi-document share.
 - A choice of colour theme for code, set by the publishing agent.
