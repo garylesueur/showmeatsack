@@ -93,10 +93,7 @@ describe("manage /api/v1/shares/[shareId]", () => {
   it("accepts the manage token from a bearer header", async () => {
     const shares = installTestShareService();
     await shares.create({ html: "<p>Live</p>" });
-    const response = await GET(
-      request("GET", "shareid1", { bearer: "managetoken1" }),
-      { params },
-    );
+    const response = await GET(request("GET", "shareid1", { bearer: "managetoken1" }), { params });
     expect(response.status).toBe(200);
     expect(await response.json()).toMatchObject({
       status: "live",
@@ -139,16 +136,14 @@ describe("manage /api/v1/shares/[shareId]", () => {
   it("delete with the right secret is gone; a second delete is still gone", async () => {
     const shares = installTestShareService();
     await shares.create({ html: "<p>Bye</p>" });
-    const first = await DELETE(
-      request("DELETE", "shareid1", { token: "managetoken1" }),
-      { params },
-    );
+    const first = await DELETE(request("DELETE", "shareid1", { token: "managetoken1" }), {
+      params,
+    });
     expect(first.status).toBe(200);
     expect(await first.json()).toEqual({ status: "gone" });
-    const second = await DELETE(
-      request("DELETE", "shareid1", { token: "managetoken1" }),
-      { params },
-    );
+    const second = await DELETE(request("DELETE", "shareid1", { token: "managetoken1" }), {
+      params,
+    });
     expect(second.status).toBe(200);
     expect(await second.json()).toEqual({ status: "gone" });
   });

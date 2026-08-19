@@ -1,3 +1,4 @@
+import { spawnSync } from "node:child_process";
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
@@ -18,8 +19,7 @@ describe("site agent documents", () => {
     const kind = mcpGetDocumentKind(
       new Request("https://showmeatsack.com/mcp", {
         headers: {
-          accept:
-            "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+          accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         },
       }),
     );
@@ -34,9 +34,7 @@ describe("site agent documents", () => {
         }),
       ),
     ).toBe("markdown");
-    expect(
-      mcpGetDocumentKind(new Request("https://showmeatsack.com/mcp")),
-    ).toBe("markdown");
+    expect(mcpGetDocumentKind(new Request("https://showmeatsack.com/mcp"))).toBe("markdown");
   });
 
   it("leaves MCP protocol GET alone", () => {
@@ -56,13 +54,20 @@ describe("site agent documents", () => {
     ).toBe("protocol");
   });
 
-  it("publishes the same skill as the Cursor skill file", () => {
-    const onDisk = readFileSync(
-      join(process.cwd(), ".cursor/skills/showmeatsack/SKILL.md"),
-      "utf8",
-    );
+  it("publishes the skill that skills/showmeatsack/SKILL.md defines", () => {
+    const source = readFileSync(join(process.cwd(), "skills/showmeatsack/SKILL.md"), "utf8");
+    const body = source.match(/^---\n[\s\S]*?\n---\n+([\s\S]*)$/)?.[1];
     expect(skillMarkdown()).toBe(SHOWMEATSACK_SKILL_MARKDOWN);
-    expect(onDisk).toBe(SHOWMEATSACK_SKILL_MARKDOWN);
+    expect(skillMarkdown()).toBe(body);
+  });
+
+  it("has no stale generated copies of the skill", () => {
+    const result = spawnSync("node", ["scripts/sync-skill.mjs", "--check"], {
+      cwd: process.cwd(),
+      encoding: "utf8",
+    });
+    expect(result.stderr).toBe("");
+    expect(result.status).toBe(0);
   });
 
   it("tells agents to publish without a meat-sack phrase and to send the view URL themselves", () => {
@@ -91,9 +96,7 @@ describe("site agent documents", () => {
     expect(html).toContain('href="https://showmeatsack.com/mcp.md"');
     expect(html).toContain('href="https://showmeatsack.com/skill.md"');
     expect(html).toContain('href="https://github.com/garylesueur/showmeatsack"');
-    expect(escapeHtml('<script>"x"</script>')).toBe(
-      "&lt;script&gt;&quot;x&quot;&lt;/script&gt;",
-    );
+    expect(escapeHtml('<script>"x"</script>')).toBe("&lt;script&gt;&quot;x&quot;&lt;/script&gt;");
   });
 
   it("names the product in JSON-LD for search and answer engines", () => {
@@ -119,13 +122,9 @@ describe("site agent documents", () => {
 
   it("builds Cursor install URLs for the hosted MCP server", () => {
     const mcpUrl = "https://showmeatsack.com/mcp";
-    expect(cursorInstallHref(mcpUrl)).toContain(
-      "cursor://anysphere.cursor-deeplink/mcp/install?",
-    );
+    expect(cursorInstallHref(mcpUrl)).toContain("cursor://anysphere.cursor-deeplink/mcp/install?");
     expect(cursorInstallHref(mcpUrl)).toContain("name=showmeatsack.com");
-    expect(cursorInstallPageHref(mcpUrl)).toContain(
-      "https://cursor.com/en/install-mcp?",
-    );
+    expect(cursorInstallPageHref(mcpUrl)).toContain("https://cursor.com/en/install-mcp?");
     expect(cursorInstallPageHref(mcpUrl)).toContain("name=showmeatsack.com");
   });
 });

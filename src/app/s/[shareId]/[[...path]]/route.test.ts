@@ -2,14 +2,8 @@ import { afterEach, describe, expect, it } from "vitest";
 import { createMemoryFileStore } from "@/lib/file-store";
 import { SHARE_MAX_BYTES } from "@/lib/schema";
 import { createMemoryShareStore } from "@/lib/share-store";
-import {
-  EXPIRED_SHARE_HTML,
-  NOT_FOUND_SHARE_HTML,
-} from "@/lib/share-view-response";
-import {
-  installTestShareService,
-  zipBase64,
-} from "@/lib/share-test-helpers";
+import { EXPIRED_SHARE_HTML, NOT_FOUND_SHARE_HTML } from "@/lib/share-view-response";
+import { installTestShareService, zipBase64 } from "@/lib/share-test-helpers";
 import { createShareService, isShareServiceError } from "@/lib/shares";
 import { GET } from "./route";
 
@@ -38,9 +32,7 @@ describe("GET /s/[shareId]", () => {
 
     const response = await view("shareid1");
     expect(response.status).toBe(200);
-    expect(response.headers.get("Content-Type")).toBe(
-      "text/html; charset=utf-8",
-    );
+    expect(response.headers.get("Content-Type")).toBe("text/html; charset=utf-8");
     expect(response.headers.get("X-Content-Type-Options")).toBe("nosniff");
     expect(await response.text()).toBe(html);
   });

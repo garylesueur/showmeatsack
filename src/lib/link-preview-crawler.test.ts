@@ -4,14 +4,8 @@ import { isLinkPreviewCrawler } from "./link-preview-crawler";
 describe("link-preview crawlers", () => {
   it("B17 — recognises Slack, Facebot, and Discord fetchers", () => {
     expect(isLinkPreviewCrawler("Slackbot-LinkExpanding 1.0")).toBe(true);
-    expect(
-      isLinkPreviewCrawler(
-        "facebookexternalhit/1.1 Facebot Twitterbot/1.0",
-      ),
-    ).toBe(true);
-    expect(isLinkPreviewCrawler("Mozilla/5.0 (compatible; Discordbot/2.0)")).toBe(
-      true,
-    );
+    expect(isLinkPreviewCrawler("facebookexternalhit/1.1 Facebot Twitterbot/1.0")).toBe(true);
+    expect(isLinkPreviewCrawler("Mozilla/5.0 (compatible; Discordbot/2.0)")).toBe(true);
   });
 
   it("B17 — a person in a browser is not a crawler", () => {

@@ -83,9 +83,7 @@ export function createR2S3Objects(client: S3Client, bucket: string): R2Objects {
     },
     async get(key: string): Promise<StoredFile | null> {
       try {
-        const result = await client.send(
-          new GetObjectCommand({ Bucket: bucket, Key: key }),
-        );
+        const result = await client.send(new GetObjectCommand({ Bucket: bucket, Key: key }));
         if (!result.Body) {
           return null;
         }
@@ -143,9 +141,7 @@ export function createR2S3Objects(client: S3Client, bucket: string): R2Objects {
   };
 }
 
-export function createR2FileStoreFromEnv(
-  env: EnvMap = process.env,
-): FileStore | null {
+export function createR2FileStoreFromEnv(env: EnvMap = process.env): FileStore | null {
   const config = readR2Config(env);
   if (!config) {
     return null;
@@ -170,9 +166,6 @@ function isMissingKey(error: unknown): boolean {
     "$metadata" in error && error.$metadata && typeof error.$metadata === "object"
       ? error.$metadata
       : undefined;
-  const status =
-    metadata && "httpStatusCode" in metadata
-      ? metadata.httpStatusCode
-      : undefined;
+  const status = metadata && "httpStatusCode" in metadata ? metadata.httpStatusCode : undefined;
   return name === "NoSuchKey" || status === 404;
 }

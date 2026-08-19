@@ -34,24 +34,14 @@ describe("secret environments", () => {
 
   it("maps Vercel targets to their own items and refuses Development", () => {
     expect(itemForVercelTarget("preview")).toBe("showmeatsack.com Preview");
-    expect(itemForVercelTarget("production")).toBe(
-      "showmeatsack.com Production",
-    );
+    expect(itemForVercelTarget("production")).toBe("showmeatsack.com Production");
     expect(parseVercelSecretTarget("preview")).toBe("preview");
     expect(parseVercelSecretTarget("production")).toBe("production");
-    expect(() => parseVercelSecretTarget("development")).toThrow(
-      /Development stays in 1Password/,
-    );
+    expect(() => parseVercelSecretTarget("development")).toThrow(/Development stays in 1Password/);
   });
 
   it("builds op:// references without embedding values", () => {
-    expect(
-      opSecretReference(
-        OP_VAULT_DEFAULT,
-        "showmeatsack.com Preview",
-        "R2_BUCKET_NAME",
-      ),
-    ).toBe(
+    expect(opSecretReference(OP_VAULT_DEFAULT, "showmeatsack.com Preview", "R2_BUCKET_NAME")).toBe(
       "op://mep374l3cpdtzwibf5fswsimbi/showmeatsack.com Preview/R2_BUCKET_NAME",
     );
     expect(opTemplateReference(secretEnvItems.development, "R2_ACCOUNT_ID")).toBe(
