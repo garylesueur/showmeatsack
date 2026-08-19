@@ -19,8 +19,7 @@ describe("site agent documents", () => {
     const kind = mcpGetDocumentKind(
       new Request("https://showmeatsack.com/mcp", {
         headers: {
-          accept:
-            "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+          accept: "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
         },
       }),
     );
@@ -35,9 +34,7 @@ describe("site agent documents", () => {
         }),
       ),
     ).toBe("markdown");
-    expect(
-      mcpGetDocumentKind(new Request("https://showmeatsack.com/mcp")),
-    ).toBe("markdown");
+    expect(mcpGetDocumentKind(new Request("https://showmeatsack.com/mcp"))).toBe("markdown");
   });
 
   it("leaves MCP protocol GET alone", () => {
@@ -99,9 +96,7 @@ describe("site agent documents", () => {
     expect(html).toContain('href="https://showmeatsack.com/mcp.md"');
     expect(html).toContain('href="https://showmeatsack.com/skill.md"');
     expect(html).toContain('href="https://github.com/garylesueur/showmeatsack"');
-    expect(escapeHtml('<script>"x"</script>')).toBe(
-      "&lt;script&gt;&quot;x&quot;&lt;/script&gt;",
-    );
+    expect(escapeHtml('<script>"x"</script>')).toBe("&lt;script&gt;&quot;x&quot;&lt;/script&gt;");
   });
 
   it("names the product in JSON-LD for search and answer engines", () => {
@@ -127,13 +122,9 @@ describe("site agent documents", () => {
 
   it("builds Cursor install URLs for the hosted MCP server", () => {
     const mcpUrl = "https://showmeatsack.com/mcp";
-    expect(cursorInstallHref(mcpUrl)).toContain(
-      "cursor://anysphere.cursor-deeplink/mcp/install?",
-    );
+    expect(cursorInstallHref(mcpUrl)).toContain("cursor://anysphere.cursor-deeplink/mcp/install?");
     expect(cursorInstallHref(mcpUrl)).toContain("name=showmeatsack.com");
-    expect(cursorInstallPageHref(mcpUrl)).toContain(
-      "https://cursor.com/en/install-mcp?",
-    );
+    expect(cursorInstallPageHref(mcpUrl)).toContain("https://cursor.com/en/install-mcp?");
     expect(cursorInstallPageHref(mcpUrl)).toContain("name=showmeatsack.com");
   });
 });

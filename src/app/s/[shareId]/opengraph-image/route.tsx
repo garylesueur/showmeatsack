@@ -1,10 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getDefaultShareService } from "@/lib/app-shares";
-import {
-  OPENGRAPH_SIZE,
-  inlineLocalShareAssets,
-  titleFromHtml,
-} from "@/lib/share-open-graph";
+import { OPENGRAPH_SIZE, inlineLocalShareAssets, titleFromHtml } from "@/lib/share-open-graph";
 import { screenshotHtmlPreview } from "@/lib/share-preview-image";
 import { sharePreviewCaptures } from "@/lib/share-preview-limit";
 import { responseForView } from "@/lib/share-view-response";
@@ -58,21 +54,19 @@ export async function GET(
       console.error("share preview capture failed", { shareId, error });
       const title = titleFromHtml(html);
       return new ImageResponse(
-        (
-          <div
-            style={{
-              display: "flex",
-              width: "100%",
-              height: "100%",
-              background: "#ffffff",
-              padding: 64,
-              fontSize: 48,
-              color: "#111111",
-            }}
-          >
-            {title}
-          </div>
-        ),
+        <div
+          style={{
+            display: "flex",
+            width: "100%",
+            height: "100%",
+            background: "#ffffff",
+            padding: 64,
+            fontSize: 48,
+            color: "#111111",
+          }}
+        >
+          {title}
+        </div>,
         { width: OPENGRAPH_SIZE.width, height: OPENGRAPH_SIZE.height },
       );
     }

@@ -40,12 +40,8 @@ function memoryObjects(): R2Objects & { store: Map<string, StoredFile> } {
 
 describe("R2 file store", () => {
   it("namespaces objects under showmeatsack/{shareId}/", () => {
-    expect(r2ObjectKey("shareid1", "index.html")).toBe(
-      "showmeatsack/shareid1/index.html",
-    );
-    expect(r2ObjectKey("shareid1", "css/app.css")).toBe(
-      "showmeatsack/shareid1/css/app.css",
-    );
+    expect(r2ObjectKey("shareid1", "index.html")).toBe("showmeatsack/shareid1/index.html");
+    expect(r2ObjectKey("shareid1", "css/app.css")).toBe("showmeatsack/shareid1/css/app.css");
   });
 
   it("needs the four R2 secrets before it is available", () => {
@@ -74,9 +70,7 @@ describe("R2 file store", () => {
       R2_SECRET_ACCESS_KEY: "secret",
       R2_BUCKET_NAME: "shares",
     });
-    expect(config?.endpoint).toBe(
-      "https://acct.r2.cloudflarestorage.com",
-    );
+    expect(config?.endpoint).toBe("https://acct.r2.cloudflarestorage.com");
     expect(config?.bucket).toBe("shares");
   });
 
@@ -101,9 +95,7 @@ describe("R2 file store", () => {
     expect(await files.get("shareid1", "index.html")).toBeNull();
     const two = await files.get("shareid2", "index.html");
     expect(new TextDecoder().decode(two?.bytes)).toBe("<p>Two</p>");
-    expect([...objects.store.keys()]).toEqual([
-      "showmeatsack/shareid2/index.html",
-    ]);
+    expect([...objects.store.keys()]).toEqual(["showmeatsack/shareid2/index.html"]);
   });
 
   it("returns null for a missing object", async () => {

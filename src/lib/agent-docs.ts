@@ -1,9 +1,6 @@
-import {
-  CURSOR_PLUGIN_HREF,
-  cursorInstallPageHref,
-} from "@/lib/cursor-install";
-import { publicOrigin } from "@/lib/public-origin";
-import { SHOWMEATSACK_SKILL_MARKDOWN } from "@/lib/showmeatsack-skill";
+import { CURSOR_PLUGIN_HREF, cursorInstallPageHref } from "./cursor-install";
+import { publicOrigin } from "./public-origin";
+import { SHOWMEATSACK_SKILL_MARKDOWN } from "./showmeatsack-skill";
 
 export const SITE_TITLE = "showmeatsack.com";
 export const SITE_TAGLINE = "An agent posts a page. A person opens it.";

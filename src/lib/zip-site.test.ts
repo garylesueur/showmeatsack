@@ -50,10 +50,7 @@ describe("unpackZipSite", () => {
     if (!result.ok) {
       return;
     }
-    expect(result.files.map((file) => file.path).sort()).toEqual([
-      "app.js",
-      "index.html",
-    ]);
+    expect(result.files.map((file) => file.path).sort()).toEqual(["app.js", "index.html"]);
   });
 
   it("accepts index.html inside a single wrapping folder", () => {
@@ -67,10 +64,7 @@ describe("unpackZipSite", () => {
     if (!result.ok) {
       return;
     }
-    expect(result.files.map((file) => file.path).sort()).toEqual([
-      "index.html",
-      "style.css",
-    ]);
+    expect(result.files.map((file) => file.path).sort()).toEqual(["index.html", "style.css"]);
   });
 
   it("refuses a zip with no index.html", () => {

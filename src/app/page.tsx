@@ -1,22 +1,9 @@
-import {
-  AGENT_SAMPLE,
-  CHART_BARS,
-  HERO,
-  USE_CASES,
-} from "@/app/home-content";
+import { AGENT_SAMPLE, CHART_BARS, HERO, USE_CASES } from "@/app/home-content";
 import { CurlBlock, HomeLanding } from "@/app/home-landing";
-import {
-  SectionLabel,
-  Seam,
-  Steps,
-  UseCases,
-} from "@/components/home-sections";
+import { SectionLabel, Seam, Steps, UseCases } from "@/components/home-sections";
 import { SiteShell } from "@/components/site-chrome";
 import { SITE_DESCRIPTION, SITE_TAGLINE } from "@/lib/agent-docs";
-import {
-  CURSOR_PLUGIN_HREF,
-  cursorInstallPageHref,
-} from "@/lib/cursor-install";
+import { CURSOR_PLUGIN_HREF, cursorInstallPageHref } from "@/lib/cursor-install";
 import { publicOrigin } from "@/lib/public-origin";
 
 const SIBLING = {
@@ -75,10 +62,7 @@ export default function Home() {
               <div className="mb-4 h-3 w-[58%] rounded bg-muted-foreground/50" />
               <div className="mb-2.5 h-2 w-full rounded bg-muted" />
               <div className="mb-2.5 h-2 w-[88%] rounded bg-muted" />
-              <div
-                className="my-4 flex h-[74px] items-end gap-1.5"
-                aria-hidden="true"
-              >
+              <div className="my-4 flex h-[74px] items-end gap-1.5" aria-hidden="true">
                 {CHART_BARS.map((height, index) => (
                   <span
                     key={height}

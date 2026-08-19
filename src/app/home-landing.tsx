@@ -19,11 +19,7 @@ type HomeLandingProps = {
   pluginHref: string;
 };
 
-export function HomeLanding({
-  mcpUrl,
-  cursorHref,
-  pluginHref,
-}: HomeLandingProps) {
+export function HomeLanding({ mcpUrl, cursorHref, pluginHref }: HomeLandingProps) {
   const [copied, setCopied] = useState(false);
 
   async function copyMcp() {
@@ -67,10 +63,7 @@ export function HomeLanding({
 
       <p className="mt-3 text-sm text-muted-foreground">
         Paste that into any MCP client.{" "}
-        <a
-          href={pluginHref}
-          className="underline underline-offset-4 hover:text-foreground"
-        >
+        <a href={pluginHref} className="underline underline-offset-4 hover:text-foreground">
           Cursor plugin
         </a>
         {" · "}
@@ -88,13 +81,7 @@ export function HomeLanding({
 }
 
 /** The raw API, for anyone who would rather not connect an agent at all. */
-export function CurlBlock({
-  endpoint,
-  curl,
-}: {
-  endpoint: string;
-  curl: string;
-}) {
+export function CurlBlock({ endpoint, curl }: { endpoint: string; curl: string }) {
   const [copied, setCopied] = useState(false);
 
   async function copy() {

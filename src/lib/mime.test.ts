@@ -11,9 +11,7 @@ describe("contentTypeForPath", () => {
     expect(contentTypeForPath("app.js")).toBe("text/javascript; charset=utf-8");
     expect(contentTypeForPath("app.mjs")).toBe("text/javascript; charset=utf-8");
     expect(contentTypeForPath("style.css")).toBe("text/css; charset=utf-8");
-    expect(contentTypeForPath("data.json")).toBe(
-      "application/json; charset=utf-8",
-    );
+    expect(contentTypeForPath("data.json")).toBe("application/json; charset=utf-8");
     expect(contentTypeForPath("pic.png")).toBe("image/png");
     expect(contentTypeForPath("mark.svg")).toBe("image/svg+xml");
   });
@@ -25,11 +23,7 @@ describe("contentTypeForPath", () => {
   });
 
   it("uses the last extension only", () => {
-    expect(contentTypeForPath("archive.html.js")).toBe(
-      "text/javascript; charset=utf-8",
-    );
-    expect(contentTypeForPath("photo.jpg.html")).toBe(
-      "text/html; charset=utf-8",
-    );
+    expect(contentTypeForPath("archive.html.js")).toBe("text/javascript; charset=utf-8");
+    expect(contentTypeForPath("photo.jpg.html")).toBe("text/html; charset=utf-8");
   });
 });

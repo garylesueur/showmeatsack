@@ -9,24 +9,16 @@ const sharePayloadFields = {
   zipBase64: z.string().min(1).optional(),
 };
 
-function onePayload<T extends { html?: string; zipBase64?: string }>(
-  schema: z.ZodType<T>,
-) {
-  return schema.refine(
-    (value) => Boolean(value.html) !== Boolean(value.zipBase64),
-    { message: "Send either html or a zip, not both or neither." },
-  );
+function onePayload<T extends { html?: string; zipBase64?: string }>(schema: z.ZodType<T>) {
+  return schema.refine((value) => Boolean(value.html) !== Boolean(value.zipBase64), {
+    message: "Send either html or a zip, not both or neither.",
+  });
 }
 
 export const createShareSchema = onePayload(
   z.object({
     ...sharePayloadFields,
-    expiresInSeconds: z
-      .number()
-      .int()
-      .positive()
-      .max(SHARE_MAX_TTL_SECONDS)
-      .optional(),
+    expiresInSeconds: z.number().int().positive().max(SHARE_MAX_TTL_SECONDS).optional(),
   }),
 );
 

@@ -1,9 +1,5 @@
 import { describe, expect, it } from "vitest";
-import {
-  EXPIRED_SHARE_HTML,
-  NOT_FOUND_SHARE_HTML,
-  responseForView,
-} from "./share-view-response";
+import { EXPIRED_SHARE_HTML, NOT_FOUND_SHARE_HTML, responseForView } from "./share-view-response";
 
 async function readText(response: Response): Promise<string> {
   return await response.text();
@@ -19,9 +15,7 @@ describe("responseForView", () => {
       contentType: "text/html; charset=utf-8",
     });
     expect(response.status).toBe(200);
-    expect(response.headers.get("Content-Type")).toBe(
-      "text/html; charset=utf-8",
-    );
+    expect(response.headers.get("Content-Type")).toBe("text/html; charset=utf-8");
     expect(response.headers.get("X-Content-Type-Options")).toBe("nosniff");
     expect(response.headers.get("X-Robots-Tag")).toBe("noindex, nofollow");
     expect(response.headers.get("Cache-Control")).toContain("no-cache");

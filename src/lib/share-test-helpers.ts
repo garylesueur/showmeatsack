@@ -1,10 +1,7 @@
 import { zipSync, strToU8 } from "fflate";
 import { createMemoryFileStore } from "./file-store";
 import { createMemoryShareStore } from "./share-store";
-import {
-  createShareService,
-  type ShareServiceDeps,
-} from "./shares";
+import { createShareService, type ShareServiceDeps } from "./shares";
 
 export function zipBase64(files: Record<string, string | Uint8Array>): string {
   const encoded: Record<string, Uint8Array> = {};
@@ -27,9 +24,7 @@ export function testShareService(overrides: Partial<ShareServiceDeps> = {}) {
   });
 }
 
-export function installTestShareService(
-  overrides: Partial<ShareServiceDeps> = {},
-) {
+export function installTestShareService(overrides: Partial<ShareServiceDeps> = {}) {
   const shares = testShareService(overrides);
   const globalForShares = globalThis as typeof globalThis & {
     showmeatsackShares?: ReturnType<typeof createShareService>;

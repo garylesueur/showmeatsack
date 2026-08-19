@@ -42,9 +42,7 @@ describe("POST /api/v1/shares", () => {
     };
     expect(payload.viewUrl).toBe("https://showmeatsack.com/s/shareid1/");
     expect(payload.viewUrl).not.toContain("token=");
-    expect(payload.manageUrl).toBe(
-      "https://showmeatsack.com/api/v1/shares/shareid1",
-    );
+    expect(payload.manageUrl).toBe("https://showmeatsack.com/api/v1/shares/shareid1");
     expect(payload.manageUrl).not.toContain("token=");
     expect(payload.manageToken).toBe("managetoken1");
   });

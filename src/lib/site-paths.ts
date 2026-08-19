@@ -1,4 +1,7 @@
 const MAX_SHARE_PATH_LENGTH = 1024;
+// Matching control characters is the entire point — a path carrying one is
+// refused, so the linter's objection is the behaviour we want.
+// oxlint-disable-next-line no-control-regex
 const CONTROL_OR_NUL = /[\u0000-\u001f\u007f]/;
 
 export function normalizeSharePath(raw: string): string | null {
