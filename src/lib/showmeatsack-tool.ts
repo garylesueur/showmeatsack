@@ -2,20 +2,11 @@ import { z } from "zod";
 import { limitCreateFromRequest } from "./create-rate-limit";
 import { incomingRequest } from "./incoming-request";
 import { SHARE_MAX_TTL_SECONDS } from "./schema";
-import {
-  isShareServiceError,
-  type ShareServiceError,
-  type createShareService,
-} from "./shares";
+import { isShareServiceError, type ShareServiceError, type createShareService } from "./shares";
 
 export const SHOWMEATSACK_TOOL_NAME = "showmeatsack.com";
 
-export const showmeatsackToolActions = [
-  "create",
-  "status",
-  "replace",
-  "delete",
-] as const;
+export const showmeatsackToolActions = ["create", "status", "replace", "delete"] as const;
 
 export type ShowmeatsackToolAction = (typeof showmeatsackToolActions)[number];
 
@@ -25,12 +16,7 @@ export const showmeatsackToolInputSchema = z.object({
   manageToken: z.string().min(1).optional(),
   html: z.string().min(1).optional(),
   zipBase64: z.string().min(1).optional(),
-  expiresInSeconds: z
-    .number()
-    .int()
-    .positive()
-    .max(SHARE_MAX_TTL_SECONDS)
-    .optional(),
+  expiresInSeconds: z.number().int().positive().max(SHARE_MAX_TTL_SECONDS).optional(),
 });
 
 export type ShowmeatsackToolShares = ReturnType<typeof createShareService>;
@@ -43,9 +29,7 @@ function invalidAction(message: string): ShareServiceError {
   };
 }
 
-export function isShowmeatsackToolError(
-  value: unknown,
-): value is ShareServiceError {
+export function isShowmeatsackToolError(value: unknown): value is ShareServiceError {
   return isShareServiceError(value);
 }
 
@@ -60,8 +44,7 @@ export function createShowmeatsackTool(shares: ShowmeatsackToolShares) {
           if (!limited.ok) {
             return {
               code: "rate_limited",
-              message:
-                "Too many pages published from this address. Try again later.",
+              message: "Too many pages published from this address. Try again later.",
               status: 429,
             };
           }

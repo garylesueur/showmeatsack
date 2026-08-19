@@ -56,10 +56,7 @@ function withMcpCors(response: Response): Response {
     "Access-Control-Allow-Headers",
     "Content-Type, Accept, Authorization, mcp-session-id, mcp-protocol-version, Last-Event-ID",
   );
-  headers.set(
-    "Access-Control-Expose-Headers",
-    "mcp-session-id, mcp-protocol-version",
-  );
+  headers.set("Access-Control-Expose-Headers", "mcp-session-id, mcp-protocol-version");
   return new Response(response.body, {
     status: response.status,
     statusText: response.statusText,
@@ -68,9 +65,7 @@ function withMcpCors(response: Response): Response {
 }
 
 export async function POST(request: Request): Promise<Response> {
-  return runWithIncomingRequest(request, async () =>
-    withMcpCors(await mcpHandler(request)),
-  );
+  return runWithIncomingRequest(request, async () => withMcpCors(await mcpHandler(request)));
 }
 
 export async function GET(request: Request): Promise<Response> {
@@ -81,15 +76,11 @@ export async function GET(request: Request): Promise<Response> {
   if (kind === "html") {
     return htmlDocumentResponse(mcpGuideHtml());
   }
-  return runWithIncomingRequest(request, async () =>
-    withMcpCors(await mcpHandler(request)),
-  );
+  return runWithIncomingRequest(request, async () => withMcpCors(await mcpHandler(request)));
 }
 
 export async function DELETE(request: Request): Promise<Response> {
-  return runWithIncomingRequest(request, async () =>
-    withMcpCors(await mcpHandler(request)),
-  );
+  return runWithIncomingRequest(request, async () => withMcpCors(await mcpHandler(request)));
 }
 
 export async function OPTIONS(): Promise<Response> {

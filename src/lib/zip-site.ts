@@ -7,9 +7,7 @@ export type SiteFile = {
   bytes: Uint8Array;
 };
 
-export type UnpackResult =
-  | { ok: true; files: SiteFile[] }
-  | { ok: false; message: string };
+export type UnpackResult = { ok: true; files: SiteFile[] } | { ok: false; message: string };
 
 function shouldSkipEntry(name: string): boolean {
   const normalized = name.replaceAll("\\", "/");

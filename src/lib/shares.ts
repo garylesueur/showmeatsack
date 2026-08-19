@@ -17,15 +17,13 @@ export type ShareServiceError = {
   status: number;
 };
 
-export function isShareServiceError(
-  value: unknown,
-): value is ShareServiceError {
+export function isShareServiceError(value: unknown): value is ShareServiceError {
   return Boolean(
     value &&
-      typeof value === "object" &&
-      "code" in value &&
-      "status" in value &&
-      "message" in value,
+    typeof value === "object" &&
+    "code" in value &&
+    "status" in value &&
+    "message" in value,
   );
 }
 
@@ -67,11 +65,7 @@ export type ViewGoneResult = {
 
 export type ViewResult = ViewFileResult | ViewGoneResult;
 
-function error(
-  status: number,
-  code: string,
-  message: string,
-): ShareServiceError {
+function error(status: number, code: string, message: string): ShareServiceError {
   return { status, code, message };
 }
 
@@ -123,9 +117,7 @@ function payloadToFiles(input: {
     }
     const unpacked = unpackZipSite(zipBytes);
     if (!unpacked.ok) {
-      const code = unpacked.message.includes("5 MB")
-        ? "too_large"
-        : "invalid_payload";
+      const code = unpacked.message.includes("5 MB") ? "too_large" : "invalid_payload";
       return error(400, code, unpacked.message);
     }
     return unpacked.files;
@@ -152,11 +144,7 @@ function isGone(share: ShareRecord, now: Date): boolean {
   return Boolean(share.deletedAt) || isExpired(share, now);
 }
 
-async function writeFiles(
-  files: FileStore,
-  shareId: string,
-  siteFiles: SiteFile[],
-): Promise<void> {
+async function writeFiles(files: FileStore, shareId: string, siteFiles: SiteFile[]): Promise<void> {
   await files.deleteAll(shareId);
   for (const file of siteFiles) {
     await files.put(shareId, file.path, {
@@ -191,11 +179,7 @@ export function createShareService(deps: ShareServiceDeps) {
     };
     await writeFiles(deps.files, shareId, siteFiles);
     await deps.store.save(share);
-    const urls = urlsFor(
-      deps.publicBaseUrl,
-      deps.viewPublicBaseUrl ?? deps.publicBaseUrl,
-      shareId,
-    );
+    const urls = urlsFor(deps.publicBaseUrl, deps.viewPublicBaseUrl ?? deps.publicBaseUrl, shareId);
     return {
       shareId,
       viewUrl: urls.viewUrl,

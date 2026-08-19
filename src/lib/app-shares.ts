@@ -2,10 +2,7 @@ import { blobStoreAvailable, createBlobFileStore } from "./blob-file-store";
 import { createMemoryFileStore, type FileStore } from "./file-store";
 import { publicOrigin, viewPublicOrigin } from "./public-origin";
 import { createR2FileStoreFromEnv } from "./r2-file-store";
-import {
-  createMemoryShareStore,
-  createRedisShareStore,
-} from "./share-store";
+import { createMemoryShareStore, createRedisShareStore } from "./share-store";
 import {
   createShareId,
   createShareService,
@@ -27,9 +24,7 @@ export function getDefaultShareService(): ShareService {
 
   const kv = createUpstashKvFromEnv();
   const now = () => new Date();
-  const store = kv
-    ? createRedisShareStore(kv, now)
-    : createMemoryShareStore();
+  const store = kv ? createRedisShareStore(kv, now) : createMemoryShareStore();
 
   const service = createShareService({
     store,
@@ -61,10 +56,7 @@ export function jsonError(
   message: string,
   headers?: HeadersInit,
 ): Response {
-  return Response.json(
-    { error: { code, message } },
-    { status, headers },
-  );
+  return Response.json({ error: { code, message } }, { status, headers });
 }
 
 export function jsonFromError(error: ShareServiceError): Response {

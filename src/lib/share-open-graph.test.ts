@@ -35,9 +35,7 @@ describe("share Open Graph", () => {
       pageUrl: "https://showmeatsack.com/s/shareid1/",
     });
     expect(html).toContain('property="og:image"');
-    expect(html).toContain(
-      "https://showmeatsack.com/s/shareid1/opengraph-image",
-    );
+    expect(html).toContain("https://showmeatsack.com/s/shareid1/opengraph-image");
     expect(html).toContain("<h1>Hello</h1>");
     expect(html).toContain('name="twitter:card"');
   });
@@ -66,13 +64,10 @@ describe("share Open Graph", () => {
 
   it("loads a repeated local asset once", async () => {
     const loads: string[] = [];
-    await inlineLocalShareAssets(
-      `<img src="pic.png"><img src="pic.png">`,
-      async (path) => {
-        loads.push(path);
-        return png;
-      },
-    );
+    await inlineLocalShareAssets(`<img src="pic.png"><img src="pic.png">`, async (path) => {
+      loads.push(path);
+      return png;
+    });
     expect(loads).toEqual(["pic.png"]);
   });
 
@@ -86,10 +81,8 @@ describe("share Open Graph", () => {
   });
 
   it("reads a meta description when the page has one", () => {
-    expect(
-      descriptionFromHtml(
-        `<meta name="description" content="Quarterly chart">`,
-      ),
-    ).toBe("Quarterly chart");
+    expect(descriptionFromHtml(`<meta name="description" content="Quarterly chart">`)).toBe(
+      "Quarterly chart",
+    );
   });
 });

@@ -5,9 +5,7 @@ function pathnameFor(shareId: string, path: string): string {
   return `showmeatsack/${shareId}/${path}`;
 }
 
-async function streamToBytes(
-  stream: ReadableStream<Uint8Array>,
-): Promise<Uint8Array> {
+async function streamToBytes(stream: ReadableStream<Uint8Array>): Promise<Uint8Array> {
   const reader = stream.getReader();
   const chunks: Uint8Array[] = [];
   let total = 0;

@@ -7,10 +7,7 @@ export async function GET(
   context: { params: Promise<{ shareId: string }> },
 ): Promise<Response> {
   const { shareId } = await context.params;
-  const result = await getDefaultShareService().status(
-    shareId,
-    manageTokenFrom(request),
-  );
+  const result = await getDefaultShareService().status(shareId, manageTokenFrom(request));
   if (isShareServiceError(result)) {
     return jsonFromError(result);
   }
@@ -28,11 +25,7 @@ export async function PUT(
     return jsonError(400, "invalid_json", "Body must be JSON");
   }
   const { shareId } = await context.params;
-  const result = await getDefaultShareService().replace(
-    shareId,
-    manageTokenFrom(request),
-    body,
-  );
+  const result = await getDefaultShareService().replace(shareId, manageTokenFrom(request), body);
   if (isShareServiceError(result)) {
     return jsonFromError(result);
   }
@@ -44,10 +37,7 @@ export async function DELETE(
   context: { params: Promise<{ shareId: string }> },
 ): Promise<Response> {
   const { shareId } = await context.params;
-  const result = await getDefaultShareService().remove(
-    shareId,
-    manageTokenFrom(request),
-  );
+  const result = await getDefaultShareService().remove(shareId, manageTokenFrom(request));
   if (isShareServiceError(result)) {
     return jsonFromError(result);
   }
