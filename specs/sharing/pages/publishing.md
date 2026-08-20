@@ -107,8 +107,25 @@ account exists. The view link does not change and the page does not change. A sh
 published without an account keeps the 30-day ceiling: the long life is a thing an
 account gets, not a thing anyone can ask for.
 
+### B21 — An agent can read a published page back 🟢 implemented
+
+An agent given a view link can read that page's content back through the tool, using only
+the share's id. It does not need the manage secret, because a public view link is already
+readable by anyone holding it — reading through the tool is the same act as opening the
+link, so it grants nothing extra. This is what lets one agent hand a share to another, or
+to a person's other assistant, without either of them depending on general web access.
+
+A share of several files can be read a file at a time; asking for nothing in particular
+gives the homepage. Something that is not text — a picture, a font — reports what it is and
+how big it is rather than returning its contents. An expired share reads as gone and an
+unknown one as not found, in the same words a browser is given, so reading reveals no more
+about a share than opening it would.
+
 ## Rules (Invariants)
 
+- Reading a page back is exactly as powerful as opening its view link: no secret is needed,
+  and none is granted. Whatever ever restricts who may open a share (B19) restricts reading
+  it by the same rule, without a separate decision.
 - The view link never grants replace or delete.
 - The manage secret never appears in the viewed page, in the manage URL, or in anything the browser is given to run.
 - One share is at most 5 MB, whether it is HTML or a zip, and that limit is enforced before a zip is expanded rather than after. A zip that would expand past it is refused without being unpacked. The submitted payload must also fit within what the platform will carry in one request, so the effective limit is the smaller of the two and the service states the one it actually applies.
@@ -130,7 +147,7 @@ account gets, not a thing anyone can ask for.
 - The home-page demo has no account, so it is limited by calling address instead, and it only
   ever publishes pages this service already holds.
 - The manage secret is sent as a bearer token and nowhere else. It is never accepted from a query string.
-- Shares are ephemeral. This product does not keep a long-term archive of pages.
+- Shares are ephemeral. This product does not keep a long-term archive of pages. It does keep a record of what an account did — see [what was changed, and by whom](../history/versions.md) — which holds actions, never content.
 
 ## Decision Tables
 
@@ -160,11 +177,23 @@ account gets, not a thing anyone can ask for.
 | Action | View link | Manage token (showmeatsack.com tool or HTTP bearer) | lanyard token |
 | --- | --- | --- | --- |
 | Publish a new page | No | No | Yes (B12) |
-| See this share’s page and its files | Yes, that share only | No | No |
+| See this share’s page and its files, in a browser or read back by an agent | Yes, that share only | No | No |
 | Replace this share | No | Yes, that share only | No |
 | Delete this share | No | Yes, that share only | No |
 | See that it is live and when it expires | No | Yes, that share only | No |
 | See the manage secret | No | It *is* the secret | No |
+
+### Reading a page back
+
+| What the agent asks to read | Outcome |
+| --- | --- |
+| A live share, nothing in particular named | The homepage of that share, as text |
+| A live share, naming a file it holds | That file, as text |
+| A live share, naming a picture or font it holds | What it is and how big it is; not its contents |
+| A live share, naming a file it does not hold | Not found; no other file and no other share |
+| A path that would climb out of the share | Refused |
+| An expired share | Gone, in the same words a browser is given |
+| An unknown or deleted share | Not found; another share is not revealed |
 
 ### Who may open a view link
 

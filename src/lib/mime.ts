@@ -27,3 +27,22 @@ export function contentTypeForPath(filePath: string): string {
   }
   return types[lower.slice(dot)] ?? "application/octet-stream";
 }
+
+const TEXT_SUFFIXES = ["+json", "+xml"];
+const TEXT_TYPES = new Set([
+  "application/json",
+  "application/xml",
+  "application/javascript",
+  "image/svg+xml",
+]);
+
+export function isTextContentType(contentType: string): boolean {
+  const base = contentType.split(";")[0]?.trim().toLowerCase() ?? "";
+  if (base.startsWith("text/")) {
+    return true;
+  }
+  if (TEXT_TYPES.has(base)) {
+    return true;
+  }
+  return TEXT_SUFFIXES.some((suffix) => base.endsWith(suffix));
+}
