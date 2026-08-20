@@ -136,7 +136,9 @@ feedback for another share.
 The review link is a surface this service renders, so it carries the same single mark as a
 document frame (B14 of [publishing a document](../pages/documents.md)) — one line linking
 home, out of the way of the page and out of the way of the feedback. It never sits over
-the published page, and it is the only branding anywhere on the review link. The plain
+the published page, and it is the only branding anywhere on the review link. On an account
+serving from its own domain it is their mark, and a paying account can remove ours
+entirely (see [serving shares from your own domain](../domains/custom-domains.md)). The plain
 view link still has none.
 
 ### B20 — The marked-up page can be saved 🔵 future
@@ -176,8 +178,8 @@ to get through.
 - Readers have no account, so limits on leaving feedback count against the calling address.
 - Feedback is ephemeral, like the share. This product does not keep a long-term record of
   what people said. Somebody who wants to keep a review saves it (B20).
-- The review link carries exactly one mark saying where it came from, and no other
-  branding. The published page inside it is never written over.
+- The review link carries exactly one mark — ours, or the account's own on a custom
+  domain — and no other branding. The published page inside it is never written over.
 - A private share's review link is as private as the share.
 
 ## Decision Tables

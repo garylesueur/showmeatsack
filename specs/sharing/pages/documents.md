@@ -112,7 +112,9 @@ another share and never the product homepage.
 
 Because a document is shown inside a frame this service renders, that frame carries one
 small mark — a line of text linking back to the showmeatsack.com home page — so a person
-who was sent a document can find out what this is and use it themselves. It is one line,
+who was sent a document can find out what this is and use it themselves. On an account
+serving from its own domain that mark is theirs instead, and a paying account can have it
+say nothing about us at all (see [serving shares from your own domain](../domains/custom-domains.md)). It is one line,
 it sits out of the way of the content, it never appears over the content, and it is the
 only thing in the frame besides the read/source switch. A published HTML page or static
 site has no frame, so it carries no mark.
@@ -124,6 +126,12 @@ reading: the formatting, the drawn diagrams, the coloured code, and a line sayin
 came from and when it was taken. A share expires; something a person saved does not, and
 the saved copy says which page and which day it came from so it is not mistaken for the
 live one.
+
+### B16 — A diagram can be opened bigger 🔵 future
+
+A drawn diagram can be opened larger and closed again, on any screen. A diagram an agent
+thought worth including is usually more detailed than the width of a document allows, and a
+reader on a phone gets the least of it.
 
 ## Rules (Invariants)
 
@@ -137,12 +145,14 @@ live one.
 - The read view and the source view of the same document have different addresses, and
   both are on the view origin.
 - The frame around a document is two things: the switch between reading and source, and
-  one small mark linking home. No menus, no navigation, no advertising, nothing that claims
+  one small mark — ours by default, theirs on a custom domain, and removable on a paying
+  plan. No menus, no navigation, no advertising, nothing that claims
   the content, and nothing that follows the reader.
 - A published HTML page and a static site have no frame at all. Only surfaces this service
   renders itself carry the mark.
 - Whether a document is shown as markdown or as a source listing never changes what the
   source view returns.
+- Any drawn diagram can be opened larger and closed again, in the read view and in a canvas.
 - A diagram that cannot be drawn degrades to its own source. One bad block never costs
   the reader the rest of the document.
 - showmeatsack.com never runs a published script. It shows it.
@@ -226,5 +236,7 @@ step and constrains nothing.
 - Editing a document in the browser. Changing it is a replace by the agent that holds the
   manage token.
 - A full documentation site: navigation trees, versions, search, or a theme system.
-- Keeping a history of previous versions of a document. Replace is a replace.
+- Keeping a history of previous versions *on the view link*. Versions are kept for the owner
+  — see [what was changed, and by whom](../history/versions.md) — and are never reachable by
+  a reader.
 - Importing a document from a git repository or a URL. The agent sends the content.
