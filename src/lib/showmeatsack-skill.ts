@@ -54,10 +54,23 @@ share.
    \`delete\`, passing \`shareId\` and \`manageToken\`. Replace keeps the view
    link. Status uses the same secrets.
 
+## Reading a page someone sends you
+
+If a person gives you a showmeatsack.com link, take the id out of the URL
+and call action \`read\` with that \`shareId\`. No token: a public view link
+is already readable by anyone holding it. This is the supported way to read
+a share — prefer it over fetching the URL, which depends on whatever web
+access you happen to have.
+
+Optional \`path\` reaches a file inside a zip share and defaults to the
+homepage. Text comes back as \`content\`; a binary file reports its type and
+size instead of its bytes. An expired share is \`gone\`; an unknown one is
+\`not_found\`.
+
 ## Do not
 
 - Name extra tools. There is one tool, \`showmeatsack.com\`, with actions
-  \`create\`, \`status\`, \`replace\`, and \`delete\`.
+  \`create\`, \`read\`, \`status\`, \`replace\`, and \`delete\`.
 - Put the manage secret in a conversation, an email, or on the viewed page.
 - Treat Slack, email, or any other delivery as a feature of this product.
   Giving the view URL to someone is **your** job.

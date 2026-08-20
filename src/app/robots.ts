@@ -7,7 +7,10 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/api/", "/s/", "/agent/"],
+      // Shares are kept out of search by the noindex header on every view
+      // response, not by blocking the fetch. Disallowing /s/ here would also
+      // stop an agent reading a link somebody deliberately handed it.
+      disallow: ["/api/", "/agent/"],
     },
     sitemap: `${origin}/sitemap.xml`,
     host: origin,

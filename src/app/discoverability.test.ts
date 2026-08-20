@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { VIEW_CACHE_HEADERS } from "@/lib/share-view-response";
 import robots from "./robots";
 import sitemap from "./sitemap";
 
@@ -16,14 +17,21 @@ describe("public crawler files", () => {
     expect(urls.join(" ")).not.toContain("/api/");
   });
 
-  it("allows the public site and disallows API, shares, and agent rewrites", () => {
+  it("allows the public site and disallows API and agent rewrites", () => {
     const file = robots();
     expect(file.host).toBe("https://showmeatsack.com");
     expect(file.sitemap).toBe("https://showmeatsack.com/sitemap.xml");
     expect(file.rules).toEqual({
       userAgent: "*",
       allow: "/",
-      disallow: ["/api/", "/s/", "/agent/"],
+      disallow: ["/api/", "/agent/"],
     });
+  });
+
+  it("B6 — does not block fetching a view link, which noindex already covers", () => {
+    const file = robots();
+    const disallow = (file.rules as { disallow: string[] }).disallow;
+    expect(disallow).not.toContain("/s/");
+    expect(VIEW_CACHE_HEADERS["X-Robots-Tag"]).toBe("noindex, nofollow");
   });
 });

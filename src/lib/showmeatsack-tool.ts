@@ -6,13 +6,14 @@ import { isShareServiceError, type ShareServiceError, type createShareService } 
 
 export const SHOWMEATSACK_TOOL_NAME = "showmeatsack.com";
 
-export const showmeatsackToolActions = ["create", "status", "replace", "delete"] as const;
+export const showmeatsackToolActions = ["create", "read", "status", "replace", "delete"] as const;
 
 export type ShowmeatsackToolAction = (typeof showmeatsackToolActions)[number];
 
 export const showmeatsackToolInputSchema = z.object({
   action: z.enum(showmeatsackToolActions),
   shareId: z.string().min(1).optional(),
+  path: z.string().optional(),
   manageToken: z.string().min(1).optional(),
   html: z.string().min(1).optional(),
   zipBase64: z.string().min(1).optional(),
@@ -57,6 +58,9 @@ export function createShowmeatsackTool(shares: ShowmeatsackToolShares) {
       }
       if (!input.shareId) {
         return invalidAction("shareId is required.");
+      }
+      if (input.action === "read") {
+        return await shares.read(input.shareId, input.path ?? "");
       }
       if (input.action === "status") {
         return await shares.status(input.shareId, input.manageToken);

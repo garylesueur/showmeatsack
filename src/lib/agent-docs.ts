@@ -77,7 +77,9 @@ There is no API key and no account. Create is open.
 
 ## Tool
 
-One tool, named \`showmeatsack.com\`. Actions: \`create\`, \`status\`, \`replace\`, \`delete\`.
+One tool, named \`showmeatsack.com\`. Actions: \`create\`, \`read\`, \`status\`, \`replace\`, \`delete\`.
+
+\`read\` takes a \`shareId\` and no token, because a public view link is already readable by anyone who has it. Use it when somebody hands you a showmeatsack.com link: take the id out of the URL and read the page, rather than fetching the URL over the web. Optional \`path\` reaches a file inside a zip share; it defaults to the homepage. Text comes back as \`content\`; a binary file reports its type and size without the bytes.
 
 POST JSON-RPC to \`${mcpUrl}\`. Do not invent extra tools, a Slack bot, or a host of your own.
 
@@ -102,6 +104,7 @@ Or send \`zipBase64\` instead of \`html\`. Optional \`expiresInSeconds\` (defaul
 
 Create returns \`viewUrl\`, \`manageUrl\`, \`manageToken\`, and \`expiresAt\`. Paste \`viewUrl\` where the person will see it. Keep \`manageToken\` for replace, delete, and status. Send it as \`Authorization: Bearer\`, not in the query string.
 
+- Read: \`GET /s/{shareId}\` — no token. The page itself, exactly as a person's browser gets it.
 - Status: \`GET /api/v1/shares/{shareId}\` with \`Authorization: Bearer {manageToken}\`
 - Replace: \`PUT /api/v1/shares/{shareId}\` with \`Authorization: Bearer {manageToken}\`
 - Delete: \`DELETE /api/v1/shares/{shareId}\` with \`Authorization: Bearer {manageToken}\`

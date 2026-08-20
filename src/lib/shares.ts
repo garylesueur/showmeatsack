@@ -1,6 +1,6 @@
 import { randomBytes, timingSafeEqual } from "node:crypto";
 import type { FileStore } from "./file-store";
-import { contentTypeForPath } from "./mime";
+import { contentTypeForPath, isTextContentType } from "./mime";
 import {
   SHARE_DEFAULT_TTL_SECONDS,
   SHARE_MAX_BYTES,
@@ -64,6 +64,13 @@ export type ViewGoneResult = {
 };
 
 export type ViewResult = ViewFileResult | ViewGoneResult;
+
+export type ReadShareResult = {
+  shareId: string;
+  path: string;
+  contentType: string;
+  byteLength: number;
+} & ({ encoding: "utf-8"; content: string } | { encoding: "binary"; content?: undefined });
 
 function error(status: number, code: string, message: string): ShareServiceError {
   return { status, code, message };
@@ -131,7 +138,10 @@ function urlsFor(
   shareId: string,
 ): { viewUrl: string; manageUrl: string } {
   return {
-    viewUrl: `${viewBase}/s/${shareId}/`,
+    // No trailing slash: the slashed form redirects, so handing it out makes
+    // every recipient follow a hop, and anything that will not follow one
+    // gets the redirect stub instead of the page.
+    viewUrl: `${viewBase}/s/${shareId}`,
     manageUrl: `${productBase}/api/v1/shares/${shareId}`,
   };
 }
@@ -300,7 +310,37 @@ export function createShareService(deps: ShareServiceDeps) {
     };
   }
 
-  return { create, status, replace, remove, view };
+  async function read(
+    shareId: string,
+    rawPath: string,
+  ): Promise<ReadShareResult | ShareServiceError> {
+    const viewed = await view(shareId, rawPath);
+    if (viewed.kind === "bad_path") {
+      return error(400, "invalid_path", "Path is not usable.");
+    }
+    if (viewed.kind === "expired") {
+      return error(410, "gone", "This share has expired.");
+    }
+    if (viewed.kind !== "file") {
+      return error(404, "not_found", "Share not found.");
+    }
+    const base = {
+      shareId,
+      path: viewed.path,
+      contentType: viewed.contentType,
+      byteLength: viewed.bytes.byteLength,
+    };
+    if (!isTextContentType(viewed.contentType)) {
+      return { ...base, encoding: "binary" };
+    }
+    return {
+      ...base,
+      encoding: "utf-8",
+      content: new TextDecoder().decode(viewed.bytes),
+    };
+  }
+
+  return { create, status, replace, remove, view, read };
 }
 
 export function createShareId(): string {

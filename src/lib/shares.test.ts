@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { createMemoryFileStore } from "./file-store";
 import { SHARE_MAX_BYTES } from "./schema";
+import { shareOpenGraphUrls } from "./share-open-graph";
 import { createMemoryShareStore } from "./share-store";
 import { testShareService, zipBase64 } from "./share-test-helpers";
 import { createShareService, isShareServiceError } from "./shares";
@@ -17,7 +18,7 @@ describe("publishing a page", () => {
     if (isShareServiceError(created)) {
       return;
     }
-    expect(created.viewUrl).toBe("https://showmeatsack.com/s/shareid1/");
+    expect(created.viewUrl).toBe("https://showmeatsack.com/s/shareid1");
     expect(created.manageUrl).toBe("https://showmeatsack.com/api/v1/shares/shareid1");
     expect(created.manageUrl).not.toContain("token=");
     expect(created.manageToken).toBe("managetoken1");
@@ -34,7 +35,7 @@ describe("publishing a page", () => {
     if (isShareServiceError(created)) {
       return;
     }
-    expect(created.viewUrl).toBe("https://s.showmeatsack.com/s/shareid1/");
+    expect(created.viewUrl).toBe("https://s.showmeatsack.com/s/shareid1");
     expect(created.manageUrl).toBe("https://showmeatsack.com/api/v1/shares/shareid1");
     expect(created.manageUrl).not.toContain(created.manageToken);
   });
@@ -317,5 +318,144 @@ describe("publishing a page", () => {
     expect(await shares.view("shareid1", "index.htm")).toEqual({
       kind: "not_found",
     });
+  });
+});
+
+describe("reading a share back", () => {
+  it("B21 — read returns the published HTML without a manage token", async () => {
+    const shares = service();
+    await shares.create({ html: "<h1>Readable</h1>" });
+    const read = await shares.read("shareid1", "");
+    expect(isShareServiceError(read)).toBe(false);
+    if (isShareServiceError(read)) {
+      return;
+    }
+    expect(read.shareId).toBe("shareid1");
+    expect(read.path).toBe("index.html");
+    expect(read.encoding).toBe("utf-8");
+    expect(read.content).toBe("<h1>Readable</h1>");
+    expect(read.contentType).toContain("text/html");
+    expect(read.byteLength).toBe(17);
+  });
+
+  it("B21 — read reaches a file inside a zip share by path", async () => {
+    const shares = service();
+    await shares.create({
+      zipBase64: zipBase64({
+        "index.html": "<p>Home</p>",
+        "style.css": "p{color:red}",
+      }),
+    });
+    const css = await shares.read("shareid1", "style.css");
+    expect(isShareServiceError(css)).toBe(false);
+    if (isShareServiceError(css)) {
+      return;
+    }
+    expect(css.content).toBe("p{color:red}");
+    expect(css.contentType).toContain("text/css");
+  });
+
+  it("B21 — read reports a binary file without its bytes", async () => {
+    const shares = service();
+    await shares.create({
+      zipBase64: zipBase64({
+        "index.html": "<p>Home</p>",
+        "logo.png": new Uint8Array([137, 80, 78, 71, 13, 10, 26, 10]),
+      }),
+    });
+    const png = await shares.read("shareid1", "logo.png");
+    expect(isShareServiceError(png)).toBe(false);
+    if (isShareServiceError(png)) {
+      return;
+    }
+    expect(png.encoding).toBe("binary");
+    expect(png.content).toBeUndefined();
+    expect(png.contentType).toBe("image/png");
+    expect(png.byteLength).toBe(8);
+  });
+
+  it("B21 B10 — read does not leak another share, and says gone rather than missing", async () => {
+    const shares = service();
+    await shares.create({ html: "<p>Mine</p>" });
+
+    const unknown = await shares.read("nosuchshare", "");
+    expect(isShareServiceError(unknown)).toBe(true);
+    if (!isShareServiceError(unknown)) {
+      return;
+    }
+    expect(unknown.status).toBe(404);
+    expect(unknown.code).toBe("not_found");
+
+    const escaping = await shares.read("shareid1", "../../etc/passwd");
+    expect(isShareServiceError(escaping)).toBe(true);
+    if (!isShareServiceError(escaping)) {
+      return;
+    }
+    expect(escaping.status).toBe(400);
+    expect(escaping.code).toBe("invalid_path");
+  });
+
+  it("B21 B8 — an expired share reads as gone", async () => {
+    let nowMs = Date.parse("2026-08-17T10:00:00.000Z");
+    const shares = service({ now: () => new Date(nowMs) });
+    await shares.create({ html: "<p>Brief</p>", expiresInSeconds: 60 });
+    nowMs += 61 * 1000;
+    const read = await shares.read("shareid1", "");
+    expect(isShareServiceError(read)).toBe(true);
+    if (!isShareServiceError(read)) {
+      return;
+    }
+    expect(read.status).toBe(410);
+    expect(read.code).toBe("gone");
+  });
+
+  it("B21 B7 — a deleted share is not readable", async () => {
+    const shares = service();
+    await shares.create({ html: "<p>Temporary</p>" });
+    await shares.remove("shareid1", "managetoken1");
+    const read = await shares.read("shareid1", "");
+    expect(isShareServiceError(read)).toBe(true);
+    if (!isShareServiceError(read)) {
+      return;
+    }
+    expect(read.code).toBe("not_found");
+  });
+
+  it("B21 B6 — read returns the replacement after a replace", async () => {
+    const shares = service();
+    await shares.create({ html: "<p>Before</p>" });
+    await shares.replace("shareid1", "managetoken1", { html: "<p>After</p>" });
+    const read = await shares.read("shareid1", "");
+    expect(isShareServiceError(read)).toBe(false);
+    if (isShareServiceError(read)) {
+      return;
+    }
+    expect(read.content).toBe("<p>After</p>");
+  });
+});
+
+describe("the view link is one canonical address", () => {
+  it("B2 B14 — the link handed out is the one that serves the page, not one that redirects", async () => {
+    const shares = service();
+    const created = await shares.create({ html: "<p>Canonical</p>" });
+    expect(isShareServiceError(created)).toBe(false);
+    if (isShareServiceError(created)) {
+      return;
+    }
+    // A trailing slash on /s/{id} redirects, so publishing that form would
+    // hand every recipient a hop, and hand anything that will not follow one
+    // a redirect stub instead of the page.
+    expect(created.viewUrl.endsWith("/")).toBe(false);
+  });
+
+  it("B2 B17 — the published link and the link preview's og:url agree", async () => {
+    const shares = service();
+    const created = await shares.create({ html: "<p>Canonical</p>" });
+    expect(isShareServiceError(created)).toBe(false);
+    if (isShareServiceError(created)) {
+      return;
+    }
+    const og = shareOpenGraphUrls("https://showmeatsack.com", created.shareId);
+    expect(og.pageUrl).toBe(created.viewUrl);
   });
 });

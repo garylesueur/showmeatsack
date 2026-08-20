@@ -22,7 +22,7 @@ const mcpHandler = createMcpHandler(
       SHOWMEATSACK_TOOL_NAME,
       {
         description:
-          'Use this whenever a person should look at something you built — a report, deck, comparison, plan, or diagram — instead of a wall of chat text, a local file, or a screenshot. Also the right tool when they say "show me", "let me see it", "make me a page", "give me a link", or any dictated form of meatsack ("meat sack", "mute sack", "meats act", "meat sac"). Publish HTML or a small static-site zip to showmeatsack.com. Create returns a view URL that is the page. Put that URL where a person will open it (this chat, email, Slack, or anywhere else you can already send). Also returns a manage token to replace or delete. Same as the HTTP API.',
+          'Use this whenever a person should look at something you built — a report, deck, comparison, plan, or diagram — instead of a wall of chat text, a local file, or a screenshot. Also the right tool when they say "show me", "let me see it", "make me a page", "give me a link", or any dictated form of meatsack ("meat sack", "mute sack", "meats act", "meat sac"). Publish HTML or a small static-site zip to showmeatsack.com. Create returns a view URL that is the page. Put that URL where a person will open it (this chat, email, Slack, or anywhere else you can already send). Also returns a manage token to replace or delete. Read needs no token — given a shareId from any view link it returns that page’s content, so a share link someone hands you can be read without fetching the URL. Same as the HTTP API.',
         inputSchema: showmeatsackToolInputSchema,
       },
       async (args) => {
