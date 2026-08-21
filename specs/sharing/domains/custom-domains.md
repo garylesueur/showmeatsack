@@ -162,13 +162,19 @@ round the rules on who may open a share.
 
 ## Open Questions
 
-- **Blocks B6, B10:** Where does a plan live? lanyard records two fixed decisions that this
-  idea contradicts — *one free plan, and no plan concept*, and *verification returns an
-  account reference and nothing else*. Either each product carries its own plans keyed by
-  that account reference and lanyard stays as small as it is, or lanyard grows a concept it
-  deliberately refused. The first preserves a contract three services build against, at the
-  cost of an account paying twice for two products. This is not a showmeatsack decision to
-  take alone.
+- **Settled 21 Aug 2026 — each product carries its own plans, keyed by the account
+  reference lanyard hands out.** lanyard stays exactly as small as it is: one free plan, no
+  plan concept, and verification returning an account reference and nothing else. The
+  contract three services build against is the more valuable thing, and a plan table in each
+  product is a cheaper price than a concept the identity server has no use for — the moment
+  verification hands out a plan, somebody expects it to hand out more.
+
+  **The cost named in the original question is real and is being accepted: an account that
+  wants both products pays twice.** There is no cross-product bundle, because there is
+  nowhere in the estate that could hold one without reopening the decision above. If that
+  ever becomes the thing standing between here and a sale, it is this decision being
+  revisited, not a small feature. Taken together with askmeatsack, whose
+  [custom domains](https://github.com/garylesueur/askmeatsack) spec carries the same answer.
 - **Blocks B3:** How hard is the check on a domain that carries something else? We can see
   whether a host answers and what it looks like, and we cannot see cookies scoped to a
   parent domain. A refusal we cannot always enforce is a warning wearing a refusal's
