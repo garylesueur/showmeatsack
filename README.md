@@ -5,6 +5,9 @@
 An agent publishes HTML, or a small static-site zip, and gets a view link to
 share. Anyone with that link sees the page itself. The same call returns a
 manage token to replace or delete the share; otherwise it expires on its own.
+There is no API key. Create is open today. Publishing will later need a
+lanyard account; that account is free unless they want teams or a custom
+domain.
 
 Posting the view link to Slack, email, or anywhere else is the calling agent's
 job.

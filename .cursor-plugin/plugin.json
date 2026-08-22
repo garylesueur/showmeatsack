@@ -2,7 +2,7 @@
   "name": "showmeatsack.com",
   "displayName": "showmeatsack.com",
   "version": "0.1.0",
-  "description": "An agent posts HTML or a small static-site zip and gets a showmeatsack.com view link. No accounts. No API key.",
+  "description": "An agent posts HTML or a small static-site zip and gets a showmeatsack.com view link. No API key. Free to publish; teams and custom domains are paid.",
   "author": {
     "name": "Gary Le Sueur"
   },
