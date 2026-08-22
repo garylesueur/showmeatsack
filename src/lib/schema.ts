@@ -6,12 +6,23 @@ export const SHARE_MAX_TTL_SECONDS = SHARE_DEFAULT_TTL_SECONDS;
 
 const sharePayloadFields = {
   html: z.string().min(1).optional(),
+  markdown: z.string().min(1).optional(),
   zipBase64: z.string().min(1).optional(),
 };
 
-function onePayload<T extends { html?: string; zipBase64?: string }>(schema: z.ZodType<T>) {
-  return schema.refine((value) => Boolean(value.html) !== Boolean(value.zipBase64), {
-    message: "Send either html or a zip, not both or neither.",
+function payloadCount(value: { html?: string; markdown?: string; zipBase64?: string }): number {
+  return (
+    Number(value.html !== undefined) +
+    Number(value.markdown !== undefined) +
+    Number(value.zipBase64 !== undefined)
+  );
+}
+
+function onePayload<T extends { html?: string; markdown?: string; zipBase64?: string }>(
+  schema: z.ZodType<T>,
+) {
+  return schema.refine((value) => payloadCount(value) === 1, {
+    message: "Send html, markdown, or a zip — one of them.",
   });
 }
 

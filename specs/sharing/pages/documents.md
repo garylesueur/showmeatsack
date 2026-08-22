@@ -1,7 +1,7 @@
 ---
 id: sharing-pages-documents
 area: Sharing / Pages
-status: future
+status: partial
 ---
 
 # Publishing a document
@@ -17,7 +17,7 @@ restated here. Only what is different about a document is written down below.
 
 ## Behaviours
 
-### B1 — An agent publishes raw text 🔵 future
+### B1 — An agent publishes raw text 🟢 implemented
 
 An agent publishes markdown, or a source file, the same way it publishes a page: the
 same call, the same view link, the same manage token, the same expiry. Opening the
@@ -25,14 +25,14 @@ view link shows the text laid out for reading rather than as a wall of unformatt
 characters. The agent does not have to write, or ask a model to write, any HTML to
 get a readable page.
 
-### B2 — Markdown is shown the way people expect it 🔵 future
+### B2 — Markdown is shown the way people expect it 🟢 implemented
 
 Headings, lists, tables, quotes, task lists, footnotes, strikethrough, plain URLs and
 images all come out looking the way the same markdown looks on GitHub. A task list
 shows which boxes are ticked and cannot be ticked by the reader — there is nowhere to
 save an answer. Every heading can be linked to directly.
 
-### B3 — Diagrams in the document are drawn 🔵 future
+### B3 — Diagrams in the document are drawn 🟢 implemented
 
 A diagram written in the document is shown as a diagram, not as the code that
 describes it, so an agent can explain a flow or an architecture without producing an
@@ -60,7 +60,7 @@ and can be copied or saved as a file. Each view has its own link, so a reader ca
 send the source to somebody rather than the formatted version. Switching views never
 changes the document.
 
-### B7 — A document cannot act 🔵 future
+### B7 — A document cannot act 🟢 implemented
 
 A published HTML page runs as the agent wrote it (B2 and B4 of publishing). A document
 does not: anything inside it that looks like a page instruction — markup, a script, a
@@ -81,14 +81,16 @@ A document long enough to need it offers its headings as a contents list, and a 
 who arrives on a link to a heading lands at that heading. Coming back to the same link
 lands in the same place.
 
-### B10 — It looks published, not dumped 🔵 future
+### B10 — It looks published, not dumped 🟡 partial
+> Comfortable reading width and light/dark are in. The read/source switch and the origin mark are not.
 
 The document is set to a comfortable reading width, is legible on a phone, and follows
 the light or dark setting the reader's device already has. The frame around it stays out of
 the way: the switch between reading and source, and one small mark saying where the page
 came from (B14). Nothing claims the content as ours.
 
-### B11 — The agent says what it published, or we work it out 🔵 future
+### B11 — The agent says what it published, or we work it out 🟡 partial
+> `markdown` on create is explicit. Markdown sent as `html` is recognised. A source filename is not yet.
 
 The agent can say what it is sending — markdown, or a source file with a filename — and
 that is what is shown. When it says nothing, the service decides from the content, and
@@ -101,7 +103,7 @@ Text in a language the service does not recognise is still shown, as a plain num
 listing, rather than refused. A payload that is not text and not a zip is refused as it
 is today (B9 of publishing), and nothing is published.
 
-### B13 — A link preview shows the document 🔵 future
+### B13 — A link preview shows the document 🟢 implemented
 
 Pasting the view link into Slack or similar previews the formatted document, exactly as
 B17 of publishing describes for a page. When a picture cannot be taken, the preview names

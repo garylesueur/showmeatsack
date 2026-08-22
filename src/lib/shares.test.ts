@@ -192,6 +192,9 @@ describe("publishing a page", () => {
         await shares.create({ html: "<p>A</p>", zipBase64: zipBase64({ "index.html": "x" }) }),
       ),
     ).toBe(true);
+    expect(isShareServiceError(await shares.create({ html: "<p>A</p>", markdown: "# A" }))).toBe(
+      true,
+    );
     expect(
       isShareServiceError(await shares.create({ zipBase64: zipBase64({ "readme.txt": "hi" }) })),
     ).toBe(true);
@@ -321,21 +324,42 @@ describe("publishing a page", () => {
   });
 });
 
-describe("reading a share back", () => {
-  it("B21 — read returns the published HTML without a manage token", async () => {
+describe("publishing a document", () => {
+  it("B1 B11 — markdown is stored as source and opened from the view link", async () => {
     const shares = service();
-    await shares.create({ html: "<h1>Readable</h1>" });
-    const read = await shares.read("shareid1", "");
-    expect(isShareServiceError(read)).toBe(false);
-    if (isShareServiceError(read)) {
+    await shares.create({ markdown: "# Isolation\n\nA safety net." });
+    const viewed = await shares.view("shareid1", "");
+    expect(viewed.kind).toBe("file");
+    if (viewed.kind !== "file") {
       return;
     }
-    expect(read.shareId).toBe("shareid1");
-    expect(read.path).toBe("index.html");
-    expect(read.encoding).toBe("utf-8");
-    expect(read.content).toBe("<h1>Readable</h1>");
-    expect(read.contentType).toContain("text/html");
-    expect(read.byteLength).toBe(17);
+    expect(viewed.path).toBe("index.md");
+    expect(viewed.contentType).toContain("text/markdown");
+    expect(new TextDecoder().decode(viewed.bytes)).toBe("# Isolation\n\nA safety net.");
+  });
+
+  it("B11 — markdown sent as html is still a document", async () => {
+    const shares = service();
+    await shares.create({ html: "# Isolation\n\nA safety net." });
+    const viewed = await shares.view("shareid1", "");
+    expect(viewed.kind).toBe("file");
+    if (viewed.kind !== "file") {
+      return;
+    }
+    expect(viewed.path).toBe("index.md");
+  });
+});
+
+describe("reading a share back", () => {
+  it("B21 — read of a markdown share returns the source", async () => {
+    const shares = service();
+    await shares.create({ markdown: "# Isolation\n" });
+    const read = await shares.read("shareid1", "");
+    expect(read).toMatchObject({
+      path: "index.md",
+      encoding: "utf-8",
+      content: "# Isolation\n",
+    });
   });
 
   it("B21 — read reaches a file inside a zip share by path", async () => {

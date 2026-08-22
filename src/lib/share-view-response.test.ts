@@ -1,3 +1,11 @@
+/*
+Regression — legacy markdown shells remain readable after their browser parser changes.
+
+Bug (2026-08-22): a share containing markdown in a text/plain script rendered as a blank page.
+Root cause: the uploaded shell used the old positional marked renderer API with a newer CDN build.
+These tests lock the fix: recognised shells are rendered server-side while ordinary HTML is unchanged.
+Spec context: sharing/pages/documents B2 and B3.
+*/
 import { describe, expect, it } from "vitest";
 import { EXPIRED_SHARE_HTML, NOT_FOUND_SHARE_HTML, responseForView } from "./share-view-response";
 
@@ -6,6 +14,77 @@ async function readText(response: Response): Promise<string> {
 }
 
 describe("responseForView", () => {
+  it("B2 B3 — markdown is shown as a GFM document with diagrams drawn", async () => {
+    const response = responseForView({
+      kind: "file",
+      path: "index.md",
+      bytes: new TextEncoder().encode(`# Isolation
+
+| GUC | Meaning |
+| --- | --- |
+| org | Bound |
+
+\`\`\`mermaid
+graph TD
+  A-->B
+\`\`\`
+`),
+      contentType: "text/markdown; charset=utf-8",
+    });
+    expect(response.status).toBe(200);
+    expect(response.headers.get("Content-Type")).toBe("text/html; charset=utf-8");
+    const body = await readText(response);
+    expect(body).toContain("<title>Isolation</title>");
+    expect(body).toContain("<table>");
+    expect(body).toContain('<pre class="mermaid">');
+    expect(body).toContain("mermaid.esm.min.mjs");
+    expect(body).not.toContain("<script>alert");
+  });
+
+  it("repairs a recognised legacy marked shell from its embedded markdown", async () => {
+    const legacy = `<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <title>Organisation isolation — Postgres RLS</title>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script type="module">
+    const src = document.getElementById("src").textContent;
+    const renderer = new marked.Renderer();
+    renderer.code = function (code, infostring, escaped) {
+      if ((infostring || "").trim() === "mermaid") return '<pre class="mermaid">' + code + "</pre>";
+    };
+    document.getElementById("out").innerHTML = marked.parse(src, { renderer, gfm: true });
+  </script>
+</head>
+<body>
+  <div id="out"></div>
+  <script type="text/plain" id="src"># Organisation isolation
+
+| GUC | Meaning |
+| --- | --- |
+| org | Bound |
+
+\`\`\`mermaid
+graph TD
+  A-->B
+\`\`\`
+</script>
+</body>
+</html>`;
+    const response = responseForView({
+      kind: "file",
+      path: "index.html",
+      bytes: new TextEncoder().encode(legacy),
+      contentType: "text/html; charset=utf-8",
+    });
+
+    const body = await readText(response);
+    expect(body).toContain("<title>Organisation isolation</title>");
+    expect(body).toContain("<table>");
+    expect(body).toContain('<pre class="mermaid">');
+    expect(body).not.toContain("new marked.Renderer");
+  });
+
   it("serves a live file as itself, with nosniff and no cache", async () => {
     const html = `<script>alert(1)</script><p>Hello</p>`;
     const response = responseForView({

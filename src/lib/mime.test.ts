@@ -19,7 +19,8 @@ describe("contentTypeForPath", () => {
   it("does not guess a script type for an unknown or extensionless name", () => {
     expect(contentTypeForPath("README")).toBe("application/octet-stream");
     expect(contentTypeForPath("payload.exe")).toBe("application/octet-stream");
-    expect(contentTypeForPath("notes.md")).toBe("application/octet-stream");
+    expect(contentTypeForPath("notes.md")).toBe("text/markdown; charset=utf-8");
+    expect(contentTypeForPath("notes.markdown")).toBe("text/markdown; charset=utf-8");
   });
 
   it("uses the last extension only", () => {

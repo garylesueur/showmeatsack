@@ -16,6 +16,7 @@ export const showmeatsackToolInputSchema = z.object({
   path: z.string().optional(),
   manageToken: z.string().min(1).optional(),
   html: z.string().min(1).optional(),
+  markdown: z.string().min(1).optional(),
   zipBase64: z.string().min(1).optional(),
   expiresInSeconds: z.number().int().positive().max(SHARE_MAX_TTL_SECONDS).optional(),
 });
@@ -52,6 +53,7 @@ export function createShowmeatsackTool(shares: ShowmeatsackToolShares) {
         }
         return await shares.create({
           html: input.html,
+          markdown: input.markdown,
           zipBase64: input.zipBase64,
           expiresInSeconds: input.expiresInSeconds,
         });
@@ -68,6 +70,7 @@ export function createShowmeatsackTool(shares: ShowmeatsackToolShares) {
       if (input.action === "replace") {
         return await shares.replace(input.shareId, input.manageToken, {
           html: input.html,
+          markdown: input.markdown,
           zipBase64: input.zipBase64,
         });
       }

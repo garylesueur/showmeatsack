@@ -79,15 +79,23 @@ export function createCapFilter(limit: number = SHARE_MAX_BYTES) {
   };
 }
 
-export function htmlAsSite(html: string): UnpackResult {
-  const bytes = new TextEncoder().encode(html);
+function textAsSite(path: string, text: string, emptyMessage: string): UnpackResult {
+  const bytes = new TextEncoder().encode(text);
   if (bytes.byteLength === 0) {
-    return { ok: false, message: "HTML is empty." };
+    return { ok: false, message: emptyMessage };
   }
   if (bytes.byteLength > SHARE_MAX_BYTES) {
     return { ok: false, message: "Share is larger than 5 MB." };
   }
-  return { ok: true, files: [{ path: "index.html", bytes }] };
+  return { ok: true, files: [{ path, bytes }] };
+}
+
+export function htmlAsSite(html: string): UnpackResult {
+  return textAsSite("index.html", html, "HTML is empty.");
+}
+
+export function markdownAsSite(markdown: string): UnpackResult {
+  return textAsSite("index.md", markdown, "Markdown is empty.");
 }
 
 export function unpackZipSite(zipBytes: Uint8Array): UnpackResult {
