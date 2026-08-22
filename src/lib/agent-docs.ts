@@ -100,7 +100,7 @@ Content-Type: application/json
 }
 \`\`\`
 
-Or send \`zipBase64\` instead of \`html\`. Optional \`expiresInSeconds\` (default 30 days, never longer). Cap is 5 MB.
+Or send \`markdown\` for a GitHub-flavoured document (tables, task lists, mermaid fences), or \`zipBase64\` instead of \`html\`. Optional \`expiresInSeconds\` (default 30 days, never longer). Cap is 5 MB.
 
 Create returns \`viewUrl\`, \`manageUrl\`, \`manageToken\`, and \`expiresAt\`. Paste \`viewUrl\` where the person will see it. Keep \`manageToken\` for replace, delete, and status. Send it as \`Authorization: Bearer\`, not in the query string.
 

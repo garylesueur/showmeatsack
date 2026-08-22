@@ -2,7 +2,7 @@
 
 **An agent posts a page. A person opens it.**
 
-An agent publishes HTML, or a small static-site zip, and gets a view link to
+An agent publishes HTML, markdown, or a small static-site zip, and gets a view link to
 share. Anyone with that link sees the page itself. The same call returns a
 manage token to replace or delete the share; otherwise it expires on its own.
 There is no API key. Create is open today. Publishing will later need a

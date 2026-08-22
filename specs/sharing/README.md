@@ -5,7 +5,7 @@
 | Spec | Covers | Status |
 | --- | --- | --- |
 | [Publishing a page](./pages/publishing.md) | Create, view URL, manage URL, HTML, zip site, replace, delete, expiry, private shares, extending a share's life, open create, path stay-inside, view origin, rate limit, bearer token, link preview | implemented |
-| [Publishing a document](./pages/documents.md) | Markdown and source published as raw text, GitHub-style formatting, diagrams, highlighted code, read/source views, a zip of markdown, a document cannot act | future |
+| [Publishing a document](./pages/documents.md) | Markdown and source published as raw text, GitHub-style formatting, diagrams, highlighted code, read/source views, a zip of markdown, a document cannot act | partial |
 | [Publishing a canvas](./pages/canvases.md) | An agent's canvas component file given a link, the closed toolkit as the safety boundary, never run on our machines, interactivity per reader, actions as feedback | future |
 | [Noticing that a page has changed](./pages/freshness.md) | A reader told when a share is replaced, never moved mid-read, opt-in automatic updates, expired and deleted noticed, nothing ever injected into published HTML, checking never identifies a reader | future |
 | [Annotating a published page](./annotations/notes.md) | Review link, notes on a spot, comments on highlighted words, drawings, replies and agreement, unverified reader names, the agent reading and answering feedback, closing it, surviving replace | future |

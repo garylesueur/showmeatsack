@@ -25,6 +25,18 @@ describe("GET /s/[shareId]", () => {
     clearInstalledService();
   });
 
+  it("returns a formatted markdown document", async () => {
+    const shares = installTestShareService();
+    await shares.create({ markdown: "# Isolation\n\nA safety net." });
+    const response = await view("shareid1");
+    expect(response.status).toBe(200);
+    expect(response.headers.get("Content-Type")).toBe("text/html; charset=utf-8");
+    const body = await response.text();
+    expect(body).toContain("<title>Isolation</title>");
+    expect(body).toContain("<h1");
+    expect(body).toContain("A safety net.");
+  });
+
   it("returns the uploaded HTML as the page", async () => {
     const html = `<script>alert(1)</script><h1>Hello</h1>`;
     const shares = installTestShareService();

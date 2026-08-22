@@ -1,5 +1,6 @@
 import { randomBytes, timingSafeEqual } from "node:crypto";
 import type { FileStore } from "./file-store";
+import { looksLikeHtml } from "./looks-like-html";
 import { contentTypeForPath, isTextContentType } from "./mime";
 import {
   SHARE_DEFAULT_TTL_SECONDS,
@@ -9,7 +10,7 @@ import {
 } from "./schema";
 import type { ShareRecord, ShareStore } from "./share-store";
 import { normalizeSharePath } from "./site-paths";
-import { htmlAsSite, unpackZipSite, type SiteFile } from "./zip-site";
+import { htmlAsSite, markdownAsSite, unpackZipSite, type SiteFile } from "./zip-site";
 
 export type ShareServiceError = {
   code: string;
@@ -97,22 +98,41 @@ function decodeZip(zipBase64: string): Uint8Array | ShareServiceError {
   }
 }
 
+function unpackOrError(
+  unpacked: { ok: true; files: SiteFile[] } | { ok: false; message: string },
+): SiteFile[] | ShareServiceError {
+  if (!unpacked.ok) {
+    return error(400, "invalid_payload", unpacked.message);
+  }
+  return unpacked.files;
+}
+
 function payloadToFiles(input: {
   html?: string;
+  markdown?: string;
   zipBase64?: string;
 }): SiteFile[] | ShareServiceError {
-  if (input.html !== undefined && input.zipBase64 !== undefined) {
-    return error(400, "invalid_payload", "Send either html or a zip, not both.");
+  const kinds =
+    Number(input.html !== undefined) +
+    Number(input.markdown !== undefined) +
+    Number(input.zipBase64 !== undefined);
+  if (kinds !== 1) {
+    return error(400, "invalid_payload", "Send html, markdown, or a zip — one of them.");
+  }
+  if (input.markdown !== undefined) {
+    if (Buffer.byteLength(input.markdown, "utf8") > SHARE_MAX_BYTES) {
+      return error(400, "too_large", "Share is larger than 5 MB.");
+    }
+    return unpackOrError(markdownAsSite(input.markdown));
   }
   if (input.html !== undefined) {
     if (Buffer.byteLength(input.html, "utf8") > SHARE_MAX_BYTES) {
       return error(400, "too_large", "Share is larger than 5 MB.");
     }
-    const unpacked = htmlAsSite(input.html);
-    if (!unpacked.ok) {
-      return error(400, "invalid_payload", unpacked.message);
+    if (!looksLikeHtml(input.html)) {
+      return unpackOrError(markdownAsSite(input.html));
     }
-    return unpacked.files;
+    return unpackOrError(htmlAsSite(input.html));
   }
   if (input.zipBase64 !== undefined) {
     const zipBytes = decodeZip(input.zipBase64);
@@ -129,7 +149,7 @@ function payloadToFiles(input: {
     }
     return unpacked.files;
   }
-  return error(400, "invalid_payload", "Send html or a zip.");
+  return error(400, "invalid_payload", "Send html, markdown, or a zip — one of them.");
 }
 
 function urlsFor(
@@ -298,13 +318,18 @@ export function createShareService(deps: ShareServiceDeps) {
     if (isExpired(share, deps.now())) {
       return { kind: "expired" };
     }
-    const file = await deps.files.get(shareId, path);
+    let file = await deps.files.get(shareId, path);
+    let resolvedPath = path;
+    if (!file && path === "index.html") {
+      file = await deps.files.get(shareId, "index.md");
+      resolvedPath = "index.md";
+    }
     if (!file) {
       return { kind: "not_found" };
     }
     return {
       kind: "file",
-      path,
+      path: resolvedPath,
       bytes: file.bytes,
       contentType: file.contentType,
     };

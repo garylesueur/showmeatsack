@@ -1,3 +1,6 @@
+import { isMarkdownContentType } from "@/lib/mime";
+import { renderMarkdownDocument } from "@/lib/markdown-document";
+import { markdownFromLegacyShell } from "@/lib/legacy-markdown-shell";
 import { getDefaultShareService } from "@/lib/app-shares";
 import { shareFallbackCard } from "@/lib/share-fallback-card";
 import { descriptionFromHtml, inlineLocalShareAssets, titleFromHtml } from "@/lib/share-open-graph";
@@ -29,7 +32,11 @@ export async function GET(
     return responseForView(index);
   }
 
-  const html = new TextDecoder().decode(index.bytes);
+  const source = new TextDecoder().decode(index.bytes);
+  const markdown = isMarkdownContentType(index.contentType)
+    ? source
+    : markdownFromLegacyShell(source);
+  const html = markdown ? renderMarkdownDocument(markdown) : source;
   const card = () =>
     shareFallbackCard({
       title: titleFromHtml(html),

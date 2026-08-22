@@ -16,6 +16,8 @@ const types: Record<string, string> = {
   ".woff2": "font/woff2",
   ".ttf": "font/ttf",
   ".txt": "text/plain; charset=utf-8",
+  ".md": "text/markdown; charset=utf-8",
+  ".markdown": "text/markdown; charset=utf-8",
   ".map": "application/json",
 };
 
@@ -35,6 +37,11 @@ const TEXT_TYPES = new Set([
   "application/javascript",
   "image/svg+xml",
 ]);
+
+export function isMarkdownContentType(contentType: string): boolean {
+  const base = contentType.split(";")[0]?.trim().toLowerCase() ?? "";
+  return base === "text/markdown" || base === "text/x-markdown";
+}
 
 export function isTextContentType(contentType: string): boolean {
   const base = contentType.split(";")[0]?.trim().toLowerCase() ?? "";

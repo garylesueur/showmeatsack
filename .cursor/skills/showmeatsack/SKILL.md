@@ -1,11 +1,11 @@
 ---
 name: showmeatsack
 description: >
-  Publish HTML or a small static-site zip to showmeatsack.com and put the
+  Publish HTML, markdown, or a small static-site zip to showmeatsack.com and put the
   view link where a person will open it: this chat, email, Slack, or
   anywhere else you can already send. Use when they asked for a
-  presentation, page, or shareable link, and also when you yourself
-  decided someone should see HTML you built, including a bot running unattended.
+  presentation, page, write-up, or shareable link, and also when you yourself
+  decided someone should see HTML or markdown you built, including a bot running unattended.
   Triggers include "make me a presentation", "email this",
   "send this to", "showmeatsack", "share this page", "preview this HTML",
   "give me a link", and plain intent to look at something: "show me",
@@ -35,7 +35,7 @@ that secret in a conversation, in an email, or on the viewed page.
 
 ## When to use
 
-Use this as soon as you have HTML (or a small static site) that a person
+Use this as soon as you have HTML, markdown, or a small static site that a person
 should open in a browser. You do not need the words "showmeatsack" or
 "give me a link". Two usual jobs:
 
@@ -57,8 +57,11 @@ share.
 ## How
 
 1. Call `showmeatsack.com` with action `create` (or `POST /api/v1/shares`).
-   Send either `html` or `zipBase64`, not both. A zip must include
-   `index.html` at the zip root or inside a single wrapping folder.
+   Send exactly one of `html`, `markdown`, or `zipBase64`. Prefer `markdown`
+   for a document: GitHub-flavoured markdown (tables, task lists,
+   strikethrough, autolinks) and mermaid fences are drawn as diagrams.
+   Do not wrap markdown in an HTML page or load `marked` yourself. A zip must
+   include `index.html` at the zip root or inside a single wrapping folder.
    Optional `expiresInSeconds` (default 30 days, never longer). Cap is 5 MB.
 2. You always get `viewUrl`, `manageUrl`, `manageToken`, and `expiresAt`
    immediately. Put **`viewUrl` where the recipient will open it**. If a
@@ -66,8 +69,9 @@ share.
    to ask. If the audience is elsewhere, send that same `viewUrl` by email,
    Slack, or whatever you already use. This product does not send mail or
    chat for you.
-3. The view link *is* the page. There is no showmeatsack.com chrome around
-   it. Scripts and styles are not stripped.
+3. The view link *is* the page. HTML and zip sites have no showmeatsack.com
+   chrome, and scripts and styles are not stripped. Markdown is shown as a
+   formatted document; nothing in that document runs.
 4. To replace or delete, call the same tool with action `replace` or
    `delete`, passing `shareId` and `manageToken`. Replace keeps the view
    link. Status uses the same secrets.
