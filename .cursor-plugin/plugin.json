@@ -1,11 +1,10 @@
 {
-  "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "showmeatsack.com",
+  "displayName": "showmeatsack.com",
   "version": "0.1.0",
   "description": "An agent posts HTML or a small static-site zip and gets a showmeatsack.com view link. No accounts. No API key.",
   "author": {
-    "name": "Gary Le Sueur",
-    "url": "https://gaz.dev"
+    "name": "Gary Le Sueur"
   },
   "homepage": "https://showmeatsack.com",
   "repository": "https://github.com/garylesueur/showmeatsack",
@@ -16,5 +15,7 @@
     "share",
     "mcp",
     "static-site"
-  ]
+  ],
+  "skills": "./skills/",
+  "mcpServers": "./mcp.json"
 }
