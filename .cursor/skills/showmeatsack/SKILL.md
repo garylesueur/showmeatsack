@@ -27,10 +27,11 @@ The product is **showmeatsack.com**. The tool is named `showmeatsack.com`.
 HTTP and the tool are the same share. View links look like
 `https://s.showmeatsack.com/s/…`.
 
-There is no API key and no account. Create is open. After create, keep
-`manageToken` for replace, delete, and status. Send it as
-`Authorization: Bearer`. Do not put it in the URL. Never put that secret
-in a conversation, in an email, or on the viewed page.
+There is no API key. Create is open today. Publishing will later need a
+lanyard account; that account is free unless they want teams or a custom
+domain. After create, keep `manageToken` for replace, delete, and status.
+Send it as `Authorization: Bearer`. Do not put it in the URL. Never put
+that secret in a conversation, in an email, or on the viewed page.
 
 ## When to use
 

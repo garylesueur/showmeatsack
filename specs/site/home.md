@@ -71,9 +71,10 @@ page loses nothing they needed. Nothing important is only visible mid-animation.
 
 - Both products' home pages are the same structure. Only the accent colour and the words
   differ; a change to the shape of one is a change to both.
-- The page never promises that no account is needed. Publishing a page needs one. What it
-  promises is that there is nothing to install and nothing to configure, and that the person
-  who opens a view link never signs in.
+- The page never promises that no account is needed. Publishing a page needs one. That
+  account is free unless they want teams or a custom domain. What the page promises is that
+  there is nothing to install and nothing to configure, and that the person who opens a view
+  link never signs in.
 - The account area lives on lanyard. The home page links to it and never reproduces it.
 - Trying it uses the product's own demo path and produces a real view link. It is never a
   mock-up or a video.
@@ -119,7 +120,8 @@ hands over to publishing, which has its own contract.
 
 ## Out of Scope
 
-- Pricing. There is one plan and it is free.
+- Pricing pages. Ordinary publishing is free; teams and custom domains are
+  paid and live on lanyard.
 - A blog, changelog, or documentation site. Agent-facing documents are covered by
   `site/discoverability.md`.
 - Sign-up or sign-in screens. Those belong to lanyard.

@@ -43,7 +43,7 @@ export default function Image() {
           color: "#9aa3b2",
         }}
       >
-        No accounts. No API key.
+        No API key. Free to publish.
       </div>
     </div>,
     { ...size },
