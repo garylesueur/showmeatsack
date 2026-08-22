@@ -44,7 +44,7 @@ uploaded HTML, with no chrome wrapped around it.
 
 ### B7 — The repository is an Agent Plugin 🟢 implemented
 
-The repository root is an Agent Plugin: a client that understands [Agent Plugins](https://agent-plugins.org/) can install it and get the hosted showmeatsack.com MCP server plus the skill. The plugin skill instructions match `/skill.md`.
+The repository root is an Agent Plugin: a client that understands [Agent Plugins](https://agent-plugins.org/) can install it and get the hosted showmeatsack.com MCP server plus the skill. `.cursor-plugin/plugin.json` is present so Cursor can add this clone as an Open Plugin from the local folder. The plugin skill instructions match `/skill.md`.
 
 ## Rules (Invariants)
 

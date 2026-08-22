@@ -83,6 +83,8 @@ remains a fallback if R2 is unset.
 | `.engineering/config.yaml`      | Toolchain contract that calm-craft skills read               |
 | `skills/showmeatsack/`          | The skill — **the source of truth**, edit this one           |
 | `.cursor/skills/showmeatsack/`  | Generated copy for Cursor (`pnpm sync:skill`)                |
+| `plugin.json`                   | Agent Plugin (open standard) identity                        |
+| `.cursor-plugin/plugin.json`    | Cursor Open Plugin manifest for this clone                   |
 | `src/lib/showmeatsack-skill.ts` | Generated constant the site and MCP serve                    |
 
 ## calm-craft
@@ -127,12 +129,22 @@ in config we own, so updating the plugin never clobbers our choices.
 
 This repository is itself an [Agent Plugin](https://agent-plugins.org/) — the
 open standard for packaging agent tooling: `plugin.json`, `mcp.json`, and
-`skills/` in one installable unit. `.mcp.json` exists for
-[cursor.directory](https://cursor.directory/plugins/new) detection.
+`skills/` in one installable unit. Cursor also reads `.cursor-plugin/plugin.json`
+so this clone can be added as an Open Plugin from the local folder. `.mcp.json`
+exists for [cursor.directory](https://cursor.directory/plugins/new) detection.
 
-**Install the plugin.** This is the one you want. The plugin carries the MCP
-server *and* `skills/showmeatsack/SKILL.md`, so your agent gets the tool and the
-instructions for when to reach for it:
+**Install in Cursor from this clone.** In Customize → Plugins, add an Open
+Plugin and choose this repository root (the folder that contains `plugin.json`).
+For local development you can also symlink it:
+
+```bash
+ln -s /path/to/showmeatsack ~/.cursor/plugins/local/showmeatsack.com
+```
+
+Then reload the window. The plugin carries the hosted MCP server and
+`skills/showmeatsack/SKILL.md`.
+
+**Or install from GitHub:**
 
 ```text
 https://github.com/garylesueur/showmeatsack
