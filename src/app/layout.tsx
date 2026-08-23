@@ -26,6 +26,9 @@ export const metadata: Metadata = {
   },
   description: `${SITE_TAGLINE} ${SITE_DESCRIPTION}`,
   applicationName: SITE_TITLE,
+  icons: {
+    icon: "/logo.svg",
+  },
   keywords: ["showmeatsack.com", "MCP", "HTML", "share", "agent"],
   authors: [{ name: SITE_TITLE, url: origin }],
   alternates: {

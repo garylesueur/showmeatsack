@@ -6,6 +6,11 @@ status: future
 
 # How the product talks
 
+Shared vocabulary for both products lives in
+[`brand/docs/voice.md`](../../brand/docs/voice.md). This spec records the
+showmeatsack.com product behaviours that sit on top of that, including the
+plain-voice switch.
+
 **showmeatsack.com** is a silly name doing a serious job. The joke is an asset — it is why
 the name sticks, and it is honest about what the product is: a machine handing something to
 a person. This spec is where the voice is decided once, and where the switch that turns it
