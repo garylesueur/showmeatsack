@@ -1,5 +1,5 @@
 import { getDefaultShareService } from "@/lib/app-shares";
-import { responseForView } from "@/lib/share-view-response";
+import { internalErrorShareResponse, responseForView } from "@/lib/share-view-response";
 
 export async function GET(
   request: Request,
@@ -7,6 +7,11 @@ export async function GET(
 ): Promise<Response> {
   const { shareId, path } = await context.params;
   const rawPath = path?.join("/") ?? "";
-  const result = await getDefaultShareService().view(shareId, rawPath);
-  return responseForView(result, { request, shareId });
+  try {
+    const result = await getDefaultShareService().view(shareId, rawPath);
+    return responseForView(result, { request, shareId });
+  } catch (error) {
+    console.error("Share view failed", { shareId, path: rawPath, error });
+    return internalErrorShareResponse();
+  }
 }
