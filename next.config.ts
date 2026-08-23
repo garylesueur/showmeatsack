@@ -2,6 +2,9 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   agentRules: false,
+  // Share homepages are directory URLs so relative files in zip sites resolve
+  // beneath /s/{shareId}/. Keep that slash instead of normalising it away.
+  skipTrailingSlashRedirect: true,
   serverExternalPackages: ["@sparticuz/chromium", "puppeteer-core"],
   // @sparticuz/chromium finds its binaries with join(dirname(fileURLToPath(
   // import.meta.url)), "..", "bin"), which the file tracer cannot follow. Without

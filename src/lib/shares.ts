@@ -158,10 +158,9 @@ function urlsFor(
   shareId: string,
 ): { viewUrl: string; manageUrl: string } {
   return {
-    // No trailing slash: the slashed form redirects, so handing it out makes
-    // every recipient follow a hop, and anything that will not follow one
-    // gets the redirect stub instead of the page.
-    viewUrl: `${viewBase}/s/${shareId}`,
+    // The slash makes this a directory URL, so browsers resolve a zip site's
+    // sibling CSS, scripts, images, and fonts beneath this share.
+    viewUrl: `${viewBase}/s/${shareId}/`,
     manageUrl: `${productBase}/api/v1/shares/${shareId}`,
   };
 }

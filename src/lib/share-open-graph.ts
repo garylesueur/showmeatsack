@@ -23,9 +23,7 @@ export function shareOpenGraphUrls(
 ): { pageUrl: string; imageUrl: string } {
   const base = origin.replace(/\/$/, "");
   return {
-    // og:url is the canonical address of the page, so it takes the form that
-    // serves the page directly rather than the one that redirects to it.
-    pageUrl: `${base}/s/${shareId}`,
+    pageUrl: `${base}/s/${shareId}/`,
     imageUrl: `${base}/s/${shareId}/${SHARE_OPENGRAPH_PATH}`,
   };
 }
