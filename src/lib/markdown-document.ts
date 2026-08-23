@@ -96,7 +96,7 @@ const SANITIZE_OPTIONS: sanitizeHtml.IOptions = {
     h6: ["id"],
   },
   allowedClasses: {
-    code: true,
+    code: ["language-*"],
     pre: ["mermaid"],
   },
   allowedSchemes: ["http", "https", "mailto"],

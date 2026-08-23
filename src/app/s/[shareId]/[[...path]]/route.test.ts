@@ -1,3 +1,11 @@
+/*
+Regression — a broken share renderer must return a useful, safe error page.
+
+Bug (2026-08-23): a markdown rendering exception produced an empty HTTP 500 response.
+Root cause: the share route allowed rendering exceptions to escape to the platform.
+These tests lock the fix: unexpected failures show the branded recovery screen without leaking details.
+Spec context: sharing/pages/publishing error handling.
+*/
 import { afterEach, describe, expect, it } from "vitest";
 import { createMemoryFileStore } from "@/lib/file-store";
 import { SHARE_MAX_BYTES } from "@/lib/schema";
@@ -47,6 +55,22 @@ describe("GET /s/[shareId]", () => {
     expect(response.headers.get("Content-Type")).toBe("text/html; charset=utf-8");
     expect(response.headers.get("X-Content-Type-Options")).toBe("nosniff");
     expect(await response.text()).toBe(html);
+  });
+
+  it("returns a useful error screen when rendering fails", async () => {
+    const shares = installTestShareService();
+    shares.view = async () => {
+      throw new Error("private infrastructure detail");
+    };
+
+    const response = await view("shareid1");
+    const body = await response.text();
+
+    expect(response.status).toBe(500);
+    expect(response.headers.get("Content-Type")).toBe("text/html; charset=utf-8");
+    expect(body).toContain("The silicon has let us down");
+    expect(body).toContain("/silicon-failure.png");
+    expect(body).not.toContain("private infrastructure detail");
   });
 
   it("returns 404 for an unknown share and a missing file", async () => {
