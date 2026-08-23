@@ -24,8 +24,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          submodules: true
+      - run: git submodule update --init brand
 
       # pnpm before Node, so setup-node can find it for its cache.
       - uses: pnpm/action-setup@v4
