@@ -1,3 +1,11 @@
+/*
+Regression — fenced code languages must render without taking a share offline.
+
+Bug (2026-08-23): opening a markdown share containing a labelled code fence returned HTTP 500.
+Root cause: the sanitiser received a boolean code-class allowlist and called indexOf on it.
+These tests lock the fix: language classes survive sanitisation and the document renders normally.
+Spec context: sharing/pages/documents B2.
+*/
 import { describe, expect, it } from "vitest";
 import { MERMAID_ESM_URL, renderMarkdownBody, renderMarkdownDocument } from "./markdown-document";
 
@@ -34,6 +42,16 @@ graph TD
     expect(html).toContain('<pre class="mermaid">');
     expect(html).toContain("A--&gt;B");
     expect(html).not.toContain("<code");
+  });
+
+  it("B2 — a labelled code fence keeps its language class", () => {
+    const html = renderMarkdownBody(`
+\`\`\`typescript
+const answer = 42;
+\`\`\`
+`);
+    expect(html).toContain('<code class="language-typescript">');
+    expect(html).toContain("const answer = 42;");
   });
 
   it("B7 — markup and scripts in the document are text, not run", () => {
