@@ -1,3 +1,11 @@
+/*
+Regression — relative files in a zip must resolve beneath that share's view link.
+
+Bug (2026-08-23): images and styles returned 404 when a browser opened a zip share.
+Root cause: the published homepage URL had no trailing slash, so browsers resolved sibling files under /s/.
+These tests lock the fix: a relative asset URL keeps the share id in its resolved path.
+Spec context: sharing/pages/publishing B3.
+*/
 import { describe, expect, it } from "vitest";
 import { createMemoryFileStore } from "./file-store";
 import { SHARE_MAX_BYTES } from "./schema";
@@ -18,7 +26,7 @@ describe("publishing a page", () => {
     if (isShareServiceError(created)) {
       return;
     }
-    expect(created.viewUrl).toBe("https://showmeatsack.com/s/shareid1");
+    expect(created.viewUrl).toBe("https://showmeatsack.com/s/shareid1/");
     expect(created.manageUrl).toBe("https://showmeatsack.com/api/v1/shares/shareid1");
     expect(created.manageUrl).not.toContain("token=");
     expect(created.manageToken).toBe("managetoken1");
@@ -35,7 +43,7 @@ describe("publishing a page", () => {
     if (isShareServiceError(created)) {
       return;
     }
-    expect(created.viewUrl).toBe("https://s.showmeatsack.com/s/shareid1");
+    expect(created.viewUrl).toBe("https://s.showmeatsack.com/s/shareid1/");
     expect(created.manageUrl).toBe("https://showmeatsack.com/api/v1/shares/shareid1");
     expect(created.manageUrl).not.toContain(created.manageToken);
   });
@@ -61,6 +69,10 @@ describe("publishing a page", () => {
       }),
     });
     expect(isShareServiceError(created)).toBe(false);
+    if (isShareServiceError(created)) {
+      return;
+    }
+    expect(new URL("style.css", created.viewUrl).pathname).toBe("/s/shareid1/style.css");
     const page = await shares.view("shareid1", "index.html");
     const css = await shares.view("shareid1", "style.css");
     expect(page.kind).toBe("file");
@@ -459,17 +471,15 @@ describe("reading a share back", () => {
 });
 
 describe("the view link is one canonical address", () => {
-  it("B2 B14 — the link handed out is the one that serves the page, not one that redirects", async () => {
+  it("B2 B3 B14 — the link handed out is a directory URL for relative site files", async () => {
     const shares = service();
     const created = await shares.create({ html: "<p>Canonical</p>" });
     expect(isShareServiceError(created)).toBe(false);
     if (isShareServiceError(created)) {
       return;
     }
-    // A trailing slash on /s/{id} redirects, so publishing that form would
-    // hand every recipient a hop, and hand anything that will not follow one
-    // a redirect stub instead of the page.
-    expect(created.viewUrl.endsWith("/")).toBe(false);
+    expect(created.viewUrl.endsWith("/")).toBe(true);
+    expect(new URL("assets/app.css", created.viewUrl).pathname).toBe("/s/shareid1/assets/app.css");
   });
 
   it("B2 B17 — the published link and the link preview's og:url agree", async () => {
