@@ -1,5 +1,5 @@
 /* Generated from meatsack-brand. Do not edit. */
-/* product: show; accent: kelp; darkMode: media */
+/* product: show; accent: kelp; darkMode: class */
 
 :root {
   color-scheme: light;
@@ -20,24 +20,23 @@
   --radius: 0.75rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    color-scheme: dark;
-    --background: oklch(0.2 0.012 80);
-    --foreground: oklch(0.96 0.01 90);
-    --card: oklch(0.24 0.012 80);
-    --card-foreground: oklch(0.96 0.01 90);
-    --muted: oklch(0.28 0.012 80);
-    --muted-foreground: oklch(0.74 0.02 80);
-    --border: oklch(1 0 0 / 12%);
-    --machine: oklch(0.17 0.012 250);
-    --machine-raised: oklch(0.21 0.012 250);
-    --machine-foreground: oklch(0.88 0.012 250);
-    --machine-muted: oklch(0.62 0.015 250);
-    --machine-rule: oklch(0.28 0.014 250);
-    --primary: oklch(0.78 0.11 172);
-    --primary-foreground: oklch(0.2 0.012 80);
-  }
+html.dark,
+.dark {
+  color-scheme: dark;
+  --background: oklch(0.2 0.012 80);
+  --foreground: oklch(0.96 0.01 90);
+  --card: oklch(0.24 0.012 80);
+  --card-foreground: oklch(0.96 0.01 90);
+  --muted: oklch(0.28 0.012 80);
+  --muted-foreground: oklch(0.74 0.02 80);
+  --border: oklch(1 0 0 / 12%);
+  --machine: oklch(0.17 0.012 250);
+  --machine-raised: oklch(0.21 0.012 250);
+  --machine-foreground: oklch(0.88 0.012 250);
+  --machine-muted: oklch(0.62 0.015 250);
+  --machine-rule: oklch(0.28 0.014 250);
+  --primary: oklch(0.78 0.11 172);
+  --primary-foreground: oklch(0.2 0.012 80);
 }
 
 .meatsack-pulse {
