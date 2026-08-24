@@ -2,7 +2,9 @@ import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
+import { ColorModePicker } from "@/components/color-mode-picker";
 import { SITE_DESCRIPTION, SITE_TAGLINE, SITE_TITLE, siteJsonLd } from "@/lib/agent-docs";
+import { COLOR_MODE_BOOT_SCRIPT } from "@/lib/color-mode";
 import { publicOrigin } from "@/lib/public-origin";
 import "./globals.css";
 
@@ -60,12 +62,16 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: ReactNode }>) {
   const jsonLd = siteJsonLd(origin);
   return (
-    <html lang="en-GB" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-background text-foreground">
+    <html lang="en-GB" className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`} suppressHydrationWarning>
+      <body className="relative flex min-h-full flex-col bg-background text-foreground">
+        <script dangerouslySetInnerHTML={{ __html: COLOR_MODE_BOOT_SCRIPT }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
+        <div className="fixed right-4 bottom-4 z-20">
+          <ColorModePicker />
+        </div>
         {children}
         <Analytics />
       </body>
