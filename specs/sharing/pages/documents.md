@@ -42,8 +42,9 @@ saying it could not be drawn, and the rest of the document is unaffected.
 ### B4 — Code in a document is readable 🔵 future
 
 A code block is shown with colouring for the language it names, keeps its exact text,
-and can be copied in one action. Long lines scroll inside the block rather than
-wrapping or being cut off, so pasted code survives the round trip unchanged.
+and can be copied in one action. Long lines wrap inside the block, including long
+URLs and words, so the whole block is readable on any screen. Wrapping preserves
+the original line breaks, spaces, and exact text when copied.
 
 ### B5 — A script is shown as a script 🔵 future
 

@@ -226,6 +226,8 @@ blockquote {
   color: var(--muted-foreground);
 }
 pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
   overflow: auto;
   padding: 0.9rem 1rem;
   border-radius: 8px;

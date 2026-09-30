@@ -9,6 +9,7 @@
   "homepage": "https://showmeatsack.com",
   "repository": "https://github.com/garylesueur/showmeatsack",
   "license": "MIT",
+  "logo": "public/logo.svg",
   "keywords": [
     "showmeatsack",
     "html",
