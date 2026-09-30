@@ -18,5 +18,6 @@
     "static-site"
   ],
   "skills": "./skills/",
-  "mcpServers": "./mcp.json"
+  "mcpServers": "./mcp.json",
+  "logo": "public/logo.svg"
 }

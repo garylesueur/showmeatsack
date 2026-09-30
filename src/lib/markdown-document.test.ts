@@ -72,4 +72,25 @@ describe("renderMarkdownDocument", () => {
     expect(page).toContain(MERMAID_ESM_URL);
     expect(page).toContain('securityLevel: "strict"');
   });
+
+  it("B10 — code and tables follow the document colours, not a leftover light highlight", () => {
+    const page = renderMarkdownDocument("# Isolation\n\n`token`\n");
+    expect(page).toContain('html[data-theme="dark"]');
+    expect(page).toContain("--code-bg:");
+    expect(page).toContain("--code-fg:");
+    expect(page).toContain("background: var(--code-bg)");
+    expect(page).toContain("color: var(--code-fg)");
+    expect(page).toContain("background: var(--card)");
+    expect(page).not.toContain("color-scheme: light dark");
+  });
+
+  it("B10 — a Light, Auto, and Dark control is on the page and remembered", () => {
+    const page = renderMarkdownDocument("# Isolation\n");
+    expect(page).toContain("data-color-mode-picker");
+    expect(page).toContain('value="light"');
+    expect(page).toContain('value="auto"');
+    expect(page).toContain('value="dark"');
+    expect(page).toContain("meatsack:color-mode");
+    expect(page).toContain("meatsack_color_mode");
+  });
 });

@@ -1,0 +1,7 @@
+{
+  "product": "show",
+  "darkMode": "class",
+  "paths": {
+    "failure": "public/silicon-failure.png"
+  }
+}

@@ -70,6 +70,15 @@ describe("site agent documents", () => {
     expect(result.status).toBe(0);
   });
 
+  it("has no stale generated copies of the brand", () => {
+    const result = spawnSync("node", ["brand/scripts/sync-brand.mjs", "--check"], {
+      cwd: process.cwd(),
+      encoding: "utf8",
+    });
+    expect(result.stderr).toBe("");
+    expect(result.status).toBe(0);
+  });
+
   it("tells agents to publish without a meat-sack phrase and to send the view URL themselves", () => {
     const skill = skillMarkdown();
     expect(skill).toContain('You do not need the words "showmeatsack"');

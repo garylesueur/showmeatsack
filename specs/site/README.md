@@ -9,5 +9,7 @@ Public documents for people, crawlers, and agents. Share behaviour lives under [
 
 ## Design references
 
-- [Silicon and meat sack character guide](../../docs/brand/characters.md) — canonical
+- [Silicon and meat sack character guide](../../brand/docs/characters.md) — canonical
   appearance, relationship, product roles, palette, failure states and image prompt.
+- [Voice](../../brand/docs/voice.md) — shared vocabulary for both products.
+
