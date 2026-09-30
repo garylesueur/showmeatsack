@@ -164,7 +164,7 @@ h1 { font-size: 1.85rem; line-height: 1.2; }
 h2 { margin-top: 2.2rem; }
 h3 { margin-top: 1.5rem; }
 a { color: #1546b0; }
-pre { overflow: auto; padding: 0.9rem 1rem; border-radius: 8px; background: #ece6da; }
+pre { white-space: pre-wrap; overflow-wrap: anywhere; overflow: auto; padding: 0.9rem 1rem; border-radius: 8px; background: #ece6da; }
 code { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.9em; }
 :not(pre) > code { background: #ece6da; padding: 0.1em 0.35em; border-radius: 4px; }
 table { border-collapse: collapse; width: 100%; font-size: 0.95rem; }
