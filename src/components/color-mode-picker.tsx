@@ -36,7 +36,11 @@ function applyPreference(mode: StoredColorMode): void {
   } catch {
     // A blocked store still applies for this page.
   }
-  document.cookie = persistColorModeCookie(mode, window.location.hostname, window.location.protocol);
+  document.cookie = persistColorModeCookie(
+    mode,
+    window.location.hostname,
+    window.location.protocol,
+  );
 }
 
 export function ColorModePicker({ className = "" }: { className?: string }) {
