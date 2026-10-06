@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { PluginInstall } from "@/components/plugin-install";
 
 /**
  * The interactive parts of the hero, and the curl block at the foot.
@@ -46,6 +47,8 @@ export function HomeLanding({ mcpUrl, cursorHref, pluginHref }: HomeLandingProps
         </a>
       </div>
 
+      <PluginInstall />
+
       <div className="mt-5 flex flex-wrap items-center gap-2">
         <code className="max-w-full break-all rounded-md bg-muted px-2 py-1 font-mono text-sm text-foreground">
           {mcpUrl}
@@ -64,7 +67,7 @@ export function HomeLanding({ mcpUrl, cursorHref, pluginHref }: HomeLandingProps
       <p className="mt-3 text-sm text-muted-foreground">
         Paste that into any MCP client.{" "}
         <a href={pluginHref} className="underline underline-offset-4 hover:text-foreground">
-          Cursor plugin
+          Plugin source
         </a>
         {" · "}
         <a
