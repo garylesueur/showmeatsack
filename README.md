@@ -157,7 +157,8 @@ Claude Code:
 
 Cursor Teams/Enterprise: Dashboard → Plugins & MCPs → Add Marketplace →
 Import from Repo, using the marketplace repository URL. Install the product
-from Customize. A local clone can also be linked into `~/.cursor/plugins/local/`.
+from Customize. For a personal account, copy the plugin package into `~/.cursor/plugins/local/`.
+See the [installation guide](https://showmeatsack.com/install) for commands.
 
 Marketplace publication must precede deploying these website install links.
 Public ChatGPT/Codex and Cursor directory listings require separate submissions.
@@ -172,10 +173,12 @@ exists for [cursor.directory](https://cursor.directory/plugins/new) detection.
 
 **Install in Cursor from this clone.** In Customize → Plugins, add an Open
 Plugin and choose this repository root (the folder that contains `plugin.json`).
-For local development you can also symlink it:
+For a local install, copy this product’s marketplace package into Cursor’s plugin folder:
 
 ```bash
-ln -s /path/to/showmeatsack ~/.cursor/plugins/local/showmeatsack
+git clone https://github.com/garylesueur/meatsack-marketplace.git
+mkdir -p ~/.cursor/plugins/local/showmeatsack
+cp -R meatsack-marketplace/plugins/showmeatsack/. ~/.cursor/plugins/local/showmeatsack/
 ```
 
 Then reload the window. The plugin carries the hosted MCP server and
