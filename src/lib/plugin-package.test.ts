@@ -18,7 +18,7 @@ describe("Agent Plugin package", () => {
       author: { name: string; url: string };
     };
     expect(manifest.$schema).toBe("https://agent-plugins.org/schemas/1.0.0/plugin.schema.json");
-    expect(manifest.name).toBe("showmeatsack.com");
+    expect(manifest.name).toBe("showmeatsack");
     expect(manifest.homepage).toBe("https://showmeatsack.com");
     expect(manifest.author).toEqual({
       name: "Gary Le Sueur",
