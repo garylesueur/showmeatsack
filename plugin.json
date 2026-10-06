@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "showmeatsack",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "An agent posts HTML, markdown, or a small static-site zip and gets a showmeatsack.com view link. No API key. Free to publish; teams and custom domains are paid.",
   "author": {
     "name": "Gary Le Sueur",
@@ -35,8 +35,8 @@
           "Share this interactive chart as a page."
         ],
         "brandColor": "#287566",
-        "logo": "./public/logo.svg",
-        "composerIcon": "./public/logo.svg"
+        "logo": "./public/plugin-icon.png",
+        "composerIcon": "./public/plugin-icon.png"
       }
     }
   }
