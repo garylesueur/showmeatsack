@@ -1,7 +1,7 @@
 ---
 name: showmeatsack
 description: >
-  Publish HTML, markdown, CSV, Excel, or a small static-site zip to showmeatsack.com and put the
+  Publish HTML, markdown, CSV, Excel, a URL QR code, or a small static-site zip to showmeatsack.com and put the
   view link where a person will open it: this chat, email, Slack, or
   anywhere else you can already send. Use when they asked for a
   presentation, page, write-up, or shareable link, and also when you yourself
@@ -57,7 +57,7 @@ share.
 ## How
 
 1. Call `showmeatsack.com` with action `create` (or `POST /api/v1/shares`).
-   Send exactly one of `html`, `markdown`, `zipBase64`, or `table`. Prefer `markdown`
+   Send exactly one of `html`, `markdown`, `zipBase64`, `qr`, or `table`. Prefer `markdown`
    for a document: GitHub-flavoured markdown (tables, task lists,
    strikethrough, autolinks) and mermaid fences are drawn as diagrams.
    Do not wrap markdown in an HTML page or load `marked` yourself. A zip must
@@ -85,6 +85,32 @@ share.
 4. To replace or delete, call the same tool with action `replace` or
    `delete`, passing `shareId` and `manageToken`. Replace keeps the view
    link. Status uses the same secrets.
+
+## Sharing a QR code
+
+Send a URL directly; the service generates the QR and its preview image:
+
+```json
+{
+  "action": "create",
+  "qr": {
+    "url": "https://example.com/register",
+    "title": "Register for the workshop"
+  }
+}
+```
+
+For HTTP, omit `action` and POST the same `qr` object. The URL must be absolute
+HTTP/HTTPS, without embedded credentials or control characters, at most 512
+UTF-8 bytes. `title` is optional, at most 120 characters. This version offers a
+code with PNG and scalable SVG downloads. Optional `qr.style` is `classic` (default black/white, square preview), `brand` (deep kelp/white, cream landscape card), or `action` (black/white, dark landscape card with title and Scan to open). The page includes Open link for
+someone already on their phone; every Open Graph image contains the QR.
+
+Paste the returned `viewUrl`. The QR encodes the supplied destination directly,
+so a downloaded QR can keep working after the share expires if its destination
+still works. Replace uses the same `qr` object with `shareId` and `manageToken`;
+the view link and expiry stay the same. Other apps may temporarily retain an old
+preview after replacement or deletion.
 
 ## Reading a page someone sends you
 

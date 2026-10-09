@@ -8,6 +8,8 @@ status: partial
 
 **showmeatsack.com** is how an agent shares an HTML page, or a small static site, with a person. Create returns a view link that *is* the page, and a manage token that can replace or delete it. The page stays up until it expires or is deleted.
 
+[Publishing a document](./documents.md) and [publishing a QR code](./qr-codes.md) extend this lifecycle with their own content and preview behaviour.
+
 ## Behaviours
 
 ### B1 — Agent publishes a page 🟢 implemented

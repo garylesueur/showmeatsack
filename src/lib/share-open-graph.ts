@@ -15,6 +15,7 @@ export type ShareOpenGraph = {
   description: string;
   imageUrl: string;
   pageUrl: string;
+  imageSize?: { width: number; height: number };
 };
 
 export function shareOpenGraphUrls(
@@ -75,8 +76,8 @@ export function openGraphMetaTags(og: ShareOpenGraph): string {
     ["og:url", og.pageUrl],
     ["og:image", og.imageUrl],
     ["og:image:type", "image/png"],
-    ["og:image:width", String(OPENGRAPH_SIZE.width)],
-    ["og:image:height", String(OPENGRAPH_SIZE.height)],
+    ["og:image:width", String((og.imageSize ?? OPENGRAPH_SIZE).width)],
+    ["og:image:height", String((og.imageSize ?? OPENGRAPH_SIZE).height)],
   ];
   const properties = tags
     .map(
