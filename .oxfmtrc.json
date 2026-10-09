@@ -13,6 +13,7 @@
     "brand/**",
     "src/app/brand.generated.css",
     "src/components/site-chrome.tsx",
-    "src/components/home-sections.tsx"
+    "src/components/home-sections.tsx",
+    "src/lib/table-viewer-bundle.generated.ts"
   ]
 }

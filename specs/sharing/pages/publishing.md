@@ -123,6 +123,41 @@ how big it is rather than returning its contents. An expired share reads as gone
 unknown one as not found, in the same words a browser is given, so reading reveals no more
 about a share than opening it would.
 
+### B24 — Agent publishes a read-only workbook 🟢 implemented
+
+An agent sends `table` instead of HTML, markdown or zip, through the same HTTP or
+MCP create/replace call. It holds exactly one of `csv` (source text) or
+`xlsxBase64` (.xlsx bytes), plus optional `filename`, `title`, and `headerRow`.
+The header row is one-based and defaults to 1; 0 means no header row. For Excel,
+this setting applies to every visible sheet. Hidden sheets are not shown in the
+viewer, but the original workbook download contains the complete source file.
+
+The view link opens a read-only workbook viewer. It has visible-sheet tabs,
+sticky column headers and source row numbers, up to three frozen leading visible
+columns, sorting, text filters, sheet search, column resizing/hiding, cell detail
+and copying, and an original-file download. The active sheet can be linked by
+name in the URL fragment. Loaded sheets preserve their view state while switching
+tabs. Search/filter/sort apply to the entire active sheet, not just visible rows.
+Rows and unpinned columns are virtualized, and sheets load independently on demand.
+The viewer includes keyboard arrow navigation, focus indication, light/dark system
+themes, responsive controls, and loading/empty/error states. Cell content is text;
+it never runs as HTML. Duplicate headers remain separate columns. CSV identifiers
+retain leading zeros, and Excel uses saved formatted values. Formula evaluation,
+macros, Excel charts, merged-cell layout, and legacy/encrypted Excel are unsupported.
+
+There is no row-count cap. Original uploads must be at most 5 MB and fit the
+hosting platform's request-body limit (including JSON/base64 overhead). Excel
+expansion and normalized sheet data each have a 32 MB processing budget. Sparse
+sheet dimensions that exceed this budget even with empty cells are refused before
+materializing them. A refused create publishes nothing; a refused replace leaves
+the prior share intact. Viewer assets and sheet data live under the share, with
+the same expiry, manage permissions, and deletion as existing shares. Reading
+`manifest.json` or a sheet JSON through the read tool needs only the view id.
+
+Large direct-to-storage uploads, background processing, server-side querying and
+chunked loading within a sheet are future work. The current viewer loads each
+active sheet in full, and does not promise unlimited browser memory or instant
+sorting for arbitrarily large datasets.
 ### B22 — Shared pages carry a small brand badge 🟢 implemented
 
 A person viewing a shared HTML or Markdown page sees a small floating badge in the
@@ -155,7 +190,7 @@ Shares published before version tracking was introduced are also checked for upd
   it by the same rule, without a separate decision.
 - The view link never grants replace or delete.
 - The manage secret never appears in the viewed page, in the manage URL, or in anything the browser is given to run.
-- One share is at most 5 MB, whether it is HTML or a zip, and that limit is enforced before a zip is expanded rather than after. A zip that would expand past it is refused without being unpacked. The submitted payload must also fit within what the platform will carry in one request, so the effective limit is the smaller of the two and the service states the one it actually applies.
+- An HTML, markdown or zip share is at most 5 MB. A workbook source is also at most 5 MB; generated viewer assets and normalized sheets are additional derived files bounded as described in B24. For a zip, the limit is enforced before a zip is expanded rather than after. A zip that would expand past it is refused without being unpacked. The submitted payload must also fit within what the platform will carry in one request, so the effective limit is the smaller of the two and the service states the one it actually applies.
 - Default life is 30 days from create. Without an account the creator may ask for shorter, never more than 30 days. With an account, the owner may extend or shorten a live share for as long as the account exists (B20).
 - Expired and deleted shares stay gone without anyone acting.
 - The viewing origin has no account cookies, so a raw page is not sitting next to a sign-in. Whatever lets somebody open a private share must not break this.
@@ -187,7 +222,8 @@ Shares published before version tracking was introduced are also checked for upd
 | Zip with no `index.html` | Refused; nothing published or changed |
 | Empty HTML or empty zip | Refused; nothing published or changed |
 | Larger than 5 MB | Refused; nothing published or changed |
-| Neither HTML nor a zip | Refused; nothing published or changed |
+| CSV or .xlsx via `table`, within B24 processing budgets | Published as a read-only workbook viewer |
+| More than one payload kind, or an unsupported kind | Refused; nothing published or changed |
 | Usable payload, but this caller has published too many pages | Refused; nothing published; agent is told to wait |
 
 ### Link preview
