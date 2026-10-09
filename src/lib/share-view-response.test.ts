@@ -150,7 +150,7 @@ graph TD
     expect(missing).not.toContain("Authorization");
   });
 
-  it("B17 — a person receives the uploaded HTML unchanged", async () => {
+  it("B2 B22 — a person receives the uploaded HTML with viewer controls", async () => {
     const html = "<h1>Hello</h1>";
     const response = responseForView(
       {
@@ -166,7 +166,10 @@ graph TD
         shareId: "shareid1",
       },
     );
-    expect(await readText(response)).toBe(html);
+    const body = await readText(response);
+    expect(body).toContain(html);
+    expect(body).toContain("data-showmeatsack-viewer");
+    expect(body).not.toContain('property="og:image"');
   });
 
   it("B17 — a link-preview crawler gets an image of this share", async () => {
@@ -188,6 +191,7 @@ graph TD
     expect(body).toContain("<h1>Hello</h1>");
     expect(body).toContain("/s/shareid1/opengraph-image");
     expect(body).toContain('property="og:image"');
+    expect(body).not.toContain("data-showmeatsack-viewer");
     expect(response.headers.get("X-Robots-Tag")).toBe("noindex, nofollow");
   });
 
