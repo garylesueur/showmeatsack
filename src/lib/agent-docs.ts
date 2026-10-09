@@ -5,7 +5,7 @@ import { SHOWMEATSACK_SKILL_MARKDOWN } from "./showmeatsack-skill";
 export const SITE_TITLE = "showmeatsack.com";
 export const SITE_TAGLINE = "An agent posts a page. A person opens it.";
 export const SITE_DESCRIPTION =
-  "Publish HTML or a small static-site zip, paste the view link. No install, no setup, no dashboard to learn.";
+  "Publish HTML, markdown, a URL QR code or a small static-site zip, paste the view link. No install, no setup, no dashboard to learn.";
 
 export type McpGetKind = "html" | "markdown" | "protocol";
 
@@ -38,7 +38,7 @@ export function llmsTxt(origin = publicOrigin()): string {
 
 > ${SITE_TAGLINE} ${SITE_DESCRIPTION}
 
-showmeatsack.com is how an agent shares an HTML page, or a small static site, with a person. Create returns a view link that is the page, and a manage link to replace or delete it. MCP and HTTP are the same share.
+showmeatsack.com is how an agent shares HTML, markdown, a URL QR code, or a small static site with a person. Create returns a view link and a manage link to replace or delete it. MCP and HTTP are the same share.
 
 ## Docs
 
@@ -101,6 +101,8 @@ Content-Type: application/json
 \`\`\`
 
 Or send \`markdown\` for a GitHub-flavoured document (tables, task lists, mermaid fences), or \`zipBase64\` instead of \`html\`. Optional \`expiresInSeconds\` (default 30 days, never longer). Cap is 5 MB.
+
+For a QR share, send \`{"qr":{"url":"https://example.com/register","title":"Register"}}\` instead. Title is optional (at most 120 characters); URL is absolute HTTP/HTTPS, without credentials or control characters, at most 512 UTF-8 bytes. The page offers Open link, Download PNG and Download SVG. Optional \`qr.style\` is \`classic\` (default square QR preview), \`brand\` (deep kelp QR and cream landscape preview), or \`action\` (black QR and dark landscape preview with a scan instruction). The preview always contains the generated QR, which encodes the destination directly and can outlive the hosting when downloaded.
 
 Create returns \`viewUrl\`, \`manageUrl\`, \`manageToken\`, and \`expiresAt\`. Paste \`viewUrl\` where the person will see it. Keep \`manageToken\` for replace, delete, and status. Send it as \`Authorization: Bearer\`, not in the query string.
 

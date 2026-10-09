@@ -28,6 +28,33 @@ async function preview(shareId: string): Promise<Response> {
 }
 
 describe("GET /s/[shareId]/opengraph-image", () => {
+  it.each(["classic", "brand", "action"] as const)(
+    "QR B4 B7 B9 — serves the stored %s code even when captures are busy, and observes deletion/expiry",
+    async (style) => {
+      let now = Date.parse("2026-10-09T12:00:00Z");
+      const shares = installTestShareService({ now: () => new Date(now) });
+      await shares.create({ qr: { url: "https://example.com/", style }, expiresInSeconds: 60 });
+      const image = await shares.view("shareid1", style === "classic" ? "qr.png" : "preview.png");
+      const held: boolean[] = [];
+      while (sharePreviewCaptures.tryEnter()) held.push(true);
+      capture.mockRejectedValue(new Error("Browser unavailable"));
+      try {
+        const response = await preview("shareid1");
+        expect(response.headers.get("content-type")).toBe("image/png");
+        expect(response.headers.get("cache-control")).toContain("no-cache");
+        if (image.kind === "file")
+          expect(new Uint8Array(await response.arrayBuffer())).toEqual(new Uint8Array(image.bytes));
+        expect(capture).not.toHaveBeenCalled();
+      } finally {
+        for (const _ of held) sharePreviewCaptures.leave();
+      }
+      now += 60_000;
+      expect((await preview("shareid1")).status).toBe(410);
+      await shares.create({ qr: { url: "https://example.com/" } });
+      await shares.remove("shareid1", "managetoken1");
+      expect((await preview("shareid1")).status).toBe(404);
+    },
+  );
   afterEach(() => {
     clearInstalledService();
     capture.mockReset();

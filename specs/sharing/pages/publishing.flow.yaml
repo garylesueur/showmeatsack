@@ -23,13 +23,13 @@ flows:
         from: publish
         event: Publish
         to: live
-        guard: The payload is usable HTML or a zip with index.html, and is at most 5 MB.
+        guard: The payload is usable HTML, markdown, a supported QR request, or a zip with index.html, and is at most 5 MB. Content-specific rules are defined in the document and QR publishing extensions.
         covers: [B1, B3, B4, B11, B12, B16]
       - id: F1.T2
         from: publish
         event: Publish
         to: refused
-        guard: The payload is empty, too large, not HTML or a zip, or a zip with no index.html.
+        guard: The payload is empty, too large, unsupported, a refused QR request, or a zip with no index.html.
         covers: [B9]
       - id: F1.T11
         from: publish
@@ -120,7 +120,7 @@ flows:
         event: Fetch for a link preview
         to: page
         guard: The view link matches, the share is still live, and the fetcher is a link-preview crawler.
-        outcome: The preview image is a picture of this share’s page. If a picture cannot be taken, the preview names that page from its title or visible text. A person in a browser still sees the uploaded page unchanged.
+        outcome: A QR share previews its generated code as defined in the QR publishing extension. For an uploaded page, the preview image is a picture of this share’s page; if a picture cannot be taken, the preview names that page from its title or visible text. A person in a browser still sees the uploaded page unchanged.
         covers: [B17]
       - id: F2.T2
         from: open

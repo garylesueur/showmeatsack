@@ -12,6 +12,18 @@ const nextConfig: NextConfig = {
   // and every link preview falls back to the plain title card. The .pnpm path is
   // the real one; node_modules/@sparticuz/chromium is a symlink.
   outputFileTracingIncludes: {
+    "/api/v1/shares": [
+      "./node_modules/next/dist/compiled/@vercel/og/Geist-Regular.ttf",
+      "./src/assets/qr-fonts.conf",
+    ],
+    "/api/v1/shares/*": [
+      "./node_modules/next/dist/compiled/@vercel/og/Geist-Regular.ttf",
+      "./src/assets/qr-fonts.conf",
+    ],
+    "/mcp": [
+      "./node_modules/next/dist/compiled/@vercel/og/Geist-Regular.ttf",
+      "./src/assets/qr-fonts.conf",
+    ],
     // The key is matched as a glob, so "[shareId]" would be read as a character
     // class and never match. "*" stands in for the dynamic segment.
     "/s/*/opengraph-image": [

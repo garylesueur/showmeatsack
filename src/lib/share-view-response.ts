@@ -108,13 +108,18 @@ export function responseForView(result: ViewResult, context?: ViewResponseContex
   const uploadedHtml = isHtml ? new TextDecoder().decode(result.bytes) : null;
   const legacyMarkdown = uploadedHtml ? markdownFromLegacyShell(uploadedHtml) : null;
   const html = legacyMarkdown ? renderMarkdownDocument(legacyMarkdown) : uploadedHtml;
-  if (context && html && isLinkPreviewCrawler(context.request.headers.get("user-agent"))) {
+  if (
+    context &&
+    html &&
+    (result.preview || isLinkPreviewCrawler(context.request.headers.get("user-agent")))
+  ) {
     const urls = shareOpenGraphUrls(viewPublicOrigin(), context.shareId);
     const withMeta = withOpenGraphMeta(html, {
-      title: titleFromHtml(html),
-      description: descriptionFromHtml(html),
+      title: result.preview?.title ?? titleFromHtml(html),
+      description: result.preview?.description ?? descriptionFromHtml(html),
       imageUrl: urls.imageUrl,
       pageUrl: urls.pageUrl,
+      imageSize: result.preview,
     });
     return htmlPage(200, withMeta);
   }

@@ -32,6 +32,11 @@ export async function GET(
     return responseForView(index);
   }
 
+  if (index.preview) {
+    const image = await shares.view(shareId, index.preview.path);
+    return responseForView(image);
+  }
+
   const source = new TextDecoder().decode(index.bytes);
   const markdown = isMarkdownContentType(index.contentType)
     ? source
