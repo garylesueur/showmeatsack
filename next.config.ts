@@ -1,7 +1,17 @@
 import type { NextConfig } from "next";
+import { realpathSync } from "node:fs";
+import { relative } from "node:path";
+
+// Vercel rejects traced files beneath pnpm's symlink directories. Include only
+// the real font path, rather than every peer dependency's alias of Next.
+const qrFont = `./${relative(
+  process.cwd(),
+  realpathSync("node_modules/next/dist/compiled/@vercel/og/Geist-Regular.ttf"),
+)}`;
 
 const nextConfig: NextConfig = {
   agentRules: false,
+  env: { SHOWMEATSACK_QR_FONT_PATH: qrFont },
   // Share homepages are directory URLs so relative files in zip sites resolve
   // beneath /s/{shareId}/. Keep that slash instead of normalising it away.
   skipTrailingSlashRedirect: true,
@@ -12,18 +22,9 @@ const nextConfig: NextConfig = {
   // and every link preview falls back to the plain title card. The .pnpm path is
   // the real one; node_modules/@sparticuz/chromium is a symlink.
   outputFileTracingIncludes: {
-    "/api/v1/shares": [
-      "./node_modules/next/dist/compiled/@vercel/og/Geist-Regular.ttf",
-      "./src/assets/qr-fonts.conf",
-    ],
-    "/api/v1/shares/*": [
-      "./node_modules/next/dist/compiled/@vercel/og/Geist-Regular.ttf",
-      "./src/assets/qr-fonts.conf",
-    ],
-    "/mcp": [
-      "./node_modules/next/dist/compiled/@vercel/og/Geist-Regular.ttf",
-      "./src/assets/qr-fonts.conf",
-    ],
+    "/api/v1/shares": [qrFont, "./src/assets/qr-fonts.conf"],
+    "/api/v1/shares/*": [qrFont, "./src/assets/qr-fonts.conf"],
+    "/mcp": [qrFont, "./src/assets/qr-fonts.conf"],
     // The key is matched as a glob, so "[shareId]" would be read as a character
     // class and never match. "*" stands in for the dynamic segment.
     "/s/*/opengraph-image": [

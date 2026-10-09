@@ -1,12 +1,14 @@
-import { join } from "node:path";
+import { realpathSync } from "node:fs";
+import { join, resolve } from "node:path";
 import sharp from "sharp";
 import { escapeHtml } from "./agent-docs";
 
 // The product's cream, kelp and ink colours come from brand/assets/show/logo.svg.
 export const QR_BRAND = { paper: "#f6f1e7", kelp: "#287566", ink: "#173f38", code: "#0b2923" };
-const fontfile = join(
+const fontfile = resolve(
   process.cwd(),
-  "node_modules/next/dist/compiled/@vercel/og/Geist-Regular.ttf",
+  process.env.SHOWMEATSACK_QR_FONT_PATH ??
+    realpathSync("node_modules/next/dist/compiled/@vercel/og/Geist-Regular.ttf"),
 );
 // A Lambda need not have system fonts/configuration. Sharp registers the bundled
 // font itself; Fontconfig only needs a writable cache location.
