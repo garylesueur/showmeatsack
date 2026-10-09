@@ -1,3 +1,4 @@
+import { MARKETPLACE_HREF, pluginInstallMarkdown } from "./plugin-install";
 import { CURSOR_PLUGIN_HREF, cursorInstallPageHref } from "./cursor-install";
 import { publicOrigin } from "./public-origin";
 import { SHOWMEATSACK_SKILL_MARKDOWN } from "./showmeatsack-skill";
@@ -42,9 +43,11 @@ showmeatsack.com is how an agent shares HTML, markdown, a URL QR code, or a smal
 
 ## Docs
 
+- [Install plugin](${origin}/install): Marketplace setup for Codex, Claude Code, and Cursor
 - [Skill](${origin}/skill.md): How to use the showmeatsack.com tool
 - [MCP and HTTP](${origin}/mcp.md): Connect, actions, curl
-- [Cursor plugin](${CURSOR_PLUGIN_HREF}): MCP plus the skill
+- [Plugin marketplace](${MARKETPLACE_HREF}): Install in Codex, Claude Code, or Cursor
+- [Plugin source](${CURSOR_PLUGIN_HREF}): MCP plus the skill
 - [Home](${origin}/): Human landing page
 
 ## Optional
@@ -75,6 +78,7 @@ This URL is the MCP server. Browsers get a short page. Agents should fetch \`${o
 
 There is no API key. Create is open today. Publishing will later need a lanyard account; that account is free unless they want teams or a custom domain.
 
+${pluginInstallMarkdown(origin)}
 ## Tool
 
 One tool, named \`showmeatsack.com\`. Actions: \`create\`, \`read\`, \`status\`, \`replace\`, \`delete\`.
@@ -180,6 +184,8 @@ export function mcpGuideHtml(origin = publicOrigin()): string {
       <li><a href="${originEscaped}/mcp.md">API guide (markdown)</a></li>
       <li><a href="${originEscaped}/skill.md">Skill</a></li>
       <li><a href="${escapeHtml(CURSOR_PLUGIN_HREF)}">Cursor plugin</a></li>
+      <li><a href="${originEscaped}/install">Install plugin</a></li>
+      <li><a href="${MARKETPLACE_HREF}">Meatsack plugin marketplace</a></li>
       <li><a href="${originEscaped}/llms.txt">llms.txt</a></li>
       <li><a href="${originEscaped}/">${title}</a></li>
     </ul>

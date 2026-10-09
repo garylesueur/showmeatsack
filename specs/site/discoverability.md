@@ -14,6 +14,12 @@ Public pages tell search engines, answer engines, and agents what showmeatsack.c
 
 The home page has a title, description, canonical URL, Open Graph tags, a large share image, and structured data naming showmeatsack.com. Sharing the home URL in chat or on social media shows that card.
 
+Browser tabs and phone home-screen bookmarks use the product’s Meatsack
+character icon and its ask, show, or share badge. `public/plugin-icon.png` owns
+the artwork; `pnpm sync:icons` exports the multi-size favicon, 32px PNG icon,
+and 180px Apple touch icon. Builds regenerate these exports and tests check
+that they match the source. Next.js supplies their metadata links.
+
 ### B2 — Crawlers get a sitemap and robots file 🟢 implemented
 
 Crawlers can fetch a sitemap of the public documents (home, MCP page, markdown guide, skill, llms.txt). Robots allow those and steer crawlers away from the manage API. View links are handled by B6: kept out of search, still readable by anyone given one.
@@ -45,6 +51,28 @@ uploaded HTML, with no chrome wrapped around it.
 ### B7 — The repository is an Agent Plugin 🟢 implemented
 
 The repository root is an Agent Plugin: a client that understands [Agent Plugins](https://agent-plugins.org/) can install it and get the hosted showmeatsack.com MCP server plus the skill. `.cursor-plugin/plugin.json` is present so Cursor can add this clone as an Open Plugin from the local folder. The plugin skill instructions match `/skill.md`.
+
+### B8 — Plugins share a Meatsack marketplace 🟢 implemented
+
+The Meatsack marketplace lists askmeatsack.com, showmeatsack.com, and
+sharemeatsack.com as independently installable plugins. This product's plugin
+ID is `showmeatsack`; its listing name and tool name remain **showmeatsack.com**.
+The product repository owns its manifest, skill, hosted MCP configuration, and
+logo. The marketplace sync copies a minimal package from those sources.
+
+The portable manifest carries OpenAI listing metadata and logo paths. Claude
+Code and Cursor compatibility manifests use the same plugin ID and version.
+The homepage leads with an **Install plugin** action to `/install`. The guide
+shows this product’s character icon, app-specific steps and copyable commands for
+Codex, Claude Code, and Cursor. Add the marketplace once per app, then choose
+one or more plugins. Direct MCP setup remains available as a secondary option.
+The install guide is linked from the footer and sitemap;
+`/llms.txt`, `/mcp.md`, and the HTML MCP guide link to the marketplace. Each
+plugin includes both the MCP connection and the same skill served at `/skill.md`.
+
+Publication of `garylesueur/meatsack-marketplace` must precede deployment of the
+website links. Public ChatGPT/Codex and Cursor directory submissions are a
+separate release step.
 
 ## Rules (Invariants)
 

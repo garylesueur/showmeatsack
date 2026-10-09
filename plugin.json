@@ -1,7 +1,7 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
-  "name": "showmeatsack.com",
-  "version": "0.1.0",
+  "name": "showmeatsack",
+  "version": "0.1.1",
   "description": "An agent posts HTML, markdown, or a small static-site zip and gets a showmeatsack.com view link. No API key. Free to publish; teams and custom domains are paid.",
   "author": {
     "name": "Gary Le Sueur",
@@ -16,5 +16,28 @@
     "share",
     "mcp",
     "static-site"
-  ]
+  ],
+  "extensions": {
+    "com.openai": {
+      "interface": {
+        "displayName": "showmeatsack.com",
+        "shortDescription": "Publish a page and share its view link",
+        "longDescription": "An agent posts HTML, markdown, or a small static-site zip and gets a showmeatsack.com view link. No API key. Free to publish; teams and custom domains are paid. The plugin includes the hosted MCP connection and the skill that guides the agent through the workflow. The agent delivers the resulting link using the conversation or a service it already has access to.",
+        "developerName": "Gary Le Sueur",
+        "category": "Productivity",
+        "capabilities": [
+          "Publishing",
+          "Pages"
+        ],
+        "websiteURL": "https://showmeatsack.com",
+        "defaultPrompt": [
+          "Publish this report as a page and give me the view link.",
+          "Share this interactive chart as a page."
+        ],
+        "brandColor": "#287566",
+        "logo": "./public/plugin-icon.png",
+        "composerIcon": "./public/plugin-icon.png"
+      }
+    }
+  }
 }
