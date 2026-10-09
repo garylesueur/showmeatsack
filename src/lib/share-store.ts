@@ -1,3 +1,11 @@
+export type SharePreview = {
+  path: string;
+  width: number;
+  height: number;
+  title: string;
+  description: string;
+};
+
 export type ShareRecord = {
   id: string;
   createdAt: string;
@@ -5,6 +13,7 @@ export type ShareRecord = {
   expiresAt: string;
   deletedAt?: string;
   manageToken: string;
+  preview?: SharePreview;
 };
 
 export type ShareStore = {
