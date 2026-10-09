@@ -26,6 +26,21 @@ async function create(body: unknown): Promise<Response> {
 }
 
 describe("POST /api/v1/shares", () => {
+  it("QR B1 — publishes the same QR payload over HTTP and refuses mixed content", async () => {
+    const shares = installTestShareService();
+    const response = await create({ qr: { url: "https://example.com/register" } });
+    expect(response.status).toBe(201);
+    expect(await response.json()).toMatchObject({
+      viewUrl: "https://showmeatsack.com/s/shareid1/",
+    });
+    expect(await shares.view("shareid1", "qr.png")).toMatchObject({
+      kind: "file",
+      contentType: "image/png",
+    });
+    expect(
+      (await create({ qr: { url: "https://example.com/" }, html: "<p>Mixed</p>" })).status,
+    ).toBe(400);
+  });
   afterEach(() => {
     clearInstalledService();
     clearInstalledCreateRateLimiter();

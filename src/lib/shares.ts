@@ -2,13 +2,15 @@ import { randomBytes, timingSafeEqual } from "node:crypto";
 import type { FileStore } from "./file-store";
 import { looksLikeHtml } from "./looks-like-html";
 import { contentTypeForPath, isTextContentType } from "./mime";
+import { qrAsSite } from "./qr-share";
 import {
   SHARE_DEFAULT_TTL_SECONDS,
   SHARE_MAX_BYTES,
   createShareSchema,
   replaceShareSchema,
+  type QrShareInput,
 } from "./schema";
-import type { ShareRecord, ShareStore } from "./share-store";
+import type { SharePreview, ShareRecord, ShareStore } from "./share-store";
 import { normalizeSharePath } from "./site-paths";
 import { htmlAsSite, markdownAsSite, unpackZipSite, type SiteFile } from "./zip-site";
 
@@ -58,6 +60,7 @@ export type ViewFileResult = {
   path: string;
   bytes: Uint8Array;
   contentType: string;
+  preview?: SharePreview;
 };
 
 export type ViewGoneResult = {
@@ -184,6 +187,33 @@ async function writeFiles(files: FileStore, shareId: string, siteFiles: SiteFile
 }
 
 export function createShareService(deps: ShareServiceDeps) {
+  async function prepare(input: {
+    html?: string;
+    markdown?: string;
+    zipBase64?: string;
+    qr?: QrShareInput;
+  }): Promise<{ files: SiteFile[]; preview?: SharePreview } | ShareServiceError> {
+    if (input.qr) {
+      try {
+        const prepared = await qrAsSite(input.qr);
+        if (
+          prepared.files.reduce((sum, file) => sum + file.bytes.byteLength, 0) > SHARE_MAX_BYTES
+        ) {
+          return error(400, "too_large", "Share is larger than 5 MB.");
+        }
+        return prepared;
+      } catch {
+        return error(
+          503,
+          "qr_generation_failed",
+          "The QR code could not be generated. Try again later.",
+        );
+      }
+    }
+    const files = payloadToFiles(input);
+    return Array.isArray(files) ? { files } : files;
+  }
+
   async function create(raw: unknown): Promise<CreateShareResult | ShareServiceError> {
     const parsed = createShareSchema.safeParse(raw);
     if (!parsed.success) {
@@ -191,9 +221,9 @@ export function createShareService(deps: ShareServiceDeps) {
       return error(400, "invalid_payload", first?.message ?? "Payload is not usable.");
     }
 
-    const siteFiles = payloadToFiles(parsed.data);
-    if (!(siteFiles instanceof Array)) {
-      return siteFiles;
+    const prepared = await prepare(parsed.data);
+    if (isShareServiceError(prepared)) {
+      return prepared;
     }
 
     const now = deps.now();
@@ -205,8 +235,9 @@ export function createShareService(deps: ShareServiceDeps) {
       createdAt: now.toISOString(),
       expiresAt: new Date(now.getTime() + ttl * 1000).toISOString(),
       manageToken,
+      ...(prepared.preview ? { preview: prepared.preview } : {}),
     };
-    await writeFiles(deps.files, shareId, siteFiles);
+    await writeFiles(deps.files, shareId, prepared.files);
     await deps.store.save(share);
     const urls = urlsFor(deps.publicBaseUrl, deps.viewPublicBaseUrl ?? deps.publicBaseUrl, shareId);
     return {
@@ -266,12 +297,17 @@ export function createShareService(deps: ShareServiceDeps) {
       return error(400, "invalid_payload", first?.message ?? "Payload is not usable.");
     }
 
-    const siteFiles = payloadToFiles(parsed.data);
-    if (!(siteFiles instanceof Array)) {
-      return siteFiles;
+    const prepared = await prepare(parsed.data);
+    if (isShareServiceError(prepared)) {
+      return prepared;
     }
 
-    await writeFiles(deps.files, share.id, siteFiles);
+    await writeFiles(deps.files, share.id, prepared.files);
+    if (prepared.preview) {
+      share.preview = prepared.preview;
+    } else {
+      delete share.preview;
+    }
     await deps.store.save(share);
     const urls = urlsFor(
       deps.publicBaseUrl,
@@ -331,6 +367,7 @@ export function createShareService(deps: ShareServiceDeps) {
       path: resolvedPath,
       bytes: file.bytes,
       contentType: file.contentType,
+      ...(share.preview && resolvedPath === "index.html" ? { preview: share.preview } : {}),
     };
   }
 
