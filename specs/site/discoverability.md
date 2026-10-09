@@ -46,7 +46,8 @@ Being kept out of search is not the same as being unreadable. A share link someb
 deliberately hands to an agent can be fetched and read by that agent. Keeping shares out of
 search is done with the instruction that means "do not index" — never by refusing the fetch,
 which would break the ordinary act of passing someone a link. The viewed page is still the
-uploaded HTML, with no chrome wrapped around it.
+uploaded HTML with the small viewer badge and update notice described in
+[publishing a page](../sharing/pages/publishing.md), B22–B23.
 
 ### B7 — The repository is an Agent Plugin 🟢 implemented
 

@@ -9,6 +9,7 @@ export type SharePreview = {
 export type ShareRecord = {
   id: string;
   createdAt: string;
+  revision?: string;
   expiresAt: string;
   deletedAt?: string;
   manageToken: string;

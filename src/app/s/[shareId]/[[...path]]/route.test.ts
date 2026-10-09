@@ -13,7 +13,7 @@ import { createMemoryShareStore } from "@/lib/share-store";
 import { EXPIRED_SHARE_HTML, NOT_FOUND_SHARE_HTML } from "@/lib/share-view-response";
 import { installTestShareService, zipBase64 } from "@/lib/share-test-helpers";
 import { createShareService, isShareServiceError } from "@/lib/shares";
-import { GET } from "./route";
+import { GET, HEAD } from "./route";
 
 function clearInstalledService() {
   const globalForShares = globalThis as typeof globalThis & {
@@ -27,6 +27,11 @@ async function view(shareId: string, path?: string[]): Promise<Response> {
     params: Promise.resolve({ shareId, path }),
   });
 }
+
+const checkRevision = () =>
+  HEAD(new Request("https://showmeatsack.com/s/shareid1/", { method: "HEAD" }), {
+    params: Promise.resolve({ shareId: "shareid1" }),
+  });
 
 describe("GET /s/[shareId]", () => {
   afterEach(() => {
@@ -54,7 +59,61 @@ describe("GET /s/[shareId]", () => {
     expect(response.status).toBe(200);
     expect(response.headers.get("Content-Type")).toBe("text/html; charset=utf-8");
     expect(response.headers.get("X-Content-Type-Options")).toBe("nosniff");
-    expect(await response.text()).toBe(html);
+    const body = await response.text();
+    expect(body).toContain(html);
+    expect(body).toContain("data-showmeatsack-viewer");
+    expect(body).not.toContain("managetoken1");
+  });
+
+  it("B23 — public version checks detect replacement without exposing manage details", async () => {
+    const shares = installTestShareService();
+    await shares.create({ html: "<p>First</p>" });
+    const first = await checkRevision();
+    const revision = first.headers.get("X-Showmeatsack-Revision");
+    expect(first.status).toBe(200);
+    expect(revision).toBeTruthy();
+    expect(await first.text()).toBe("");
+    expect(JSON.stringify([...first.headers])).not.toContain("managetoken1");
+    const firstPage = await (await view("shareid1")).text();
+    expect(firstPage).toContain(revision);
+
+    await shares.replace("shareid1", "managetoken1", { html: "<p>Second</p>" });
+    const second = await checkRevision();
+    expect(second.headers.get("X-Showmeatsack-Revision")).not.toBe(revision);
+    expect(second.headers.get("Cache-Control")).toContain("no-cache");
+    await shares.replace("shareid1", "managetoken1", { html: "" });
+    expect((await checkRevision()).headers.get("X-Showmeatsack-Revision")).toBe(
+      second.headers.get("X-Showmeatsack-Revision"),
+    );
+    await shares.remove("shareid1", "managetoken1");
+    const gone = await checkRevision();
+    expect(gone.status).toBe(404);
+    expect(gone.headers.has("X-Showmeatsack-Revision")).toBe(false);
+  });
+
+  it("B23 — older shares have a stable public version without reading their files", async () => {
+    const store = createMemoryShareStore();
+    await store.save({
+      id: "shareid1",
+      createdAt: "2026-08-17T10:00:00.000Z",
+      expiresAt: "2026-08-18T10:00:00.000Z",
+      manageToken: "managetoken1",
+    });
+    const files = createMemoryFileStore();
+    files.get = async () => {
+      throw new Error("Version checks must not read files");
+    };
+    const shares = installTestShareService({ store, files });
+    const first = await checkRevision();
+    expect(first.status).toBe(200);
+    expect(first.headers.get("X-Showmeatsack-Revision")).toBe("2026-08-17T10:00:00.000Z");
+    expect((await checkRevision()).headers.get("X-Showmeatsack-Revision")).toBe(
+      first.headers.get("X-Showmeatsack-Revision"),
+    );
+    await shares.replace("shareid1", "managetoken1", { html: "<p>Updated</p>" });
+    expect((await checkRevision()).headers.get("X-Showmeatsack-Revision")).not.toBe(
+      first.headers.get("X-Showmeatsack-Revision"),
+    );
   });
 
   it("returns a useful error screen when rendering fails", async () => {
@@ -116,6 +175,12 @@ describe("GET /s/[shareId]", () => {
     await shares.create({ html: "<p>Temp</p>", expiresInSeconds: 60 });
     nowMs += 61_000;
 
+    const revision = await HEAD(
+      new Request("https://showmeatsack.com/s/shareid1/", { method: "HEAD" }),
+      { params: Promise.resolve({ shareId: "shareid1" }) },
+    );
+    expect(revision.status).toBe(410);
+    expect(revision.headers.has("X-Showmeatsack-Revision")).toBe(false);
     const response = await view("shareid1");
     expect(response.status).toBe(410);
     expect(await response.text()).toBe(EXPIRED_SHARE_HTML);
@@ -145,6 +210,17 @@ describe("GET /s/[shareId]", () => {
     expect(css.headers.get("Content-Type")).toBe("text/css; charset=utf-8");
     expect(css.headers.get("X-Content-Type-Options")).toBe("nosniff");
     expect(await css.text()).toBe("p{color:red}");
+    const head = await HEAD(
+      new Request("https://showmeatsack.com/s/shareid1/style.css", { method: "HEAD" }),
+      { params: Promise.resolve({ shareId: "shareid1", path: ["style.css"] }) },
+    );
+    expect(head.status).toBe(200);
+    expect(head.headers.get("Content-Type")).toBe(css.headers.get("Content-Type"));
+    const missing = await HEAD(
+      new Request("https://showmeatsack.com/s/shareid1/missing.css", { method: "HEAD" }),
+      { params: Promise.resolve({ shareId: "shareid1", path: ["missing.css"] }) },
+    );
+    expect(missing.status).toBe(404);
   });
 
   it("does not treat a huge create as a published page", async () => {
