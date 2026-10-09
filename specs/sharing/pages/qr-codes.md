@@ -36,6 +36,8 @@ The existing manage token can replace the QR's destination and title. After a su
 
 A missing or invalid destination, a URL with a scheme other than HTTP or HTTPS, embedded URL credentials, control characters, a URL over 512 UTF-8 bytes, a title over 120 characters, or more than one content kind is refused with a useful explanation. If the QR cannot be generated within the supported limits, nothing is published. The service does not visit a destination to validate it.
 
+Validation and size failures return 400. A generation exception returns 503 with `qr_generation_failed`, so a caller can retry; a failed create publishes nothing and a failed replace preserves the live share.
+
 ### B7 — QR files and previews follow the share's lifecycle 🟢 implemented
 
 After expiry or deletion, a fresh request cannot read the QR page, its PNG or its preview from showmeatsack.com. An unknown share cannot return another share's code. The manage secret never appears in the QR, page, downloadable file or preview. A QR already downloaded or retained by another app is outside the service's ability to recall.

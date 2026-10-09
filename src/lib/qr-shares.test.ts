@@ -4,6 +4,7 @@ import { responseForView } from "./share-view-response";
 import { testShareService, zipBase64 } from "./share-test-helpers";
 import { createShowmeatsackTool } from "./showmeatsack-tool";
 import { decodeQrImage } from "./qr-test-helpers";
+import { SHARE_MAX_BYTES } from "./schema";
 
 describe("QR share lifecycle", () => {
   afterEach(() => vi.restoreAllMocks());
@@ -84,11 +85,12 @@ describe("QR share lifecycle", () => {
       await shares.replace("shareid1", "managetoken1", {
         qr: { url: "https://example.com/other" },
       }),
-    ).toMatchObject({ status: 400 });
+    ).toMatchObject({ status: 503, code: "qr_generation_failed" });
     expect(await shares.view("shareid1", "qr.png")).toEqual(original);
     const empty = testShareService();
     expect(await empty.create({ qr: { url: "https://example.com/" } })).toMatchObject({
-      status: 400,
+      status: 503,
+      code: "qr_generation_failed",
     });
     expect(await empty.view("shareid1", "")).toEqual({ kind: "not_found" });
     vi.restoreAllMocks();
@@ -97,7 +99,20 @@ describe("QR share lifecycle", () => {
       await shares.replace("shareid1", "managetoken1", {
         qr: { url: "https://example.com/other" },
       }),
-    ).toMatchObject({ status: 400 });
+    ).toMatchObject({ status: 503, code: "qr_generation_failed" });
+    expect(await shares.view("shareid1", "qr.png")).toEqual(original);
+  });
+
+  it("B6 — oversized generated assets stay a client error and preserve the live share", async () => {
+    const shares = testShareService();
+    await shares.create({ qr: { url: "https://example.com/original" } });
+    const original = await shares.view("shareid1", "qr.png");
+    vi.spyOn(QRCode, "toBuffer").mockImplementation(async () => Buffer.alloc(SHARE_MAX_BYTES + 1));
+    expect(
+      await shares.replace("shareid1", "managetoken1", {
+        qr: { url: "https://example.com/other" },
+      }),
+    ).toMatchObject({ status: 400, code: "too_large" });
     expect(await shares.view("shareid1", "qr.png")).toEqual(original);
   });
 

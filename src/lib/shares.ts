@@ -204,9 +204,9 @@ export function createShareService(deps: ShareServiceDeps) {
         return prepared;
       } catch {
         return error(
-          400,
-          "invalid_payload",
-          "The QR code could not be generated. Try a shorter URL.",
+          503,
+          "qr_generation_failed",
+          "The QR code could not be generated. Try again later.",
         );
       }
     }

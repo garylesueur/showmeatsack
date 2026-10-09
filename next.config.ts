@@ -8,10 +8,17 @@ const qrFont = `./${relative(
   process.cwd(),
   realpathSync("node_modules/next/dist/compiled/@vercel/og/Geist-Regular.ttf"),
 )}`;
+const qrFallbackFonts = `./${relative(
+  process.cwd(),
+  realpathSync("node_modules/@sparticuz/chromium/bin/fonts.tar.br"),
+)}`;
 
 const nextConfig: NextConfig = {
   agentRules: false,
-  env: { SHOWMEATSACK_QR_FONT_PATH: qrFont },
+  env: {
+    SHOWMEATSACK_QR_FONT_PATH: qrFont,
+    SHOWMEATSACK_QR_FALLBACK_FONTS_PATH: qrFallbackFonts,
+  },
   // Share homepages are directory URLs so relative files in zip sites resolve
   // beneath /s/{shareId}/. Keep that slash instead of normalising it away.
   skipTrailingSlashRedirect: true,
@@ -22,9 +29,9 @@ const nextConfig: NextConfig = {
   // and every link preview falls back to the plain title card. The .pnpm path is
   // the real one; node_modules/@sparticuz/chromium is a symlink.
   outputFileTracingIncludes: {
-    "/api/v1/shares": [qrFont, "./src/assets/qr-fonts.conf"],
-    "/api/v1/shares/*": [qrFont, "./src/assets/qr-fonts.conf"],
-    "/mcp": [qrFont, "./src/assets/qr-fonts.conf"],
+    "/api/v1/shares": [qrFont, qrFallbackFonts, "./src/assets/qr-fonts.conf"],
+    "/api/v1/shares/*": [qrFont, qrFallbackFonts, "./src/assets/qr-fonts.conf"],
+    "/mcp": [qrFont, qrFallbackFonts, "./src/assets/qr-fonts.conf"],
     // The key is matched as a glob, so "[shareId]" would be read as a character
     // class and never match. "*" stands in for the dynamic segment.
     "/s/*/opengraph-image": [
