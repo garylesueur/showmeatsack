@@ -29,6 +29,7 @@ describe("QR share lifecycle", () => {
     expect(html).toContain('property="og:image:width" content="1024"');
     expect(html).toContain('property="og:image:height" content="1024"');
     expect(html).not.toContain("managetoken1");
+    expect(html).toContain("data-showmeatsack-viewer");
     const second = await tool.invoke({
       action: "replace",
       shareId: "shareid1",
@@ -45,6 +46,8 @@ describe("QR share lifecycle", () => {
     if (image.kind === "file")
       expect(await decodeQrImage(image.bytes)).toBe("https://example.com/second");
     const updatedPage = await shares.view("shareid1", "");
+    if (updatedPage.kind === "file" && page.kind === "file")
+      expect(updatedPage.revision).not.toBe(page.revision);
     expect(updatedPage).toMatchObject({
       preview: { path: "preview.png", width: 1200, height: 630 },
     });

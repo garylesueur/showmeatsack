@@ -9,6 +9,7 @@ import {
   withOpenGraphMeta,
 } from "./share-open-graph";
 import { renderMarkdownDocument } from "./markdown-document";
+import { withShareViewer } from "./share-viewer";
 import type { ViewResult } from "./shares";
 
 export const VIEW_CACHE_HEADERS = {
@@ -101,7 +102,7 @@ export function responseForView(result: ViewResult, context?: ViewResponseContex
       });
       return htmlPage(200, withMeta);
     }
-    return htmlPage(200, html);
+    return htmlPage(200, context ? withShareViewer(html, context.shareId, result.revision) : html);
   }
 
   const isHtml = result.contentType.toLowerCase().includes("text/html");
@@ -121,10 +122,15 @@ export function responseForView(result: ViewResult, context?: ViewResponseContex
       pageUrl: urls.pageUrl,
       imageSize: result.preview,
     });
-    return htmlPage(200, withMeta);
+    return htmlPage(
+      200,
+      isLinkPreviewCrawler(context.request.headers.get("user-agent"))
+        ? withMeta
+        : withShareViewer(withMeta, context.shareId, result.revision),
+    );
   }
-  if (legacyMarkdown && html) {
-    return htmlPage(200, html);
+  if (html && (context || legacyMarkdown)) {
+    return htmlPage(200, context ? withShareViewer(html, context.shareId, result.revision) : html);
   }
 
   return new Response(Buffer.from(result.bytes), {

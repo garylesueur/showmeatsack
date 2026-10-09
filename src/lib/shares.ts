@@ -62,6 +62,7 @@ export type ViewFileResult = {
   path: string;
   bytes: Uint8Array;
   contentType: string;
+  revision?: string;
   preview?: SharePreview;
 };
 
@@ -239,6 +240,7 @@ export function createShareService(deps: ShareServiceDeps) {
     const share: ShareRecord = {
       id: shareId,
       createdAt: now.toISOString(),
+      revision: randomBytes(16).toString("base64url"),
       expiresAt: new Date(now.getTime() + ttl * 1000).toISOString(),
       manageToken,
       ...(prepared.preview ? { preview: prepared.preview } : {}),
@@ -314,6 +316,7 @@ export function createShareService(deps: ShareServiceDeps) {
     } else {
       delete share.preview;
     }
+    share.revision = randomBytes(16).toString("base64url");
     await deps.store.save(share);
     const urls = urlsFor(
       deps.publicBaseUrl,
@@ -373,8 +376,16 @@ export function createShareService(deps: ShareServiceDeps) {
       path: resolvedPath,
       bytes: file.bytes,
       contentType: file.contentType,
+      revision: share.revision ?? share.createdAt,
       ...(share.preview && resolvedPath === "index.html" ? { preview: share.preview } : {}),
     };
+  }
+
+  async function publicRevision(shareId: string) {
+    const share = await deps.store.getById(shareId);
+    if (!share || share.deletedAt) return { kind: "not_found" as const };
+    if (isExpired(share, deps.now())) return { kind: "expired" as const };
+    return { kind: "live" as const, revision: share.revision ?? share.createdAt };
   }
 
   async function read(
@@ -407,7 +418,7 @@ export function createShareService(deps: ShareServiceDeps) {
     };
   }
 
-  return { create, status, replace, remove, view, read };
+  return { create, status, replace, remove, view, read, publicRevision };
 }
 
 export function createShareId(): string {

@@ -18,7 +18,7 @@ An agent calls the **showmeatsack.com** tool, or sends the same payload over HTT
 
 ### B2 — The view link is the page itself 🟢 implemented
 
-Anyone who opens the view link in a browser sees the uploaded page on the view origin. There is no showmeatsack.com chrome around it, and scripts and styles in the page are not stripped. The page looks as the agent published it. The product origin (home, docs, MCP, and the manage API) does not serve that uploaded page.
+Anyone who opens the view link in a browser sees the uploaded page on the view origin. Scripts and styles in the page are not stripped. The page keeps its published layout, with a small floating showmeatsack.com badge in the bottom left (B22) and a notice when a newer version is available (B23). The product origin (home, docs, MCP, and the manage API) does not serve that uploaded page.
 
 ### B3 — A zip is a small static site 🟢 implemented
 
@@ -85,7 +85,7 @@ Create and replace return a manage URL that names the share and a manage token t
 
 ### B17 — A link preview shows the page 🟢 implemented
 
-When the view link is pasted into Slack or another app that fetches a link preview, the preview image is a picture of that share’s uploaded page — not the showmeatsack.com homepage, and not another share. If a picture cannot be taken, the preview still names that page (its title or visible text), never another share and never the product homepage. A person who opens the same link in a browser still sees the uploaded page, with no extra chrome around it. Building that image is expensive, so it is built once and reused rather than rebuilt for every crawler that asks, and only so many can be built at once.
+When the view link is pasted into Slack or another app that fetches a link preview, the preview image is a picture of that share’s uploaded page — not the showmeatsack.com homepage, and not another share. If a picture cannot be taken, the preview still names that page (its title or visible text), never another share and never the product homepage. A person who opens the same link in a browser sees the uploaded page with the small viewer badge and update notice (B22–B23). Link-preview crawlers receive no viewer controls. Building that image is expensive, so it is built once and reused rather than rebuilt for every crawler that asks, and only so many can be built at once.
 
 ### B18 — Trying it on the home page needs no account 🔵 future
 
@@ -123,7 +123,7 @@ how big it is rather than returning its contents. An expired share reads as gone
 unknown one as not found, in the same words a browser is given, so reading reveals no more
 about a share than opening it would.
 
-### B22 — Agent publishes a read-only workbook 🟢 implemented
+### B24 — Agent publishes a read-only workbook 🟢 implemented
 
 An agent sends `table` instead of HTML, markdown or zip, through the same HTTP or
 MCP create/replace call. It holds exactly one of `csv` (source text) or
@@ -158,6 +158,30 @@ Large direct-to-storage uploads, background processing, server-side querying and
 chunked loading within a sheet are future work. The current viewer loads each
 active sheet in full, and does not promise unlimited browser memory or instant
 sorting for arbitrarily large datasets.
+### B22 — Shared pages carry a small brand badge 🟢 implemented
+
+A person viewing a shared HTML or Markdown page sees a small floating badge in the
+bottom left, showing the meat sack character and **showmeatsack.com**. The badge links
+to the product in a new tab. Its styles are isolated from the uploaded page, and it
+fits on a phone without changing the page layout. It appears on all shares while
+publishing has no account requirement. Assets, link-preview crawlers, and embedded
+frames receive no visible badge. Viewer controls require JavaScript and permission
+from any content security policy supplied by the uploaded page.
+
+### B23 — An open page announces a replacement 🟢 implemented
+
+While a shared page is open, the viewer checks its public version every 30 seconds
+while visible, on initial load, and when the tab becomes visible or receives focus.
+After a successful replacement, a notice above the badge says **New version available**
+and offers **Refresh**. The page stays in place until the viewer chooses to refresh,
+so the notice does not discard input or interrupt reading. Refresh reloads the same
+URL and shows the latest page. A rejected replacement does not change the version.
+
+The version check reads only public share metadata, needs no account or manage secret,
+and never exposes the manage token. Temporary network failures leave the current
+page readable and retry on the next check. Expiry or deletion shows an availability
+notice instead of an update notice; refreshing then shows the usual gone page.
+Shares published before version tracking was introduced are also checked for updates.
 
 ## Rules (Invariants)
 
@@ -166,7 +190,7 @@ sorting for arbitrarily large datasets.
   it by the same rule, without a separate decision.
 - The view link never grants replace or delete.
 - The manage secret never appears in the viewed page, in the manage URL, or in anything the browser is given to run.
-- An HTML, markdown or zip share is at most 5 MB. A workbook source is also at most 5 MB; generated viewer assets and normalized sheets are additional derived files bounded as described in B22. For a zip, the limit is enforced before a zip is expanded rather than after. A zip that would expand past it is refused without being unpacked. The submitted payload must also fit within what the platform will carry in one request, so the effective limit is the smaller of the two and the service states the one it actually applies.
+- An HTML, markdown or zip share is at most 5 MB. A workbook source is also at most 5 MB; generated viewer assets and normalized sheets are additional derived files bounded as described in B24. For a zip, the limit is enforced before a zip is expanded rather than after. A zip that would expand past it is refused without being unpacked. The submitted payload must also fit within what the platform will carry in one request, so the effective limit is the smaller of the two and the service states the one it actually applies.
 - Default life is 30 days from create. Without an account the creator may ask for shorter, never more than 30 days. With an account, the owner may extend or shorten a live share for as long as the account exists (B20).
 - Expired and deleted shares stay gone without anyone acting.
 - The viewing origin has no account cookies, so a raw page is not sitting next to a sign-in. Whatever lets somebody open a private share must not break this.
@@ -174,7 +198,7 @@ sorting for arbitrarily large datasets.
 - The agent tool is named **showmeatsack.com**. View links are on `https://s.showmeatsack.com`. The product stays on `https://showmeatsack.com`.
 - User-facing copy calls the product **showmeatsack.com**.
 - A zip’s homepage is `index.html` at the zip root, or inside a single wrapping folder (the usual “zip a folder” case). Relative files in that zip are part of the same share.
-- A person opening the view link receives the uploaded page as published. Extra Open Graph tags are only for link-preview crawlers, and they do not change how the page looks.
+- A person opening the view link receives the published page with the small viewer badge and availability notice (B22–B23). Open Graph tags are only added for link-preview crawlers; viewer controls are not added to crawler responses.
 - A link preview for one view link never shows another share’s page.
 - Replace changes the files only. Expiry stays as it was at create.
 - After a successful replace, the next open of the view link shows the new page.
@@ -198,7 +222,7 @@ sorting for arbitrarily large datasets.
 | Zip with no `index.html` | Refused; nothing published or changed |
 | Empty HTML or empty zip | Refused; nothing published or changed |
 | Larger than 5 MB | Refused; nothing published or changed |
-| CSV or .xlsx via `table`, within B22 processing budgets | Published as a read-only workbook viewer |
+| CSV or .xlsx via `table`, within B24 processing budgets | Published as a read-only workbook viewer |
 | More than one payload kind, or an unsupported kind | Refused; nothing published or changed |
 | Usable payload, but this caller has published too many pages | Refused; nothing published; agent is told to wait |
 
@@ -206,7 +230,7 @@ sorting for arbitrarily large datasets.
 
 | Who fetches the view link | Outcome |
 | --- | --- |
-| A person in a browser | The uploaded page, unchanged |
+| A person in a browser | The uploaded page with a small viewer badge and, when needed, an update or availability notice |
 | A link-preview crawler, share still live, picture taken | Preview image is a picture of that share’s page |
 | A link-preview crawler, share still live, picture cannot be taken | Preview names that page from its title or visible text; not the product homepage; not another share |
 | A link-preview crawler, expired, deleted, or unknown | No preview of another share |
@@ -270,6 +294,16 @@ sorting for arbitrarily large datasets.
 | Manage secret matches; payload would be refused on create | Refused; live page unchanged |
 | View link only, or secret does not match | Refused; live page unchanged |
 | Share already expired or deleted | Refused |
+
+### A page already open in a browser
+
+| What happens | Outcome |
+| --- | --- |
+| A replacement succeeds | On the next visible check, the viewer offers Refresh; the current page and input stay in place |
+| A replacement is refused | No update notice; the current version stays live |
+| The viewer chooses Refresh | The same URL reloads with the latest content |
+| A version check fails temporarily | No interruption; another check is attempted later |
+| The share expires or is deleted | An availability notice appears; Refresh opens the usual gone page |
 
 ## User Flows
 

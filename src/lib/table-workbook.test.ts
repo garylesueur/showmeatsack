@@ -34,7 +34,7 @@ function excel() {
   return write(workbook, { type: "base64", bookType: "xlsx" }) as string;
 }
 
-describe("B22 — publishing a workbook", () => {
+describe("B24 — publishing a workbook", () => {
   it.each(["", "\uFEFF"])(
     "preserves quoted CSV, unicode, multiline values, duplicate headers and leading zeros (BOM %j)",
     (bom) => {
