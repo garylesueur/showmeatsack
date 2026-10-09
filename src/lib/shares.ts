@@ -1,8 +1,10 @@
+import { tableAsSite } from "./table-workbook";
 import { randomBytes, timingSafeEqual } from "node:crypto";
 import type { FileStore } from "./file-store";
 import { looksLikeHtml } from "./looks-like-html";
 import { contentTypeForPath, isTextContentType } from "./mime";
 import {
+  type TablePayload,
   SHARE_DEFAULT_TTL_SECONDS,
   SHARE_MAX_BYTES,
   createShareSchema,
@@ -111,14 +113,17 @@ function payloadToFiles(input: {
   html?: string;
   markdown?: string;
   zipBase64?: string;
+  table?: TablePayload;
 }): SiteFile[] | ShareServiceError {
   const kinds =
     Number(input.html !== undefined) +
     Number(input.markdown !== undefined) +
-    Number(input.zipBase64 !== undefined);
+    Number(input.zipBase64 !== undefined) +
+    Number(input.table !== undefined);
   if (kinds !== 1) {
-    return error(400, "invalid_payload", "Send html, markdown, or a zip — one of them.");
+    return error(400, "invalid_payload", "Send html, markdown, zipBase64, or table — exactly one.");
   }
+  if (input.table !== undefined) return unpackOrError(tableAsSite(input.table));
   if (input.markdown !== undefined) {
     if (Buffer.byteLength(input.markdown, "utf8") > SHARE_MAX_BYTES) {
       return error(400, "too_large", "Share is larger than 5 MB.");
@@ -149,7 +154,7 @@ function payloadToFiles(input: {
     }
     return unpacked.files;
   }
-  return error(400, "invalid_payload", "Send html, markdown, or a zip — one of them.");
+  return error(400, "invalid_payload", "Send html, markdown, zipBase64, or table — exactly one.");
 }
 
 function urlsFor(

@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { limitCreateFromRequest } from "./create-rate-limit";
 import { incomingRequest } from "./incoming-request";
-import { SHARE_MAX_TTL_SECONDS } from "./schema";
+import { SHARE_MAX_TTL_SECONDS, tablePayloadSchema } from "./schema";
 import { isShareServiceError, type ShareServiceError, type createShareService } from "./shares";
 
 export const SHOWMEATSACK_TOOL_NAME = "showmeatsack.com";
@@ -18,6 +18,7 @@ export const showmeatsackToolInputSchema = z.object({
   html: z.string().min(1).optional(),
   markdown: z.string().min(1).optional(),
   zipBase64: z.string().min(1).optional(),
+  table: tablePayloadSchema.optional(),
   expiresInSeconds: z.number().int().positive().max(SHARE_MAX_TTL_SECONDS).optional(),
 });
 
@@ -55,6 +56,7 @@ export function createShowmeatsackTool(shares: ShowmeatsackToolShares) {
           html: input.html,
           markdown: input.markdown,
           zipBase64: input.zipBase64,
+          table: input.table,
           expiresInSeconds: input.expiresInSeconds,
         });
       }
@@ -72,6 +74,7 @@ export function createShowmeatsackTool(shares: ShowmeatsackToolShares) {
           html: input.html,
           markdown: input.markdown,
           zipBase64: input.zipBase64,
+          table: input.table,
         });
       }
       if (input.action === "delete") {

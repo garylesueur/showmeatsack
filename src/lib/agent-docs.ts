@@ -106,6 +106,8 @@ Content-Type: application/json
 
 Or send \`markdown\` for a GitHub-flavoured document (tables, task lists, mermaid fences), or \`zipBase64\` instead of \`html\`. Optional \`expiresInSeconds\` (default 30 days, never longer). Cap is 5 MB.
 
+For a read-only table viewer, send \`table: { csv: "Name,Amount\\nAlice,12" }\` or \`table: { xlsxBase64: "<base64 .xlsx bytes>", filename: "Report.xlsx" }\`. Optional \`title\` and \`headerRow\` (one-based, default 1; 0 means no headers). Visible sheets become tabs. Search, sort, filter, resize, and freeze columns without editing the source. The original file is downloadable. Workbook expansion and normalized data each have a 32 MB processing budget; there is no row-count cap. The platform request limit also applies, including base64 overhead. Excel displays saved values and number formats; no formula recalculation, macros, or workbook layout reproduction.
+
 Create returns \`viewUrl\`, \`manageUrl\`, \`manageToken\`, and \`expiresAt\`. Paste \`viewUrl\` where the person will see it. Keep \`manageToken\` for replace, delete, and status. Send it as \`Authorization: Bearer\`, not in the query string.
 
 - Read: \`GET /s/{shareId}\` — no token. The page itself, exactly as a person's browser gets it.
