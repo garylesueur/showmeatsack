@@ -1,7 +1,7 @@
 ---
 name: showmeatsack
 description: >
-  Publish HTML, markdown, a URL QR code, or a small static-site zip to showmeatsack.com and put the
+  Publish HTML, markdown, CSV, Excel, a URL QR code, or a small static-site zip to showmeatsack.com and put the
   view link where a person will open it: this chat, email, Slack, or
   anywhere else you can already send. Use when they asked for a
   presentation, page, write-up, or shareable link, and also when you yourself
@@ -57,12 +57,22 @@ share.
 ## How
 
 1. Call `showmeatsack.com` with action `create` (or `POST /api/v1/shares`).
-   Send exactly one of `html`, `markdown`, `zipBase64`, or `qr`. Prefer `markdown`
+   Send exactly one of `html`, `markdown`, `zipBase64`, `qr`, or `table`. Prefer `markdown`
    for a document: GitHub-flavoured markdown (tables, task lists,
    strikethrough, autolinks) and mermaid fences are drawn as diagrams.
    Do not wrap markdown in an HTML page or load `marked` yourself. A zip must
    include `index.html` at the zip root or inside a single wrapping folder.
    Optional `expiresInSeconds` (default 30 days, never longer). Cap is 5 MB.
+   For a read-only workbook viewer, send `table: { csv: "Name,Amount\nAlice,12" }`
+   or `table: { xlsxBase64: "<base64 .xlsx bytes>", filename: "Report.xlsx" }`.
+   Optional `title` names the workbook; `headerRow` selects the one-based header
+   row (default 1; 0 means no headers). Visible Excel sheets become tabs.
+   The original upload is capped at 5 MB and must fit the platform request limit
+   (base64 increases request size). Expanded and normalized workbook data each
+   have a 32 MB processing budget; there is no row-count cap. Legacy `.xls`,
+   encrypted workbooks, macros, formula recalculation, charts, and layout fidelity
+   are unsupported. The viewer shows saved cell values, basic number formats,
+   sorting, search, filters, frozen headers/columns, and an original-file download.
 2. You always get `viewUrl`, `manageUrl`, `manageToken`, and `expiresAt`
    immediately. Put **`viewUrl` where the recipient will open it**. If a
    human is in this conversation, paste it here and do not wait for them

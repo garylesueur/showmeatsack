@@ -36,27 +36,50 @@ export const qrShareSchema = z.strictObject({
 
 export type QrShareInput = z.infer<typeof qrShareSchema>;
 
+export const tablePayloadSchema = z
+  .object({
+    csv: z.string().min(1).optional(),
+    xlsxBase64: z.string().min(1).optional(),
+    filename: z.string().min(1).max(255).optional(),
+    title: z.string().min(1).max(255).optional(),
+    headerRow: z.number().int().min(0).optional(),
+  })
+  .refine(
+    (value) => Number(value.csv !== undefined) + Number(value.xlsxBase64 !== undefined) === 1,
+    { message: "Send csv or xlsxBase64 inside table, exactly one." },
+  );
+
+export type TablePayload = z.infer<typeof tablePayloadSchema>;
+
 const sharePayloadFields = {
   html: z.string().min(1).optional(),
   markdown: z.string().min(1).optional(),
   zipBase64: z.string().min(1).optional(),
   qr: qrShareSchema.optional(),
+  table: tablePayloadSchema.optional(),
 };
 
-type SharePayload = { html?: string; markdown?: string; zipBase64?: string; qr?: QrShareInput };
+type SharePayload = {
+  html?: string;
+  markdown?: string;
+  zipBase64?: string;
+  qr?: QrShareInput;
+  table?: TablePayload;
+};
 
 function payloadCount(value: SharePayload): number {
   return (
     Number(value.html !== undefined) +
     Number(value.markdown !== undefined) +
     Number(value.zipBase64 !== undefined) +
-    Number(value.qr !== undefined)
+    Number(value.qr !== undefined) +
+    Number(value.table !== undefined)
   );
 }
 
 function onePayload<T extends SharePayload>(schema: z.ZodType<T>) {
   return schema.refine((value) => payloadCount(value) === 1, {
-    message: "Send html, markdown, a zip, or qr — one of them.",
+    message: "Send html, markdown, zipBase64, qr, or table — exactly one.",
   });
 }
 
