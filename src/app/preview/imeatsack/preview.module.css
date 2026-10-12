@@ -10,37 +10,6 @@
   outline-offset: 6px;
   border-radius: 3px;
 }
-.nav {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  padding: 24px 0;
-  border-bottom: 1px solid var(--border);
-  font-size: 13px;
-}
-.navWordmark {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: -0.02em;
-}
-.navWordmark span {
-  width: 7px;
-  height: 7px;
-  border-radius: 50%;
-  background: var(--primary);
-}
-.navLinks {
-  display: flex;
-  gap: 22px;
-  color: var(--muted-foreground);
-}
-.navLinks a:hover {
-  color: var(--foreground);
-}
 .hero {
   padding-top: 56px;
 }

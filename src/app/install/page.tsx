@@ -21,9 +21,8 @@ export default function InstallPage() {
   const mcpUrl = origin + "/mcp";
   return (
     <SiteShell
-      wordmark={PLUGIN_INSTALL.displayName}
+      product="show"
       repoHref={CURSOR_PLUGIN_HREF}
-      sibling={{ name: "ask.imeatsack.com", href: "https://ask.imeatsack.com" }}
       docs={[
         { label: "Install plugin", href: "/install" },
         { label: "skill.md", href: "/skill.md" },

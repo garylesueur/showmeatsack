@@ -12,7 +12,7 @@ domain.
 Posting the view link to Slack, email, or anywhere else is the calling agent's
 job.
 
-Sibling project: [askmeatsack.com](https://github.com/garylesueur/askmeatsack) —
+Sibling project: [ask.imeatsack.com](https://github.com/garylesueur/askmeatsack) —
 an agent asks, a human answers.
 
 ## Quick start
@@ -126,7 +126,7 @@ Published pages use a separate origin because they can contain untrusted HTML.
 | `https://show.imeatsack.com` | The product site and API |
 | `https://s.imeatsack.com` | Published pages |
 
-Both hosts belong to the Show Vercel project. `s.showmeatsack.com` redirects to
+Both hosts belong to the Show Vercel project. The previous view host redirects to
 `s.imeatsack.com`. Set production `PUBLIC_BASE_URL` and `VIEW_PUBLIC_BASE_URL`
 to these origins. The move redeploys the existing production sources with updated
 public-origin configuration; unfinished changes in local product checkouts are
@@ -134,8 +134,8 @@ not part of the release.
 
 ## Secrets
 
-Three 1Password items live in the **Agents** vault: `showmeatsack.com
-Development`, `showmeatsack.com Preview`, and `showmeatsack.com Production`.
+Three 1Password items live in the **Agents** vault: `show.imeatsack.com
+Development`, `show.imeatsack.com Preview`, and `show.imeatsack.com Production`.
 Same field names, different values. Local work uses Development only; Preview
 and Production are pushed to Vercel and are not for a laptop.
 

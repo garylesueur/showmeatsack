@@ -6,13 +6,13 @@ status: implemented
 
 # Site discoverability
 
-Public pages tell search engines, answer engines, and agents what showmeatsack.com is. View links stay private.
+Public pages tell search engines, answer engines, and agents what show.imeatsack.com is. View links stay private.
 
 ## Behaviours
 
 ### B1 — Home carries ordinary share metadata 🟢 implemented
 
-The home page has a title, description, canonical URL, Open Graph tags, a large share image, and structured data naming showmeatsack.com. Sharing the home URL in chat or on social media shows that card.
+The home page has a title, description, canonical URL, Open Graph tags, a large share image, and structured data naming show.imeatsack.com. Sharing the home URL in chat or on social media shows that card.
 
 Browser tabs and phone home-screen bookmarks use the product’s Meatsack
 character icon and its ask, show, or share badge. `public/plugin-icon.png` owns
@@ -30,11 +30,11 @@ Crawlers can fetch a sitemap of the public documents (home, MCP page, markdown g
 
 ### B4 — Pasting the MCP URL yields a guide 🟢 implemented
 
-Opening `https://showmeatsack.com/mcp` in a browser shows a short HTML page with the MCP URL and links to the markdown guide and skill. Fetching that same URL as markdown (or with no HTML Accept), or fetching `/mcp.md`, returns a markdown API guide: what the product does, how to connect, the tool actions, curl, and the skill.
+Opening `https://show.imeatsack.com/mcp` in a browser shows a short HTML page with the MCP URL and links to the markdown guide and skill. Fetching that same URL as markdown (or with no HTML Accept), or fetching `/mcp.md`, returns a markdown API guide: what the product does, how to connect, the tool actions, curl, and the skill.
 
 ### B5 — The skill is on the site 🟢 implemented
 
-`/skill.md` is the showmeatsack.com skill: create, put the view link where the person will open it (this conversation, email, Slack, or anywhere else the agent can already send), replace or delete with the manage token. It matches the skill shipped for Cursor. An agent does not wait for the words "showmeatsack"; a bot acting on its own still publishes, then delivers `viewUrl` itself.
+`/skill.md` is the show.imeatsack.com skill: create, put the view link where the person will open it (this conversation, email, Slack, or anywhere else the agent can already send), replace or delete with the manage token. It matches the skill shipped for Cursor. An agent does not wait for the words "showmeatsack"; a bot acting on its own still publishes, then delivers `viewUrl` itself.
 
 ### B6 — View links are not for search, but are not hidden from agents 🟢 implemented
 
@@ -51,13 +51,13 @@ uploaded HTML with the small viewer badge and update notice described in
 
 ### B7 — The repository is an Agent Plugin 🟢 implemented
 
-The repository root is an Agent Plugin: a client that understands [Agent Plugins](https://agent-plugins.org/) can install it and get the hosted showmeatsack.com MCP server plus the skill. `.cursor-plugin/plugin.json` is present so Cursor can add this clone as an Open Plugin from the local folder. The plugin skill instructions match `/skill.md`.
+The repository root is an Agent Plugin: a client that understands [Agent Plugins](https://agent-plugins.org/) can install it and get the hosted show.imeatsack.com MCP server plus the skill. `.cursor-plugin/plugin.json` is present so Cursor can add this clone as an Open Plugin from the local folder. The plugin skill instructions match `/skill.md`.
 
 ### B8 — Plugins share a Meatsack marketplace 🟢 implemented
 
-The Meatsack marketplace lists askmeatsack.com, showmeatsack.com, and
-sharemeatsack.com as independently installable plugins. This product's plugin
-ID is `showmeatsack`; its listing name and tool name remain **showmeatsack.com**.
+The Meatsack marketplace lists ask.imeatsack.com, show.imeatsack.com, and
+share.imeatsack.com as independently installable plugins. This product's plugin
+ID is `showmeatsack`; its listing name and tool name remain **show.imeatsack.com**.
 The product repository owns its manifest, skill, hosted MCP configuration, and
 logo. The marketplace sync copies a minimal package from those sources.
 
@@ -77,7 +77,7 @@ separate release step.
 
 ## Rules (Invariants)
 
-- Public copy always calls the product **showmeatsack.com**. The tool is named `showmeatsack.com`.
+- Public copy always calls the product **show.imeatsack.com**. The tool is named `show.imeatsack.com`.
 - View URLs (`/s/…`) are not in the sitemap and are not offered for indexing.
 - Keeping shares out of search never costs an agent the ability to read a link it was given.
   A share is kept unindexed, not unfetchable; secrecy comes from the link being unguessable,

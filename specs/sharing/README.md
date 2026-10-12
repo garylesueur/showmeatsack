@@ -1,6 +1,6 @@
 # Sharing
 
-**showmeatsack.com** — an agent posts HTML or a small static-site zip and gets a view link to share. The tool is named showmeatsack.com. Create also returns a manage link to replace or delete that share.
+**show.imeatsack.com** — an agent posts HTML or a small static-site zip and gets a view link to share. The tool is named show.imeatsack.com. Create also returns a manage link to replace or delete that share.
 
 | Spec | Covers | Status |
 | --- | --- | --- |

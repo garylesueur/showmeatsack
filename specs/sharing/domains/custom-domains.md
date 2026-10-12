@@ -7,7 +7,7 @@ status: future
 # Serving shares from your own domain
 
 Not everybody wants to send a client a link with our name in it. An account can point a
-domain it owns at **showmeatsack.com** and have its shares served from there, with its own
+domain it owns at **show.imeatsack.com** and have its shares served from there, with its own
 mark on the frame instead of ours.
 
 This spec extends [publishing a page](../pages/publishing.md) and changes the frame
@@ -57,7 +57,7 @@ changes documents, canvases and review links.
 
 ### B6 — Our mark can be removed, by an account that pays 🔵 future
 
-An account on a paying plan can have the mark say nothing about showmeatsack.com. A free
+An account on a paying plan can have the mark say nothing about show.imeatsack.com. A free
 account keeps our mark. This is the visible half of what paying buys, and it is also a
 control on abuse (B12) rather than only a preference.
 
@@ -92,7 +92,7 @@ being served, the shares do not stop existing.
 
 A share opened from a custom domain previews as it does today (B17 of
 [publishing](../pages/publishing.md)) — a picture of that page, on that host, with their
-mark rather than ours. The preview never names showmeatsack.com on an account that has
+mark rather than ours. The preview never names show.imeatsack.com on an account that has
 paid for it not to.
 
 ### B12 — A domain is not a costume 🔵 future
@@ -158,7 +158,7 @@ round the rules on who may open a share.
 | --- | --- | --- |
 | Free, default host | Our mark, linking home | No frame |
 | Paying, custom domain | Their mark, linking where they choose | No frame |
-| Paying, mark removed | Nothing about showmeatsack.com | No frame |
+| Paying, mark removed | Nothing about show.imeatsack.com | No frame |
 
 ## Open Questions
 
@@ -191,7 +191,7 @@ round the rules on who may open a share.
 - A landing page on their domain listing what they have published, for accounts that want
   one.
 - Bringing a certificate they already hold, rather than us issuing one.
-- The same domain serving both showmeatsack.com and askmeatsack.com surfaces, so a client
+- The same domain serving both show.imeatsack.com and ask.imeatsack.com surfaces, so a client
   sees one name across a page they were shown and a form they were asked to fill in.
 
 ## Out of Scope

@@ -57,7 +57,7 @@ export const INTERNAL_ERROR_SHARE_HTML = `<!doctype html>
     <p class="code">Error 500</p>
     <h1>The silicon has let us down.</h1>
     <p>The meat sack is disappointed. This share hit an unexpected snag while we were opening it. Try refreshing in a moment.</p>
-    <a href="/">Back to show.imeatsack.com</a>
+    <a href="https://show.imeatsack.com">Back to show.imeatsack.com</a>
   </main>
 </body>
 </html>`;

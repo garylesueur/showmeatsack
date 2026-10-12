@@ -1,6 +1,5 @@
 import Image from "next/image";
-import Link from "next/link";
-import { SiteFooter } from "@/components/site-chrome";
+import { SiteFooter, SiteNav } from "@/components/site-chrome";
 import { HeroSlideshow } from "./hero-slideshow";
 import styles from "./preview.module.css";
 
@@ -53,25 +52,10 @@ function Arrow() {
   );
 }
 
-function LandingNav({ homeHref }: { homeHref: string }) {
-  return (
-    <nav className={styles.nav} aria-label="Main">
-      <Link href={homeHref} className={styles.navWordmark}>
-        <span aria-hidden="true" />
-        I, Meatsack
-      </Link>
-      <div className={styles.navLinks}>
-        <a href="#connect">Install</a>
-        <a href="https://github.com/garylesueur/meatsack-marketplace">GitHub</a>
-      </div>
-    </nav>
-  );
-}
-
 export function LandingPage({ preview = false }: { preview?: boolean }) {
   return (
     <div className={`mx-auto flex w-full max-w-5xl flex-1 flex-col px-6 sm:px-8 ${styles.page}`}>
-      <LandingNav homeHref={preview ? "/preview/imeatsack" : "/"} />
+      <SiteNav homeHref={preview ? "/preview/imeatsack" : "/"} installHref="#connect" />
       <main className="flex flex-1 flex-col">
         <header className={styles.hero}>
           <h1 className={styles.wordmark}>
@@ -170,11 +154,7 @@ export function LandingPage({ preview = false }: { preview?: boolean }) {
           </p>
         ) : null}
       </main>
-      <SiteFooter
-        sibling={{ name: "Installation", href: "#connect" }}
-        repoHref="https://github.com/garylesueur/meatsack-marketplace"
-        docs={[]}
-      />
+      <SiteFooter repoHref="https://github.com/garylesueur/meatsack-marketplace" docs={[]} />
     </div>
   );
 }
