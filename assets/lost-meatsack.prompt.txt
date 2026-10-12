@@ -1,0 +1,12 @@
+Use case: illustration-story.
+Asset type: production illustration for an unavailable or expired share page on showmeatsack.com.
+Input images: reference images only, for established character identity and editorial screen-print style. Create a new scene; do not reproduce the damaged silicon chip.
+Primary request: A friendly lost meat sack looking for a page that is no longer there.
+Subject: One warm cream pear-shaped cloth sack mascot, gathered top tied with olive cord, dark oval eyes, small eyebrows and simple puzzled mouth, muted kelp green mitten hands and feet, kelp steak-cut emblem on front. Standing at a small wooden signpost with two opposing blank arrow signs, holding an unfolded paper map and looking gently baffled. A few small footprints lead to the signpost. No other character.
+Style: same lightly imperfect editorial screen print as the references, charcoal hand-drawn outlines, muted flat cream and kelp fills, sparse stipple and scuffs, friendly restrained expression, readable silhouette, no 3D, gloss, photorealism or gradients.
+Composition: a compact landscape 3:2 scene, mascot and signpost centered together with comfortable negative space around them, important details away from edges. Background uniform warm cream paper #f8f4e9 with very subtle print texture, minimal ground detail. No frame.
+Constraints: no lettering, no labels, no logos, no watermark. No flesh, blood, teeth, injury, damaged chips, smoke, scary imagery. The character is a cloth mascot. Image only, no webpage mockup.
+
+Generated using the built-in imagegen tool on 2026-10-12.
+References: public/brand/hero.jpg and public/silicon-failure.png.
+Published asset: public/lost-meatsack.webp (1200 × 800).

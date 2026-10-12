@@ -44,6 +44,8 @@ Using the manage token, the agent can delete the share. After that, the view lin
 
 If the agent does not set an expiry, the share lasts 30 days from create. The agent may choose a sooner expiry, never later than 30 days. After the expiry time, the view link no longer shows the uploaded page, without anyone acting. A new share is a new link.
 
+When expiry is known, the view link returns HTTP 410 with a branded “This share has expired” recovery page. It tells the visitor to ask the sender to publish again and send a new link.
+
 ### B9 — A bad payload is refused 🟢 implemented
 
 Create or replace is refused, and nothing is published or changed, when the payload is empty, larger than 5 MB, not HTML and not a zip, or a zip that does not contain `index.html`. The agent is told it was refused.
@@ -51,6 +53,8 @@ Create or replace is refused, and nothing is published or changed, when the payl
 ### B10 — A broken or unknown link does not leak another share 🟢 implemented
 
 An unknown share, a link whose secret does not match, an expired share, or a deleted share does not show another share’s page and does not accept replace or delete for another share.
+
+Unknown or deleted shares and missing or refused file paths return the same HTTP 404 recovery page: “This page has wandered off.” It explains that the page may no longer be available or the link may be incomplete, without claiming to know why. Both the 404 and 410 pages show the lost meat sack illustration, a link to the product homepage, and a product navigation section for showmeatsack.com, askmeatsack.com and sharemeatsack.com. Homepage links use the full product origin so they work on the separate share host. Neither page contains share content or manage secrets, and both remain excluded from indexing.
 
 ### B11 — Tool and HTTP produce the same share 🟢 implemented
 
@@ -202,7 +206,7 @@ Shares published before version tracking was introduced are also checked for upd
 - A link preview for one view link never shows another share’s page.
 - Replace changes the files only. Expiry stays as it was at create.
 - After a successful replace, the next open of the view link shows the new page.
-- An expired view link shows a short “this share has expired” page. An unknown or deleted link shows a generic not-found. Neither reveals another share.
+- An expired view link shows a branded expiry recovery page. An unknown or deleted link shows the same generic missing-page recovery screen as a missing or refused file path. Both offer guidance, the homepage and the meatsack products. Neither reveals another share.
 - Publishing needs a lanyard token. Manage still needs that share’s own manage secret, sent as a bearer token; a lanyard token does not replace it. Viewing a public share needs nothing; only a private share (B19) ever asks the person who opens it for anything.
 - A share belongs to the account that published it. Deleting that account does not un-publish shares that are already live; they expire as they were going to.
 - Create from one account is limited. A refused create does not publish a page.

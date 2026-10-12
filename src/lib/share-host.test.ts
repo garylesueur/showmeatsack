@@ -60,4 +60,18 @@ describe("share host isolation", () => {
       }),
     ).toEqual({ kind: "next" });
   });
+
+  it("B14 — the unavailable-page illustration loads on the isolated view host", () => {
+    const input = {
+      host: "s.showmeatsack.com",
+      pathname: "/lost-meatsack.webp",
+      search: "",
+      productOrigin: product,
+      viewOrigin: view,
+    };
+    expect(shareHostDecision(input)).toEqual({ kind: "next" });
+    expect(shareHostDecision({ ...input, pathname: "/brand/hero.jpg" })).toEqual({
+      kind: "not_found",
+    });
+  });
 });
