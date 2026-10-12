@@ -88,6 +88,7 @@ export const landingJsonLd = {
             name: product.domain,
             url: `https://${product.domain}`,
             description: product.description,
+            applicationSuite: LANDING_NAME,
             applicationCategory: "DeveloperApplication",
             operatingSystem: "Web",
           },
@@ -111,6 +112,8 @@ ${product.description}
 
 - [${product.domain}](https://${product.domain})
 - [Install ${product.name}](https://${product.domain}/install)
+- [Product overview in Markdown](https://${product.domain}/index.md)
+- [Complete product documentation](https://${product.domain}/llms-full.txt)
 - [Agent guide](https://${product.domain}/llms.txt)
 - [Skill](https://${product.domain}/skill.md)
 - [MCP and HTTP documentation](https://${product.domain}/mcp.md)
