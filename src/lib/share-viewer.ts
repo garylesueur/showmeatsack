@@ -3,7 +3,7 @@ import { publicOrigin } from "./public-origin";
 const VIEWER_MARKUP = `<style>
       :host { color-scheme: light; }
       * { box-sizing: border-box; }
-      .badge { display:flex; flex-direction:column; align-items:flex-start; gap:8px; font:500 12px/1.4 system-ui,sans-serif; color:#173f38; }
+      .badge { display:flex; flex-direction:column; align-items:flex-end; gap:8px; font:500 12px/1.4 system-ui,sans-serif; color:#173f38; }
       a,button { -webkit-tap-highlight-color:transparent; }
       a { display:flex; align-items:center; gap:7px; min-height:40px; padding:4px 12px 4px 4px; border:1px solid #d8d2c6; border-radius:24px; background:#f6f1e7; box-shadow:0 3px 12px #28251f20; color:inherit; text-decoration:none; }
       img { width:30px; height:30px; border-radius:50%; object-fit:cover; }
@@ -24,7 +24,7 @@ const VIEWER_SCRIPT = String.raw`
     if (window.top !== window.self) return;
     const host = document.createElement('div');
     host.setAttribute('data-showmeatsack-viewer', '');
-    host.style.cssText = 'all:initial!important;position:fixed!important;left:max(12px,env(safe-area-inset-left))!important;bottom:max(12px,env(safe-area-inset-bottom))!important;z-index:2147483647!important;display:block!important;max-width:calc(100vw - 24px)!important;';
+    host.style.cssText = 'all:initial!important;position:fixed!important;right:max(12px,env(safe-area-inset-right))!important;bottom:max(12px,env(safe-area-inset-bottom))!important;z-index:2147483647!important;display:block!important;max-width:calc(100vw - 24px)!important;';
     const root = host.attachShadow({ mode: 'open' });
     root.innerHTML = __MARKUP__;
     const link = root.querySelector('a');
@@ -34,6 +34,11 @@ const VIEWER_SCRIPT = String.raw`
     const message = root.querySelector('p');
     root.querySelector('button').addEventListener('click', () => window.location.reload());
     document.documentElement.appendChild(host);
+    window.setTimeout(() => {
+      const hideBrand = () => { link.hidden = true; };
+      if (root.activeElement === link) link.addEventListener('blur', hideBrand, { once: true });
+      else hideBrand();
+    }, 5000);
     if (!config.revision) return;
     let checking = false;
     let finished = false;
