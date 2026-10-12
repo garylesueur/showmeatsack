@@ -26,8 +26,8 @@ describe("publishing a page", () => {
     if (isShareServiceError(created)) {
       return;
     }
-    expect(created.viewUrl).toBe("https://showmeatsack.com/s/shareid1/");
-    expect(created.manageUrl).toBe("https://showmeatsack.com/api/v1/shares/shareid1");
+    expect(created.viewUrl).toBe("https://show.imeatsack.com/s/shareid1/");
+    expect(created.manageUrl).toBe("https://show.imeatsack.com/api/v1/shares/shareid1");
     expect(created.manageUrl).not.toContain("token=");
     expect(created.manageToken).toBe("managetoken1");
     expect(created.expiresAt).toBe("2026-09-16T10:00:00.000Z");
@@ -36,15 +36,15 @@ describe("publishing a page", () => {
 
   it("B14 B16 — view URL uses the view origin and manage URL has no token", async () => {
     const shares = service({
-      viewPublicBaseUrl: "https://s.showmeatsack.com",
+      viewPublicBaseUrl: "https://s.imeatsack.com",
     });
     const created = await shares.create({ html: "<p>Isolated</p>" });
     expect(isShareServiceError(created)).toBe(false);
     if (isShareServiceError(created)) {
       return;
     }
-    expect(created.viewUrl).toBe("https://s.showmeatsack.com/s/shareid1/");
-    expect(created.manageUrl).toBe("https://showmeatsack.com/api/v1/shares/shareid1");
+    expect(created.viewUrl).toBe("https://s.imeatsack.com/s/shareid1/");
+    expect(created.manageUrl).toBe("https://show.imeatsack.com/api/v1/shares/shareid1");
     expect(created.manageUrl).not.toContain(created.manageToken);
   });
 
@@ -168,7 +168,7 @@ describe("publishing a page", () => {
       now: () => new Date(nowMs),
       createId: () => "shareid1",
       createToken: () => "managetoken1",
-      publicBaseUrl: "https://showmeatsack.com",
+      publicBaseUrl: "https://show.imeatsack.com",
     });
     const created = await shares.create({
       html: "<p>Temp</p>",
@@ -275,7 +275,7 @@ describe("publishing a page", () => {
       now: () => new Date(nowMs),
       createId: () => "shareid1",
       createToken: () => "managetoken1",
-      publicBaseUrl: "https://showmeatsack.com",
+      publicBaseUrl: "https://show.imeatsack.com",
     });
     await shares.create({ html: "<p>Temp</p>", expiresInSeconds: 60 });
     expect(await shares.view("missing", "")).toEqual({ kind: "not_found" });
@@ -489,7 +489,7 @@ describe("the view link is one canonical address", () => {
     if (isShareServiceError(created)) {
       return;
     }
-    const og = shareOpenGraphUrls("https://showmeatsack.com", created.shareId);
+    const og = shareOpenGraphUrls("https://show.imeatsack.com", created.shareId);
     expect(og.pageUrl).toBe(created.viewUrl);
   });
 });

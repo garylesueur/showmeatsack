@@ -19,7 +19,7 @@ export function testShareService(overrides: Partial<ShareServiceDeps> = {}) {
     now: () => new Date(nowMs),
     createId: () => "shareid1",
     createToken: () => "managetoken1",
-    publicBaseUrl: "https://showmeatsack.com",
+    publicBaseUrl: "https://show.imeatsack.com",
     ...overrides,
   });
 }

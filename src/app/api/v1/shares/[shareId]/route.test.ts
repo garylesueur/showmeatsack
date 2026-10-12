@@ -14,7 +14,7 @@ function request(
   shareId: string,
   options: { token?: string; bearer?: string; body?: unknown } = {},
 ): Request {
-  const url = new URL(`https://showmeatsack.com/api/v1/shares/${shareId}`);
+  const url = new URL(`https://show.imeatsack.com/api/v1/shares/${shareId}`);
   if (options.token) {
     url.searchParams.set("token", options.token);
   }

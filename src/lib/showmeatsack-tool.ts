@@ -4,7 +4,7 @@ import { incomingRequest } from "./incoming-request";
 import { SHARE_MAX_TTL_SECONDS, qrShareSchema, tablePayloadSchema } from "./schema";
 import { isShareServiceError, type ShareServiceError, type createShareService } from "./shares";
 
-export const SHOWMEATSACK_TOOL_NAME = "showmeatsack.com";
+export const SHOWMEATSACK_TOOL_NAME = "show.imeatsack.com";
 
 export const showmeatsackToolActions = ["create", "read", "status", "replace", "delete"] as const;
 

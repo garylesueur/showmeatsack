@@ -38,12 +38,12 @@ describe("create rate limit", () => {
       }),
     );
     const first = await limitCreateFromRequest(
-      new Request("https://showmeatsack.com/api/v1/shares", {
+      new Request("https://show.imeatsack.com/api/v1/shares", {
         headers: { "x-forwarded-for": "9.9.9.9" },
       }),
     );
     const second = await limitCreateFromRequest(
-      new Request("https://showmeatsack.com/api/v1/shares", {
+      new Request("https://show.imeatsack.com/api/v1/shares", {
         headers: { "x-forwarded-for": "9.9.9.9" },
       }),
     );

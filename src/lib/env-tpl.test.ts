@@ -49,8 +49,8 @@ describe("1Password env templates", () => {
 
     const preview = readFileSync(join(root, envTemplateFiles.preview), "utf8");
     const production = readFileSync(join(root, envTemplateFiles.production), "utf8");
-    expect(production).toContain("PUBLIC_BASE_URL=https://showmeatsack.com");
-    expect(production).toContain("VIEW_PUBLIC_BASE_URL=https://s.showmeatsack.com");
+    expect(production).toContain("PUBLIC_BASE_URL=https://show.imeatsack.com");
+    expect(production).toContain("VIEW_PUBLIC_BASE_URL=https://s.imeatsack.com");
     for (const key of secretKeys) {
       expect(preview).toContain(
         `${key}=${opTemplateReference(itemForVercelTarget("preview"), key)}`,

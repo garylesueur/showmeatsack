@@ -8,7 +8,7 @@ status: future
 
 A coding agent can already write a canvas — a single component file describing a small
 interactive app, built only from a fixed toolkit of cards, tables, charts and controls.
-Today that app can only be opened in the editor that made it. **showmeatsack.com** takes
+Today that app can only be opened in the editor that made it. **show.imeatsack.com** takes
 the same file and gives it a link, so the person who needs to see it does not need that
 editor, or any editor.
 

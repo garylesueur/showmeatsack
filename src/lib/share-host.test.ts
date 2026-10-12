@@ -1,13 +1,13 @@
 import { describe, expect, it } from "vitest";
 import { shareHostDecision } from "./share-host";
 
-const product = "https://showmeatsack.com";
-const view = "https://s.showmeatsack.com";
+const product = "https://show.imeatsack.com";
+const view = "https://s.imeatsack.com";
 
 describe("share host isolation", () => {
   it("B14 — product-origin view paths go to the view origin", () => {
     const decision = shareHostDecision({
-      host: "showmeatsack.com",
+      host: "show.imeatsack.com",
       pathname: "/s/shareid1/",
       search: "",
       productOrigin: product,
@@ -15,14 +15,14 @@ describe("share host isolation", () => {
     });
     expect(decision).toEqual({
       kind: "redirect",
-      location: "https://s.showmeatsack.com/s/shareid1/",
+      location: "https://s.imeatsack.com/s/shareid1/",
     });
   });
 
   it("B14 — the view origin serves share paths and not the product", () => {
     expect(
       shareHostDecision({
-        host: "s.showmeatsack.com",
+        host: "s.imeatsack.com",
         pathname: "/s/shareid1/",
         search: "",
         productOrigin: product,
@@ -31,7 +31,7 @@ describe("share host isolation", () => {
     ).toEqual({ kind: "next" });
     expect(
       shareHostDecision({
-        host: "s.showmeatsack.com",
+        host: "s.imeatsack.com",
         pathname: "/api/v1/shares",
         search: "",
         productOrigin: product,
@@ -40,13 +40,13 @@ describe("share host isolation", () => {
     ).toEqual({ kind: "not_found" });
     expect(
       shareHostDecision({
-        host: "s.showmeatsack.com",
+        host: "s.imeatsack.com",
         pathname: "/",
         search: "",
         productOrigin: product,
         viewOrigin: view,
       }),
-    ).toEqual({ kind: "redirect", location: "https://showmeatsack.com/" });
+    ).toEqual({ kind: "redirect", location: "https://show.imeatsack.com/" });
   });
 
   it("B14 — the same origin is a no-op", () => {
@@ -59,5 +59,19 @@ describe("share host isolation", () => {
         viewOrigin: "http://localhost:3000",
       }),
     ).toEqual({ kind: "next" });
+  });
+
+  it("B14 — the unavailable-page illustration loads on the isolated view host", () => {
+    const input = {
+      host: "s.imeatsack.com",
+      pathname: "/lost-meatsack.webp",
+      search: "",
+      productOrigin: product,
+      viewOrigin: view,
+    };
+    expect(shareHostDecision(input)).toEqual({ kind: "next" });
+    expect(shareHostDecision({ ...input, pathname: "/brand/hero.jpg" })).toEqual({
+      kind: "not_found",
+    });
   });
 });

@@ -1,7 +1,7 @@
 {
   "mcpServers": {
-    "showmeatsack.com": {
-      "url": "https://showmeatsack.com/mcp",
+    "show.imeatsack.com": {
+      "url": "https://show.imeatsack.com/mcp",
       "type": "http"
     }
   }

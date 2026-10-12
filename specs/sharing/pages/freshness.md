@@ -41,7 +41,7 @@ and tells them plainly instead of leaving them looking at a page that no longer 
 ### B5 — Shared pages carry the viewer controls 🟢 implemented
 
 Published HTML, Markdown, and HTML pages in a static-site zip carry the small floating
-showmeatsack.com badge and update notice. The uploaded layout, scripts, and styles
+show.imeatsack.com badge and update notice. The uploaded layout, scripts, and styles
 are preserved. The badge's styles are isolated in a shadow root. Assets and crawler
 responses are unchanged, and embedded frames do not mount the controls. The controls
 require JavaScript and permission from any content security policy supplied by the page.

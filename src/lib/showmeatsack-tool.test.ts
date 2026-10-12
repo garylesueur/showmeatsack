@@ -4,7 +4,7 @@ import { createMemoryShareStore } from "./share-store";
 import { createShareService, isShareServiceError } from "./shares";
 import { createShowmeatsackTool } from "./showmeatsack-tool";
 
-describe("showmeatsack.com tool", () => {
+describe("show.imeatsack.com tool", () => {
   it("B11 — tool create, status, replace, and delete match the service", async () => {
     const shares = createShareService({
       store: createMemoryShareStore(),
@@ -12,7 +12,7 @@ describe("showmeatsack.com tool", () => {
       now: () => new Date("2026-08-17T10:00:00.000Z"),
       createId: () => "shareid1",
       createToken: () => "managetoken1",
-      publicBaseUrl: "https://showmeatsack.com",
+      publicBaseUrl: "https://show.imeatsack.com",
     });
     const tool = createShowmeatsackTool(shares);
 
@@ -63,7 +63,7 @@ describe("reading a share through the tool", () => {
       now: () => new Date("2026-08-17T10:00:00.000Z"),
       createId: () => "shareid1",
       createToken: () => "managetoken1",
-      publicBaseUrl: "https://showmeatsack.com",
+      publicBaseUrl: "https://show.imeatsack.com",
     });
     return { shares, tool: createShowmeatsackTool(shares) };
   }

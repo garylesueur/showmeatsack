@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 import { SHARED_BUCKET, clientIpFromRequest } from "./client-ip";
 
 function requestWith(headers: Record<string, string>): Request {
-  return new Request("https://showmeatsack.com/api/v1/shares", { headers });
+  return new Request("https://show.imeatsack.com/api/v1/shares", { headers });
 }
 
 describe("B15 — a flood from one caller is refused", () => {

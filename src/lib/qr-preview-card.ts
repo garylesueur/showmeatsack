@@ -53,7 +53,7 @@ export async function qrPreviewCard(input: {
       .png()
       .toBuffer();
   const [wordmark, title, host, instruction, qr] = await Promise.all([
-    label("showmeatsack.com", 24),
+    label("show.imeatsack.com", 24),
     label(shortLabel(input.title, 100), 52, 260),
     label(shortLabel(new URL(input.url).hostname, 40), 24),
     label("Scan to open", 30),

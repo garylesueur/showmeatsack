@@ -22,7 +22,7 @@ function clearInstalledService() {
 }
 
 async function preview(shareId: string): Promise<Response> {
-  return GET(new Request(`https://s.showmeatsack.com/s/${shareId}/opengraph-image`), {
+  return GET(new Request(`https://s.imeatsack.com/s/${shareId}/opengraph-image`), {
     params: Promise.resolve({ shareId }),
   });
 }
@@ -72,7 +72,7 @@ describe("GET /s/[shareId]/opengraph-image", () => {
       now: () => new Date(nowMs),
       createId: () => "shareid1",
       createToken: () => "managetoken1",
-      publicBaseUrl: "https://showmeatsack.com",
+      publicBaseUrl: "https://show.imeatsack.com",
     });
     const globalForShares = globalThis as typeof globalThis & {
       showmeatsackShares?: typeof shares;

@@ -96,7 +96,7 @@ export async function qrAsSite(
   </style>
 </head>
 <body data-style="${style}">
-  <header class="origin"><a href="https://showmeatsack.com">showmeatsack.com</a></header>
+  <header class="origin"><a href="https://show.imeatsack.com">show.imeatsack.com</a></header>
   <main>
     <div class="heading">
       <h1>${escapeHtml(title)}</h1>

@@ -2,9 +2,9 @@ export const OP_VAULT_NAME = "Agents";
 export const OP_VAULT_DEFAULT = "mep374l3cpdtzwibf5fswsimbi";
 
 export const secretEnvItems = {
-  development: "showmeatsack.com Development",
-  preview: "showmeatsack.com Preview",
-  production: "showmeatsack.com Production",
+  development: "kurrh2l5nm5jd2ajqchctrls4q",
+  preview: "iwuprml52wmzuvgq4eg37pzrly",
+  production: "gzow46cckd6yenaplpsv3mre6y",
 } as const;
 
 export type LocalSecretEnv = "development";

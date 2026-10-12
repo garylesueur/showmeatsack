@@ -330,8 +330,8 @@ const COLOR_MODE_PICKER_SCRIPT = `
     var secure = location.protocol === "https:" ? "; Secure" : "";
     var domain = "";
     var host = location.hostname;
-    if (host === "showmeatsack.com" || host.slice(-17) === ".showmeatsack.com") domain = "; Domain=.showmeatsack.com";
-    if (host === "askmeatsack.com" || host.slice(-16) === ".askmeatsack.com") domain = "; Domain=.askmeatsack.com";
+    if (host === "show.imeatsack.com" || host.slice(-17) === ".show.imeatsack.com") domain = "; Domain=.show.imeatsack.com";
+    if (host === "ask.imeatsack.com" || host.slice(-16) === ".ask.imeatsack.com") domain = "; Domain=.ask.imeatsack.com";
     document.cookie = "meatsack_color_mode=" + mode + "; Path=/; Max-Age=31536000; SameSite=Lax" + secure + domain;
   }
   function apply(mode){

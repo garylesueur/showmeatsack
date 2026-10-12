@@ -17,7 +17,7 @@ function clearInstalledService() {
 
 async function create(body: unknown): Promise<Response> {
   return POST(
-    new Request("https://showmeatsack.com/api/v1/shares", {
+    new Request("https://show.imeatsack.com/api/v1/shares", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: typeof body === "string" ? body : JSON.stringify(body),
@@ -31,7 +31,7 @@ describe("POST /api/v1/shares", () => {
     const response = await create({ qr: { url: "https://example.com/register" } });
     expect(response.status).toBe(201);
     expect(await response.json()).toMatchObject({
-      viewUrl: "https://showmeatsack.com/s/shareid1/",
+      viewUrl: "https://show.imeatsack.com/s/shareid1/",
     });
     expect(await shares.view("shareid1", "qr.png")).toMatchObject({
       kind: "file",
@@ -55,9 +55,9 @@ describe("POST /api/v1/shares", () => {
       manageUrl: string;
       manageToken: string;
     };
-    expect(payload.viewUrl).toBe("https://showmeatsack.com/s/shareid1/");
+    expect(payload.viewUrl).toBe("https://show.imeatsack.com/s/shareid1/");
     expect(payload.viewUrl).not.toContain("token=");
-    expect(payload.manageUrl).toBe("https://showmeatsack.com/api/v1/shares/shareid1");
+    expect(payload.manageUrl).toBe("https://show.imeatsack.com/api/v1/shares/shareid1");
     expect(payload.manageUrl).not.toContain("token=");
     expect(payload.manageToken).toBe("managetoken1");
   });

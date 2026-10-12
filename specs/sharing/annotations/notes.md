@@ -7,7 +7,7 @@ status: future
 # Annotating a published page
 
 An agent shows somebody a page and wants to know what they think of it. Instead of
-asking for that back in prose, **showmeatsack.com** lets the people who open the link
+asking for that back in prose, **show.imeatsack.com** lets the people who open the link
 mark up the thing itself — point at a spot, highlight a sentence, draw on it, and say
 what they mean — and hands all of it back to the agent that published the page.
 
@@ -275,7 +275,7 @@ to get through.
 - Feedback on a specific version, with a view of what each version was told.
 - Asking named people for review and knowing who has not looked yet.
 - Notes on a region of an image, rather than on the page around it.
-- Composing with [askmeatsack.com](https://askmeatsack.com) so an agent can ask a
+- Composing with [ask.imeatsack.com](https://ask.imeatsack.com) so an agent can ask a
   question about a note it received.
 - Turning feedback into issues in a tracker.
 - A saved review that stays live — a link to the marked-up page that outlives the share.

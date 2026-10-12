@@ -1,13 +1,13 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
   "name": "showmeatsack",
-  "version": "0.1.1",
-  "description": "An agent posts HTML, markdown, or a small static-site zip and gets a showmeatsack.com view link. No API key. Free to publish; teams and custom domains are paid.",
+  "version": "0.1.2",
+  "description": "An agent posts HTML, markdown, or a small static-site zip and gets a published-page link. No API key. Free to publish; teams and custom domains are paid.",
   "author": {
     "name": "Gary Le Sueur",
     "url": "https://gaz.dev"
   },
-  "homepage": "https://showmeatsack.com",
+  "homepage": "https://show.imeatsack.com",
   "repository": "https://github.com/garylesueur/showmeatsack",
   "license": "MIT",
   "keywords": [
@@ -20,16 +20,16 @@
   "extensions": {
     "com.openai": {
       "interface": {
-        "displayName": "showmeatsack.com",
+        "displayName": "show.imeatsack.com",
         "shortDescription": "Publish a page and share its view link",
-        "longDescription": "An agent posts HTML, markdown, or a small static-site zip and gets a showmeatsack.com view link. No API key. Free to publish; teams and custom domains are paid. The plugin includes the hosted MCP connection and the skill that guides the agent through the workflow. The agent delivers the resulting link using the conversation or a service it already has access to.",
+        "longDescription": "An agent posts HTML, markdown, or a small static-site zip and gets a published-page link. No API key. Free to publish; teams and custom domains are paid. The plugin includes the hosted MCP connection and the skill that guides the agent through the workflow. The agent delivers the resulting link using the conversation or a service it already has access to.",
         "developerName": "Gary Le Sueur",
         "category": "Productivity",
         "capabilities": [
           "Publishing",
           "Pages"
         ],
-        "websiteURL": "https://showmeatsack.com",
+        "websiteURL": "https://show.imeatsack.com",
         "defaultPrompt": [
           "Publish this report as a page and give me the view link.",
           "Share this interactive chart as a page."

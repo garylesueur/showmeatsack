@@ -14,7 +14,7 @@ const VIEWER_MARKUP = `<style>
       p { margin:0 0 8px; font-size:13px; }
       button { min-height:36px; padding:7px 12px; border:0; border-radius:6px; background:#287566; color:#fff; font:600 12px/1.4 system-ui,sans-serif; cursor:pointer; }
       button:hover { background:#173f38; }
-    </style><div class="badge"><div class="notice" hidden><p role="status" aria-live="polite"></p><button type="button">Refresh</button></div><a target="_blank" rel="noopener noreferrer" aria-label="Shared with showmeatsack.com"><img alt="" width="30" height="30"><span>showmeatsack.com</span></a></div>`;
+    </style><div class="badge"><div class="notice" hidden><p role="status" aria-live="polite"></p><button type="button">Refresh</button></div><a target="_blank" rel="noopener noreferrer" aria-label="Shared with show.imeatsack.com"><img alt="" width="30" height="30"><span>show.imeatsack.com</span></a></div>`;
 
 // Kept inside a shadow root so an uploaded page's CSS cannot restyle the controls.
 const VIEWER_SCRIPT = String.raw`

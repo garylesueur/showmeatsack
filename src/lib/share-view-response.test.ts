@@ -134,10 +134,35 @@ graph TD
       const body = await readText(response);
       expect(body).toBe(NOT_FOUND_SHARE_HTML);
       expect(body).toContain('name="robots" content="noindex, nofollow"');
-      expect(body).toContain("Not found.");
+      expect(body).toContain("This page has wandered off.");
       expect(body).not.toContain("expired");
       expect(body).not.toContain("shareid");
       expect(body).not.toContain("token");
+    }
+  });
+
+  it("B8 B10 — unavailable links offer recovery and the meatsack products on the share host", async () => {
+    const bodies = await Promise.all(
+      (["expired", "not_found"] as const).map((kind) =>
+        readText(
+          responseForView(
+            { kind },
+            {
+              request: new Request("https://s.imeatsack.com/s/missing/"),
+              shareId: "missing",
+            },
+          ),
+        ),
+      ),
+    );
+    for (const body of bodies) {
+      expect(body).toContain("Ask whoever sent you this link to publish it again");
+      for (const product of ["show.imeatsack.com", "ask.imeatsack.com", "share.imeatsack.com"]) {
+        expect(body).toContain(`href="https://${product}"`);
+      }
+      expect(body).toContain('src="/lost-meatsack.webp"');
+      expect(body).toContain('name="viewport"');
+      expect(body).not.toContain('href="/"');
     }
   });
 
@@ -160,7 +185,7 @@ graph TD
         contentType: "text/html; charset=utf-8",
       },
       {
-        request: new Request("https://s.showmeatsack.com/s/shareid1/", {
+        request: new Request("https://s.imeatsack.com/s/shareid1/", {
           headers: { "user-agent": "Mozilla/5.0 Safari/605.1.15" },
         }),
         shareId: "shareid1",
@@ -181,7 +206,7 @@ graph TD
         contentType: "text/html; charset=utf-8",
       },
       {
-        request: new Request("https://s.showmeatsack.com/s/shareid1/", {
+        request: new Request("https://s.imeatsack.com/s/shareid1/", {
           headers: { "user-agent": "Slackbot-LinkExpanding 1.0" },
         }),
         shareId: "shareid1",
@@ -205,7 +230,7 @@ graph TD
         contentType: "text/css; charset=utf-8",
       },
       {
-        request: new Request("https://s.showmeatsack.com/s/shareid1/style.css", {
+        request: new Request("https://s.imeatsack.com/s/shareid1/style.css", {
           headers: { "user-agent": "Slackbot-LinkExpanding 1.0" },
         }),
         shareId: "shareid1",
@@ -218,7 +243,7 @@ graph TD
     const expired = responseForView(
       { kind: "expired" },
       {
-        request: new Request("https://s.showmeatsack.com/s/shareid1/", {
+        request: new Request("https://s.imeatsack.com/s/shareid1/", {
           headers: { "user-agent": "Slackbot-LinkExpanding 1.0" },
         }),
         shareId: "shareid1",
@@ -232,7 +257,7 @@ graph TD
     const missing = responseForView(
       { kind: "not_found" },
       {
-        request: new Request("https://s.showmeatsack.com/s/shareid1/", {
+        request: new Request("https://s.imeatsack.com/s/shareid1/", {
           headers: { "user-agent": "Slackbot-LinkExpanding 1.0" },
         }),
         shareId: "shareid1",

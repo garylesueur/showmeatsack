@@ -6,7 +6,7 @@ status: partial
 
 # Publishing a QR code
 
-An agent gives showmeatsack.com a destination URL and gets a share whose page, download and link preview show a QR code for that destination. This extends [publishing a page](./publishing.md): the existing view link, manage token, origins, size limit, rate limit, replace, delete and expiry rules still apply.
+An agent gives show.imeatsack.com a destination URL and gets a share whose page, download and link preview show a QR code for that destination. This extends [publishing a page](./publishing.md): the existing view link, manage token, origins, size limit, rate limit, replace, delete and expiry rules still apply.
 
 ## Behaviours
 
@@ -40,7 +40,7 @@ Validation and size failures return 400. A generation exception returns 503 with
 
 ### B7 — QR files and previews follow the share's lifecycle 🟢 implemented
 
-After expiry or deletion, a fresh request cannot read the QR page, its PNG or its preview from showmeatsack.com. An unknown share cannot return another share's code. The manage secret never appears in the QR, page, downloadable file or preview. A QR already downloaded or retained by another app is outside the service's ability to recall.
+After expiry or deletion, a fresh request cannot read the QR page, its PNG or its preview from show.imeatsack.com. An unknown share cannot return another share's code. The manage secret never appears in the QR, page, downloadable file or preview. A QR already downloaded or retained by another app is outside the service's ability to recall.
 
 ### B8 — A reader can download an SVG 🟢 implemented
 
@@ -59,7 +59,7 @@ An agent can select a Classic, Brand or Action card style. The share page and it
 - The first release accepts URL payloads only. Wi-Fi credentials, contact cards and arbitrary text are separate future decisions.
 - The QR and page work without browser scripts or remote image services.
 - The existing 5 MB share limit includes all generated assets.
-- HTTP and the showmeatsack.com tool have equivalent behaviour.
+- HTTP and the show.imeatsack.com tool have equivalent behaviour.
 - Preview fetching grants only the ability to view this share, never manage it.
 - Existing HTML, markdown and zip shares retain their own preview behaviour. Only a service-generated QR share gets the QR-specific preview.
 - Replace does not extend expiry. The hosting lifetime and the destination's lifetime are distinct.
@@ -113,7 +113,7 @@ _None._ QR publishing and management use the existing [publishing flows](./publi
 ## Out of Scope
 
 - A browser QR editor or homepage creation form.
-- Redirecting scans through showmeatsack.com, scan tracking or analytics.
+- Redirecting scans through show.imeatsack.com, scan tracking or analytics.
 - Visiting or verifying the destination URL.
 - AI-generated QR artwork.
 - New authentication, private shares or changes to share lifetime.

@@ -118,7 +118,7 @@ export function tableAsSite(input: TablePayload): UnpackResult {
     });
     if (!manifest.sheets.length) throw new Error("Workbook has no visible sheets.");
     const title = escapeHtml(manifest.title);
-    const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title} · showmeatsack.com</title><link rel="stylesheet" href="viewer.css"></head><body><div id="root"><main class="opening"><h1>${title}</h1>${preview}<p>Opening interactive workbook…</p><noscript>Enable JavaScript to explore this table. <a href="${manifest.source}" download>Download the original file</a>.</noscript></main></div><script src="viewer.js" defer></script></body></html>`;
+    const html = `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${title} · show.imeatsack.com</title><link rel="stylesheet" href="viewer.css"></head><body><div id="root"><main class="opening"><h1>${title}</h1>${preview}<p>Opening interactive workbook…</p><noscript>Enable JavaScript to explore this table. <a href="${manifest.source}" download>Download the original file</a>.</noscript></main></div><script src="viewer.js" defer></script></body></html>`;
     const text = (path: string, content: string): SiteFile => ({
       path,
       bytes: new TextEncoder().encode(content),

@@ -1,4 +1,4 @@
-# showmeatsack.com
+# show.imeatsack.com
 
 **An agent posts a page. A person opens it.**
 
@@ -12,7 +12,7 @@ domain.
 Posting the view link to Slack, email, or anywhere else is the calling agent's
 job.
 
-Sibling project: [askmeatsack.com](https://github.com/garylesueur/askmeatsack) —
+Sibling project: [ask.imeatsack.com](https://github.com/garylesueur/askmeatsack) —
 an agent asks, a human answers.
 
 ## Quick start
@@ -46,20 +46,96 @@ are the merge gates — see `.engineering/config.yaml`, and
 
 ## Hosts
 
-Two origins, on purpose. Published pages are untrusted HTML, so they are served
-from a separate host and never share an origin with the product site.
+The **I, Meatsack** umbrella landing page is deployed separately on
+`imeatsack.com`, in the **lesueur / imeatsack** Vercel project. Its source is
+`src/app/preview/imeatsack/`; the `/preview/imeatsack` route remains a local
+preview with noindex metadata. The live build omits the preview notice and
+links its wordmark to `/`. Ask, Share and Show links point to their canonical
+`imeatsack.com` subdomains.
 
-| Origin                       | Serves                                      |
-| ---------------------------- | ------------------------------------------- |
-| `https://showmeatsack.com`   | The product site and the API                |
-| `https://s.showmeatsack.com` | View links — the published pages themselves |
+Prepare an isolated release with
+`pnpm prepare:landing --out /absolute/path/to/release`, then install and build
+inside that directory with the pinned pnpm version. The preparation script
+copies only the landing components, shared brand files and illustrations,
+and records source hashes in `imeatsack-source.json`. It does not copy product
+APIs, storage settings or environment files. Generated release files should
+be changed through their source files and regenerated with this command.
 
-Add `s.showmeatsack.com` to the Vercel project so that host reaches this app.
+Link the release directory explicitly to **lesueur / imeatsack**, verify the
+project with `vercel project inspect --non-interactive --scope lesueur`, and
+stage with `vercel deploy --prod --skip-domain --scope lesueur`. Verify the
+staged deployment before promoting it. Product deployments and their domain
+redirects are managed separately from this landing-page release.
+
+The landing page's production-only layout, crawler routes and Open Graph image
+live in `src/imeatsack/`; `src/lib/imeatsack-site.ts` owns its metadata,
+structured data and Markdown content. The release includes a 1200×630 branded
+Open Graph card, Twitter large-image metadata, favicon and Apple icon,
+`robots.txt`, and a sitemap of the canonical homepage with its three
+illustrations. Only the homepage is offered for search indexing. `/index.md`,
+`/llms.txt` and `/llms-full.txt` remain readable by agents and carry `noindex`
+headers to avoid duplicate search results. HTML and HTTP Link metadata point
+agents to these resources. The llms.txt format is a discovery proposal, not a
+guarantee of inclusion in an answer engine.
+
+The IndexNow ownership proof is sourced from `src/imeatsack/indexnow-key.txt`
+and exported by the preparation script into the public release. It is a
+public site-ownership proof, not an account/API credential. After promoting
+an update and verifying public HTTPS, run `pnpm submit:landing` to notify
+IndexNow of the homepage change. The command checks the live landing page
+and ownership proof before submitting. HTTP 200 acknowledges receipt;
+HTTP 202 means ownership validation is pending. Neither promises indexing.
+
+On 12 October 2026, the `imeatsack.com` domain property was verified in
+Google Search Console and `https://imeatsack.com/sitemap.xml` was submitted
+successfully. Keep the Google verification TXT record at the apex when
+changing DNS providers. This property covers future product subdomains.
+On the same day, the user approved switching only this domain to Vercel DNS.
+Namecheap now delegates it to `ns1.vercel-dns.com` and `ns2.vercel-dns.com`;
+registration stays with Namecheap. The Google verification TXT was copied to
+Vercel before the switch. Public HTTPS serves the landing page and crawler
+files, and `www.imeatsack.com` redirects to the apex with HTTP 308.
+Vercel manages the certificates automatically.
+
+The first IndexNow homepage notification was accepted with HTTP 202
+(ownership validation pending); a bounded follow-up returned HTTP 200.
+Bing Webmaster Tools' Google sign-in was
+unavailable during setup; its dashboard sitemap submission remains pending
+account access. An existing Outlook.com Microsoft account can be used to
+sign in. Google's earlier sitemap fetch failed while DNS/TLS was incomplete;
+the sitemap was resubmitted after public HTTPS started working. Submission
+acceptance is separate from a successful crawl or inclusion in search results.
+
+### Product subdomains
+
+The products use `ask.imeatsack.com`, `share.imeatsack.com` and
+`show.imeatsack.com` as their production public origins. The old product
+domains permanently redirect with HTTP 308, preserving paths and query strings.
+Existing Show links retain their share IDs and stored content through the redirect.
+The product MCP endpoints, canonical metadata, robots files and sitemaps use the
+new origins. All three product sitemaps were submitted successfully to Google's
+verified `imeatsack.com` domain property on 12 October 2026. Search Console still
+reported "Couldn't fetch" immediately after submission; public HTTPS checks of
+the sitemap files returned HTTP 200. Successful Google crawling remains unverified.
+The landing-page update was accepted by IndexNow with HTTP 200.
+
+Published pages use a separate origin because they can contain untrusted HTML.
+
+| Origin | Serves |
+| --- | --- |
+| `https://show.imeatsack.com` | The product site and API |
+| `https://s.imeatsack.com` | Published pages |
+
+Both hosts belong to the Show Vercel project. The previous view host redirects to
+`s.imeatsack.com`. Set production `PUBLIC_BASE_URL` and `VIEW_PUBLIC_BASE_URL`
+to these origins. The move redeploys the existing production sources with updated
+public-origin configuration; unfinished changes in local product checkouts are
+not part of the release.
 
 ## Secrets
 
-Three 1Password items live in the **Agents** vault: `showmeatsack.com
-Development`, `showmeatsack.com Preview`, and `showmeatsack.com Production`.
+Three 1Password items live in the **Agents** vault: `show.imeatsack.com
+Development`, `show.imeatsack.com Preview`, and `show.imeatsack.com Production`.
 Same field names, different values. Local work uses Development only; Preview
 and Production are pushed to Vercel and are not for a laptop.
 
@@ -128,7 +204,7 @@ in config we own, so updating the plugin never clobbers our choices.
 ## Plugin marketplace
 
 The plugin ID is `showmeatsack`; its display name and MCP tool name are
-**showmeatsack.com**. The portable manifest includes OpenAI listing metadata and
+**show.imeatsack.com**. The portable manifest includes OpenAI listing metadata and
 icons; `.claude-plugin/plugin.json` and `.cursor-plugin/plugin.json` provide
 client compatibility.
 
@@ -143,7 +219,7 @@ Codex:
 codex plugin marketplace add garylesueur/meatsack-marketplace
 ```
 
-Then install **showmeatsack.com** from the Meatsack source in Plugins.
+Then install **show.imeatsack.com** from the Meatsack source in Plugins.
 
 Claude Code:
 
@@ -155,7 +231,7 @@ Claude Code:
 Cursor Teams/Enterprise: Dashboard → Plugins & MCPs → Add Marketplace →
 Import from Repo, using the marketplace repository URL. Install the product
 from Customize. For a personal account, copy the plugin package into `~/.cursor/plugins/local/`.
-See the [installation guide](https://showmeatsack.com/install) for commands.
+See the [installation guide](https://show.imeatsack.com/install) for commands.
 
 Marketplace publication must precede deploying these website install links.
 Public ChatGPT/Codex and Cursor directory listings require separate submissions.
@@ -187,7 +263,7 @@ Then reload the window. The plugin carries the hosted MCP server and
 https://github.com/garylesueur/showmeatsack
 ```
 
-**Or install the MCP server on its own** at `https://showmeatsack.com/mcp`. The
+**Or install the MCP server on its own** at `https://show.imeatsack.com/mcp`. The
 tool works, and the server sends the same skill as its MCP `instructions`, so
 most clients still get the full brief. Clients that ignore `instructions` see
 only the tool description — prefer the plugin where you can.

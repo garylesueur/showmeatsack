@@ -7,7 +7,7 @@ status: partial
 # Publishing a document
 
 An agent often has something worth showing that is not a finished web page — a
-plan in markdown, a script it just wrote, a diagram, a set of notes. **showmeatsack.com**
+plan in markdown, a script it just wrote, a diagram, a set of notes. **show.imeatsack.com**
 takes that raw text and shows it as a document a person can read, while keeping
 the exact source one click away.
 
@@ -116,7 +116,7 @@ another share and never the product homepage.
 ### B14 — The frame says where the page came from 🔵 future
 
 Because a document is shown inside a frame this service renders, that frame carries one
-small mark — a line of text linking back to the showmeatsack.com home page — so a person
+small mark — a line of text linking back to the show.imeatsack.com home page — so a person
 who was sent a document can find out what this is and use it themselves. On an account
 serving from its own domain that mark is theirs instead, and a paying account can have it
 say nothing about us at all (see [serving shares from your own domain](../domains/custom-domains.md)). It is one line,
@@ -160,7 +160,7 @@ reader on a phone gets the least of it.
 - Any drawn diagram can be opened larger and closed again, in the read view and in a canvas.
 - A diagram that cannot be drawn degrades to its own source. One bad block never costs
   the reader the rest of the document.
-- showmeatsack.com never runs a published script. It shows it.
+- show.imeatsack.com never runs a published script. It shows it.
 - A document that is replaced is a new document at the same view link, exactly as a
   replaced page is.
 
@@ -218,10 +218,10 @@ step and constrains nothing.
   to include and awkward to retrofit, but it is a second dialect to keep working.
 - Should a document carry a title given by the agent, separate from its first heading,
   for the link preview in B13 to use?
-- **Blocks B14:** What does the mark actually say? It is the first showmeatsack.com copy a
+- **Blocks B14:** What does the mark actually say? It is the first show.imeatsack.com copy a
   person meets who was only ever sent a link, so it is doing real work. Candidates, all
-  short enough for one line: "Shown to you by showmeatsack.com", "Written by silicon, read
-  by meatsacks", "Made of silicon, made for meatsacks", "Powered by showmeatsack.com". The
+  short enough for one line: "Shown to you by show.imeatsack.com", "Written by silicon, read
+  by meatsacks", "Made of silicon, made for meatsacks", "Powered by show.imeatsack.com". The
   pun earns its place only if it survives being read by somebody who has no idea what any
   of this is.
 

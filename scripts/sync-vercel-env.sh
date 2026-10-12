@@ -5,8 +5,8 @@ set -euo pipefail
 
 target="${1:-}"
 case "$target" in
-  preview) item="showmeatsack.com Preview" ;;
-  production) item="showmeatsack.com Production" ;;
+  preview) item="iwuprml52wmzuvgq4eg37pzrly" ;;
+  production) item="gzow46cckd6yenaplpsv3mre6y" ;;
   *)
     echo "Usage: pnpm env:vercel preview|production" >&2
     echo "Development stays in 1Password and is loaded with pnpm env / pnpm dev:op." >&2
@@ -57,13 +57,13 @@ done
 
 if [[ "${target}" == "production" ]]; then
   vercel env rm PUBLIC_BASE_URL production --yes >/dev/null 2>&1 || true
-  if ! printf '%s' 'https://showmeatsack.com' | vercel env add PUBLIC_BASE_URL production >/dev/null; then
+  if ! printf '%s' 'https://show.imeatsack.com' | vercel env add PUBLIC_BASE_URL production >/dev/null; then
     echo "failed to set PUBLIC_BASE_URL on Vercel production" >&2
     exit 1
   fi
   echo "set PUBLIC_BASE_URL on Vercel production" >&2
   vercel env rm VIEW_PUBLIC_BASE_URL production --yes >/dev/null 2>&1 || true
-  if ! printf '%s' 'https://s.showmeatsack.com' | vercel env add VIEW_PUBLIC_BASE_URL production >/dev/null; then
+  if ! printf '%s' 'https://s.imeatsack.com' | vercel env add VIEW_PUBLIC_BASE_URL production >/dev/null; then
     echo "failed to set VIEW_PUBLIC_BASE_URL on Vercel production" >&2
     exit 1
   fi

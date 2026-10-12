@@ -208,7 +208,7 @@ several times a day accumulates them quickly.
 - Sharing a meat locker, or part of one, with somebody else.
 - Folders, or a locker per client, for people keeping work for more than one customer.
 - Being told when something kept is about to expire, so it can be frozen in time.
-- Keeping a page from askmeatsack.com — a questionnaire you answered — in the same place.
+- Keeping a page from ask.imeatsack.com — a questionnaire you answered — in the same place.
 - An agent asking what is in its own account's meat locker, so it can find what it
   published last month.
 

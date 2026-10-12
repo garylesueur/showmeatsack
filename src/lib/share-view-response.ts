@@ -10,6 +10,7 @@ import {
 } from "./share-open-graph";
 import { renderMarkdownDocument } from "./markdown-document";
 import { withShareViewer } from "./share-viewer";
+import { unavailableSharePage } from "./share-unavailable-page";
 import type { ViewResult } from "./shares";
 
 export const VIEW_CACHE_HEADERS = {
@@ -18,9 +19,9 @@ export const VIEW_CACHE_HEADERS = {
   "X-Robots-Tag": "noindex, nofollow",
 };
 
-export const EXPIRED_SHARE_HTML = `<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><title>This share has expired</title></head><body><p>This share has expired.</p></body></html>`;
+export const EXPIRED_SHARE_HTML = unavailableSharePage("expired");
 
-export const NOT_FOUND_SHARE_HTML = `<!doctype html><html lang="en-GB"><head><meta charset="utf-8"><meta name="robots" content="noindex, nofollow"><title>Not found</title></head><body><p>Not found.</p></body></html>`;
+export const NOT_FOUND_SHARE_HTML = unavailableSharePage("not_found");
 
 export const INTERNAL_ERROR_SHARE_HTML = `<!doctype html>
 <html lang="en-GB">
@@ -28,7 +29,7 @@ export const INTERNAL_ERROR_SHARE_HTML = `<!doctype html>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <title>The silicon has let us down · showmeatsack.com</title>
+  <title>The silicon has let us down · show.imeatsack.com</title>
   <style>
     :root { color-scheme: light dark; font-family: ui-sans-serif, system-ui, sans-serif; }
     * { box-sizing: border-box; }
@@ -56,7 +57,7 @@ export const INTERNAL_ERROR_SHARE_HTML = `<!doctype html>
     <p class="code">Error 500</p>
     <h1>The silicon has let us down.</h1>
     <p>The meat sack is disappointed. This share hit an unexpected snag while we were opening it. Try refreshing in a moment.</p>
-    <a href="/">Back to showmeatsack.com</a>
+    <a href="https://show.imeatsack.com">Back to show.imeatsack.com</a>
   </main>
 </body>
 </html>`;

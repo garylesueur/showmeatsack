@@ -6,7 +6,7 @@ status: partial
 
 # Publishing a page
 
-**showmeatsack.com** is how an agent shares an HTML page, or a small static site, with a person. Create returns a view link that *is* the page, and a manage token that can replace or delete it. The page stays up until it expires or is deleted.
+**show.imeatsack.com** is how an agent shares an HTML page, or a small static site, with a person. Create returns a view link that *is* the page, and a manage token that can replace or delete it. The page stays up until it expires or is deleted.
 
 [Publishing a document](./documents.md) and [publishing a QR code](./qr-codes.md) extend this lifecycle with their own content and preview behaviour.
 
@@ -14,11 +14,11 @@ status: partial
 
 ### B1 — Agent publishes a page 🟢 implemented
 
-An agent calls the **showmeatsack.com** tool, or sends the same payload over HTTP. It sends either an HTML page or a zip of a small static site, and may set an expiry sooner than the default. It always receives a view link (to put in the conversation, or anywhere else the agent already can post), a manage URL, a manage token, and when the share will expire. The showmeatsack.com tool and HTTP produce the same share.
+An agent calls the **show.imeatsack.com** tool, or sends the same payload over HTTP. It sends either an HTML page or a zip of a small static site, and may set an expiry sooner than the default. It always receives a view link (to put in the conversation, or anywhere else the agent already can post), a manage URL, a manage token, and when the share will expire. The show.imeatsack.com tool and HTTP produce the same share.
 
 ### B2 — The view link is the page itself 🟢 implemented
 
-Anyone who opens the view link in a browser sees the uploaded page on the view origin. Scripts and styles in the page are not stripped. The page keeps its published layout, with a small floating showmeatsack.com badge in the bottom right that hides after five seconds (B22) and a notice when a newer version is available (B23). The product origin (home, docs, MCP, and the manage API) does not serve that uploaded page.
+Anyone who opens the view link in a browser sees the uploaded page on the view origin. Scripts and styles in the page are not stripped. The page keeps its published layout, with a small floating show.imeatsack.com badge in the bottom right that hides after five seconds (B22) and a notice when a newer version is available (B23). The product origin (home, docs, MCP, and the manage API) does not serve that uploaded page.
 
 ### B3 — A zip is a small static site 🟢 implemented
 
@@ -44,6 +44,8 @@ Using the manage token, the agent can delete the share. After that, the view lin
 
 If the agent does not set an expiry, the share lasts 30 days from create. The agent may choose a sooner expiry, never later than 30 days. After the expiry time, the view link no longer shows the uploaded page, without anyone acting. A new share is a new link.
 
+When expiry is known, the view link returns HTTP 410 with a branded “This share has expired” recovery page. It tells the visitor to ask the sender to publish again and send a new link.
+
 ### B9 — A bad payload is refused 🟢 implemented
 
 Create or replace is refused, and nothing is published or changed, when the payload is empty, larger than 5 MB, not HTML and not a zip, or a zip that does not contain `index.html`. The agent is told it was refused.
@@ -52,9 +54,11 @@ Create or replace is refused, and nothing is published or changed, when the payl
 
 An unknown share, a link whose secret does not match, an expired share, or a deleted share does not show another share’s page and does not accept replace or delete for another share.
 
+Unknown or deleted shares and missing or refused file paths return the same HTTP 404 recovery page: “This page has wandered off.” It explains that the page may no longer be available or the link may be incomplete, without claiming to know why. Both the 404 and 410 pages show the lost meat sack illustration, a link to the product homepage, and a product navigation section for show.imeatsack.com, ask.imeatsack.com and share.imeatsack.com. Homepage links use the full product origin so they work on the separate share host. Neither page contains share content or manage secrets, and both remain excluded from indexing.
+
 ### B11 — Tool and HTTP produce the same share 🟢 implemented
 
-The showmeatsack.com tool and HTTP take the same kind of payload and return the same view link, manage URL, manage token, expiry, and later the same replace, delete, and status result for that share.
+The show.imeatsack.com tool and HTTP take the same kind of payload and return the same view link, manage URL, manage token, expiry, and later the same replace, delete, and status result for that share.
 
 ### B12 — Publishing needs an account 🔵 future
 
@@ -85,7 +89,7 @@ Create and replace return a manage URL that names the share and a manage token t
 
 ### B17 — A link preview shows the page 🟢 implemented
 
-When the view link is pasted into Slack or another app that fetches a link preview, the preview image is a picture of that share’s uploaded page — not the showmeatsack.com homepage, and not another share. If a picture cannot be taken, the preview still names that page (its title or visible text), never another share and never the product homepage. A person who opens the same link in a browser sees the uploaded page with the small viewer badge and update notice (B22–B23). Link-preview crawlers receive no viewer controls. Building that image is expensive, so it is built once and reused rather than rebuilt for every crawler that asks, and only so many can be built at once.
+When the view link is pasted into Slack or another app that fetches a link preview, the preview image is a picture of that share’s uploaded page — not the show.imeatsack.com homepage, and not another share. If a picture cannot be taken, the preview still names that page (its title or visible text), never another share and never the product homepage. A person who opens the same link in a browser sees the uploaded page with the small viewer badge and update notice (B22–B23). Link-preview crawlers receive no viewer controls. Building that image is expensive, so it is built once and reused rather than rebuilt for every crawler that asks, and only so many can be built at once.
 
 ### B18 — Trying it on the home page needs no account 🔵 future
 
@@ -161,7 +165,7 @@ sorting for arbitrarily large datasets.
 ### B22 — Shared pages carry a small brand badge 🟢 implemented
 
 A person viewing a shared HTML or Markdown page sees a small floating badge in the
-bottom right, showing the meat sack character and **showmeatsack.com**. The badge links
+bottom right, showing the meat sack character and **show.imeatsack.com**. The badge links
 to the product in a new tab. It hides after five seconds so it does not stay over
 the page's content or controls. If the link has keyboard focus when the time is up,
 it stays visible until focus leaves it. Update and availability notices still appear
@@ -198,14 +202,14 @@ Shares published before version tracking was introduced are also checked for upd
 - Expired and deleted shares stay gone without anyone acting.
 - The viewing origin has no account cookies, so a raw page is not sitting next to a sign-in. Whatever lets somebody open a private share must not break this.
 - Tool and HTTP are equivalent: same payload in, same share, same view link and manage token out.
-- The agent tool is named **showmeatsack.com**. View links are on `https://s.showmeatsack.com`. The product stays on `https://showmeatsack.com`.
-- User-facing copy calls the product **showmeatsack.com**.
+- The agent tool is named **show.imeatsack.com**. View links are on `https://s.imeatsack.com`. The product stays on `https://show.imeatsack.com`.
+- User-facing copy calls the product **show.imeatsack.com**.
 - A zip’s homepage is `index.html` at the zip root, or inside a single wrapping folder (the usual “zip a folder” case). Relative files in that zip are part of the same share.
 - A person opening the view link receives the published page with the small viewer badge and availability notice (B22–B23). Open Graph tags are only added for link-preview crawlers; viewer controls are not added to crawler responses.
 - A link preview for one view link never shows another share’s page.
 - Replace changes the files only. Expiry stays as it was at create.
 - After a successful replace, the next open of the view link shows the new page.
-- An expired view link shows a short “this share has expired” page. An unknown or deleted link shows a generic not-found. Neither reveals another share.
+- An expired view link shows a branded expiry recovery page. An unknown or deleted link shows the same generic missing-page recovery screen as a missing or refused file path. Both offer guidance, the homepage and the meatsack products. Neither reveals another share.
 - Publishing needs a lanyard token. Manage still needs that share’s own manage secret, sent as a bearer token; a lanyard token does not replace it. Viewing a public share needs nothing; only a private share (B19) ever asks the person who opens it for anything.
 - A share belongs to the account that published it. Deleting that account does not un-publish shares that are already live; they expire as they were going to.
 - Create from one account is limited. A refused create does not publish a page.
@@ -240,7 +244,7 @@ Shares published before version tracking was introduced are also checked for upd
 
 ### What each doorway may do
 
-| Action | View link | Manage token (showmeatsack.com tool or HTTP bearer) | lanyard token |
+| Action | View link | Manage token (show.imeatsack.com tool or HTTP bearer) | lanyard token |
 | --- | --- | --- | --- |
 | Publish a new page | No | No | Yes (B12) |
 | See this share’s page and its files, in a browser or read back by an agent | Yes, that share only | No | No |
@@ -275,8 +279,8 @@ Shares published before version tracking was introduced are also checked for upd
 
 | Host | View path `/s/…` | Product home, MCP, manage API |
 | --- | --- | --- |
-| View origin (`s.showmeatsack.com`) | Shows that share’s page | Not served |
-| Product origin (`showmeatsack.com`) | Sent to the view origin | Served |
+| View origin (`s.imeatsack.com`) | Shows that share’s page | Not served |
+| Product origin (`show.imeatsack.com`) | Sent to the view origin | Served |
 | Same origin (local or preview, no view host set) | Shows that share’s page | Served |
 
 ### Lifecycle
@@ -318,7 +322,7 @@ Shares published before version tracking was introduced are also checked for upd
 - **Settled:** After a successful replace, the next open of the view link shows the new page. Recorded as B6 and the invariants.
 - **Settled:** An expired view link shows a short “this share has expired” page. Unknown or deleted shows a generic not-found. Recorded as B8, B10, and the invariants.
 - **Settled:** Replace does not change expiry. Life stays as it was at create. Recorded as B6 and the invariants.
-- **Settled:** The product is **showmeatsack.com**. The domain is live. The agent tool is named **showmeatsack.com**. View links are on `https://s.showmeatsack.com`. Recorded as B1, B14, and the invariants.
+- **Settled:** The product is **show.imeatsack.com**. The domain is live. The agent tool is named **show.imeatsack.com**. View links are on `https://s.imeatsack.com`. Recorded as B1, B14, and the invariants.
 - **Settled:** A zip with `index.html` inside a single wrapping folder is accepted as that site. Recorded as B3 and the invariants.
 - **Settled:** Untrusted HTML is isolated on a separate view origin. Recorded as B14.
 - **Settled:** The manage secret is a bearer token, not a query string on the manage URL. Recorded as B16.
@@ -337,7 +341,7 @@ Shares published before version tracking was introduced are also checked for upd
 ## Future Considerations
 
 - Large binary files, or a FileSnare-style transfer product.
-- An agent composing with askmeatsack.com to send the view link (no product hook required; the agent already has the URL).
+- An agent composing with ask.imeatsack.com to send the view link (no product hook required; the agent already has the URL).
 - Listing every share an account has published, quotas, or custom slugs. Accounts themselves are no longer future — see B12, and private shares are B19.
 - A per-share subdomain, so one uploaded page cannot read another share on the same view origin.
 
@@ -349,4 +353,4 @@ Shares published before version tracking was introduced are also checked for upd
 - Email or Slack posting. The calling agent does that with the URL this service already returns.
 - Server-side code, build pipelines, or deploying from git.
 - Big-file transfer.
-- A built-in askmeatsack.com or FileSnare integration.
+- A built-in ask.imeatsack.com or FileSnare integration.

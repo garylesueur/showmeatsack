@@ -72,8 +72,13 @@ function Workbook() {
     <div className="workbook">
       <header className="workbook-header">
         <div>
-          <a className="wordmark" href="https://showmeatsack.com" target="_blank" rel="noreferrer">
-            showmeatsack.com
+          <a
+            className="wordmark"
+            href="https://show.imeatsack.com"
+            target="_blank"
+            rel="noreferrer"
+          >
+            show.imeatsack.com
           </a>
           <h1>{manifest.title}</h1>
         </div>
