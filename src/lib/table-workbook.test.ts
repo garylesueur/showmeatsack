@@ -50,6 +50,10 @@ describe("B24 — publishing a workbook", () => {
       });
       const html = new TextDecoder().decode(output.get("index.html"));
       expect(html).not.toContain("<script>alert(1)</script>");
+      const embedded = html.match(
+        /<script id="workbook-manifest" type="application\/json">([\s\S]*?)<\/script>/,
+      )?.[1];
+      expect(JSON.parse(embedded!)).toEqual(json(output, "manifest.json"));
       expect(output.has("viewer.js")).toBe(true);
       expect(html).toContain("00123");
     },

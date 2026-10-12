@@ -18,7 +18,7 @@ An agent calls the **show.imeatsack.com** tool, or sends the same payload over H
 
 ### B2 — The view link is the page itself 🟢 implemented
 
-Anyone who opens the view link in a browser sees the uploaded page on the view origin. Scripts and styles in the page are not stripped. The page keeps its published layout, with a small floating show.imeatsack.com badge in the bottom left (B22) and a notice when a newer version is available (B23). The product origin (home, docs, MCP, and the manage API) does not serve that uploaded page.
+Anyone who opens the view link in a browser sees the uploaded page on the view origin. Scripts and styles in the page are not stripped. The page keeps its published layout, with a small floating show.imeatsack.com badge in the bottom right that hides after five seconds (B22) and a notice when a newer version is available (B23). The product origin (home, docs, MCP, and the manage API) does not serve that uploaded page.
 
 ### B3 — A zip is a small static site 🟢 implemented
 
@@ -143,6 +143,8 @@ and copying, and an original-file download. The active sheet can be linked by
 name in the URL fragment. Loaded sheets preserve their view state while switching
 tabs. Search/filter/sort apply to the entire active sheet, not just visible rows.
 Rows and unpinned columns are virtualized, and sheets load independently on demand.
+Newly published workbook pages include the sheet names and dimensions in the page,
+so opening the selected sheet does not wait for a separate manifest request.
 The viewer includes keyboard arrow navigation, focus indication, light/dark system
 themes, responsive controls, and loading/empty/error states. Cell content is text;
 it never runs as HTML. Duplicate headers remain separate columns. CSV identifiers
@@ -165,8 +167,11 @@ sorting for arbitrarily large datasets.
 ### B22 — Shared pages carry a small brand badge 🟢 implemented
 
 A person viewing a shared HTML or Markdown page sees a small floating badge in the
-bottom left, showing the meat sack character and **show.imeatsack.com**. The badge links
-to the product in a new tab. Its styles are isolated from the uploaded page, and it
+bottom right, showing the meat sack character and **show.imeatsack.com**. The badge links
+to the product in a new tab. It hides after five seconds so it does not stay over
+the page's content or controls. If the link has keyboard focus when the time is up,
+it stays visible until focus leaves it. Update and availability notices still appear
+after the badge has hidden. Its styles are isolated from the uploaded page, and it
 fits on a phone without changing the page layout. It appears on all shares while
 publishing has no account requirement. Assets, link-preview crawlers, and embedded
 frames receive no visible badge. Viewer controls require JavaScript and permission
@@ -176,7 +181,7 @@ from any content security policy supplied by the uploaded page.
 
 While a shared page is open, the viewer checks its public version every 30 seconds
 while visible, on initial load, and when the tab becomes visible or receives focus.
-After a successful replacement, a notice above the badge says **New version available**
+After a successful replacement, a notice in the bottom right says **New version available**
 and offers **Refresh**. The page stays in place until the viewer chooses to refresh,
 so the notice does not discard input or interrupt reading. Refresh reloads the same
 URL and shows the latest page. A rejected replacement does not change the version.
