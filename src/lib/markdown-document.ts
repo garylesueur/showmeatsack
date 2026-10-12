@@ -313,7 +313,7 @@ const COLOR_MODE_PICKER_SCRIPT = `
     var domain = "";
     var host = location.hostname;
     if (host === "imeatsack.com" || host.endsWith(".imeatsack.com")) domain = "; Domain=.imeatsack.com";
-    document.cookie = "meatsack_color_mode=" + mode + "; Path=/; Max-Age=31536000; SameSite=Lax" + secure + domain;
+    try { document.cookie = "meatsack_color_mode=" + mode + "; Path=/; Max-Age=31536000; SameSite=Lax" + secure + domain; } catch (e) {}
   }
   function apply(mode){
     var dark = mode === "dark" || (mode !== "light" && window.matchMedia("(prefers-color-scheme: dark)").matches);
