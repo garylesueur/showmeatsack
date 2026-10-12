@@ -7,10 +7,10 @@ function encodeConfig(mcpUrl: string): string {
 
 export function cursorInstallHref(mcpUrl: string): string {
   const config = encodeConfig(mcpUrl);
-  return `cursor://anysphere.cursor-deeplink/mcp/install?name=${encodeURIComponent("showmeatsack.com")}&config=${config}`;
+  return `cursor://anysphere.cursor-deeplink/mcp/install?name=${encodeURIComponent("show.imeatsack.com")}&config=${config}`;
 }
 
 export function cursorInstallPageHref(mcpUrl: string): string {
   const config = encodeConfig(mcpUrl);
-  return `https://cursor.com/en/install-mcp?name=${encodeURIComponent("showmeatsack.com")}&config=${config}`;
+  return `https://cursor.com/en/install-mcp?name=${encodeURIComponent("show.imeatsack.com")}&config=${config}`;
 }

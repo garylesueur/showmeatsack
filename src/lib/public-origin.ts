@@ -1,4 +1,4 @@
-const DEFAULT_PRODUCT_ORIGIN = "https://showmeatsack.com";
+const DEFAULT_PRODUCT_ORIGIN = "https://show.imeatsack.com";
 
 function trimOrigin(value: string | undefined): string | undefined {
   const trimmed = value?.replace(/\/$/, "");

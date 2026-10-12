@@ -7,7 +7,7 @@ function attribute(attributes: string, name: string): string | null {
 
 /**
  * Recovers markdown from the old client-rendered shell agents commonly
- * published before showmeatsack.com accepted markdown directly.
+ * published before show.imeatsack.com accepted markdown directly.
  *
  * This deliberately recognises the broken positional marked renderer API,
  * rather than treating every page containing a text/plain script as markdown.

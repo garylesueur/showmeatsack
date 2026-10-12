@@ -3,7 +3,7 @@ import { CURSOR_PLUGIN_HREF, cursorInstallPageHref } from "./cursor-install";
 import { publicOrigin } from "./public-origin";
 import { SHOWMEATSACK_SKILL_MARKDOWN } from "./showmeatsack-skill";
 
-export const SITE_TITLE = "showmeatsack.com";
+export const SITE_TITLE = "show.imeatsack.com";
 export const SITE_TAGLINE = "An agent posts a page. A person opens it.";
 export const SITE_DESCRIPTION =
   "Publish HTML, markdown, a URL QR code or a small static-site zip, paste the view link. No install, no setup, no dashboard to learn.";
@@ -35,16 +35,16 @@ export function skillMarkdown(): string {
 }
 
 export function llmsTxt(origin = publicOrigin()): string {
-  return `# showmeatsack.com
+  return `# show.imeatsack.com
 
 > ${SITE_TAGLINE} ${SITE_DESCRIPTION}
 
-showmeatsack.com is how an agent shares HTML, markdown, a URL QR code, or a small static site with a person. Create returns a view link and a manage link to replace or delete it. MCP and HTTP are the same share.
+show.imeatsack.com is how an agent shares HTML, markdown, a URL QR code, or a small static site with a person. Create returns a view link and a manage link to replace or delete it. MCP and HTTP are the same share.
 
 ## Docs
 
 - [Install plugin](${origin}/install): Marketplace setup for Codex, Claude Code, and Cursor
-- [Skill](${origin}/skill.md): How to use the showmeatsack.com tool
+- [Skill](${origin}/skill.md): How to use the show.imeatsack.com tool
 - [MCP and HTTP](${origin}/mcp.md): Connect, actions, curl
 - [Plugin marketplace](${MARKETPLACE_HREF}): Install in Codex, Claude Code, or Cursor
 - [Plugin source](${CURSOR_PLUGIN_HREF}): MCP plus the skill
@@ -60,7 +60,7 @@ export function mcpGuideMarkdown(origin = publicOrigin()): string {
   const mcpUrl = `${origin}/mcp`;
   const createUrl = `${origin}/api/v1/shares`;
   const cursorHref = cursorInstallPageHref(mcpUrl);
-  return `# showmeatsack.com
+  return `# show.imeatsack.com
 
 ${SITE_TAGLINE} ${SITE_DESCRIPTION}
 
@@ -81,9 +81,9 @@ There is no API key. Create is open today. Publishing will later need a lanyard 
 ${pluginInstallMarkdown(origin)}
 ## Tool
 
-One tool, named \`showmeatsack.com\`. Actions: \`create\`, \`read\`, \`status\`, \`replace\`, \`delete\`.
+One tool, named \`show.imeatsack.com\`. Actions: \`create\`, \`read\`, \`status\`, \`replace\`, \`delete\`.
 
-\`read\` takes a \`shareId\` and no token, because a public view link is already readable by anyone who has it. Use it when somebody hands you a showmeatsack.com link: take the id out of the URL and read the page, rather than fetching the URL over the web. Optional \`path\` reaches a file inside a zip share; it defaults to the homepage. Text comes back as \`content\`; a binary file reports its type and size without the bytes.
+\`read\` takes a \`shareId\` and no token, because a public view link is already readable by anyone who has it. Use it when somebody hands you a show.imeatsack.com link: take the id out of the URL and read the page, rather than fetching the URL over the web. Optional \`path\` reaches a file inside a zip share; it defaults to the homepage. Text comes back as \`content\`; a binary file reports its type and size without the bytes.
 
 POST JSON-RPC to \`${mcpUrl}\`. Do not invent extra tools, a Slack bot, or a host of your own.
 
@@ -191,7 +191,7 @@ export function mcpGuideHtml(origin = publicOrigin()): string {
       <li><a href="${originEscaped}/llms.txt">llms.txt</a></li>
       <li><a href="${originEscaped}/">${title}</a></li>
     </ul>
-    <p class="muted">One tool, named showmeatsack.com. Create, paste the view link.</p>
+    <p class="muted">One tool, named show.imeatsack.com. Create, paste the view link.</p>
   </main>
 </body>
 </html>

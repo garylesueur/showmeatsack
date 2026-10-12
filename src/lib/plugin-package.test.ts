@@ -19,7 +19,7 @@ describe("Agent Plugin package", () => {
     };
     expect(manifest.$schema).toBe("https://agent-plugins.org/schemas/1.0.0/plugin.schema.json");
     expect(manifest.name).toBe("showmeatsack");
-    expect(manifest.homepage).toBe("https://showmeatsack.com");
+    expect(manifest.homepage).toBe("https://show.imeatsack.com");
     expect(manifest.author).toEqual({
       name: "Gary Le Sueur",
       url: "https://gaz.dev",
@@ -42,25 +42,25 @@ describe("Agent Plugin package", () => {
     const mcp = readJson("mcp.json") as {
       $schema: string;
       mcpServers: {
-        "showmeatsack.com": { type: string; url: string };
+        "show.imeatsack.com": { type: string; url: string };
       };
     };
     expect(mcp.$schema).toBe("https://agent-plugins.org/schemas/1.0.0/mcp.schema.json");
-    expect(mcp.mcpServers["showmeatsack.com"]).toEqual({
+    expect(mcp.mcpServers["show.imeatsack.com"]).toEqual({
       type: "streamable-http",
-      url: "https://showmeatsack.com/mcp",
+      url: "https://show.imeatsack.com/mcp",
     });
   });
 
   it("keeps cursor.directory .mcp.json on the same URL", () => {
     const directory = readJson(".mcp.json") as {
-      mcpServers: { "showmeatsack.com": { url: string } };
+      mcpServers: { "show.imeatsack.com": { url: string } };
     };
     const mcp = readJson("mcp.json") as {
-      mcpServers: { "showmeatsack.com": { url: string } };
+      mcpServers: { "show.imeatsack.com": { url: string } };
     };
-    expect(directory.mcpServers["showmeatsack.com"].url).toBe(
-      mcp.mcpServers["showmeatsack.com"].url,
+    expect(directory.mcpServers["show.imeatsack.com"].url).toBe(
+      mcp.mcpServers["show.imeatsack.com"].url,
     );
   });
 

@@ -7,12 +7,12 @@ describe("public crawler files", () => {
   it("lists the public documents and keeps shares off the sitemap", () => {
     const urls = sitemap().map((entry) => entry.url);
     expect(urls).toEqual([
-      "https://showmeatsack.com",
-      "https://showmeatsack.com/install",
-      "https://showmeatsack.com/mcp",
-      "https://showmeatsack.com/mcp.md",
-      "https://showmeatsack.com/skill.md",
-      "https://showmeatsack.com/llms.txt",
+      "https://show.imeatsack.com",
+      "https://show.imeatsack.com/install",
+      "https://show.imeatsack.com/mcp",
+      "https://show.imeatsack.com/mcp.md",
+      "https://show.imeatsack.com/skill.md",
+      "https://show.imeatsack.com/llms.txt",
     ]);
     expect(urls.join(" ")).not.toContain("/s/");
     expect(urls.join(" ")).not.toContain("/api/");
@@ -20,8 +20,8 @@ describe("public crawler files", () => {
 
   it("allows the public site and disallows API and agent rewrites", () => {
     const file = robots();
-    expect(file.host).toBe("https://showmeatsack.com");
-    expect(file.sitemap).toBe("https://showmeatsack.com/sitemap.xml");
+    expect(file.host).toBe("https://show.imeatsack.com");
+    expect(file.sitemap).toBe("https://show.imeatsack.com/sitemap.xml");
     expect(file.rules).toEqual({
       userAgent: "*",
       allow: "/",

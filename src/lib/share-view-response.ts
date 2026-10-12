@@ -29,7 +29,7 @@ export const INTERNAL_ERROR_SHARE_HTML = `<!doctype html>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
-  <title>The silicon has let us down · showmeatsack.com</title>
+  <title>The silicon has let us down · show.imeatsack.com</title>
   <style>
     :root { color-scheme: light dark; font-family: ui-sans-serif, system-ui, sans-serif; }
     * { box-sizing: border-box; }
@@ -57,7 +57,7 @@ export const INTERNAL_ERROR_SHARE_HTML = `<!doctype html>
     <p class="code">Error 500</p>
     <h1>The silicon has let us down.</h1>
     <p>The meat sack is disappointed. This share hit an unexpected snag while we were opening it. Try refreshing in a moment.</p>
-    <a href="/">Back to showmeatsack.com</a>
+    <a href="/">Back to show.imeatsack.com</a>
   </main>
 </body>
 </html>`;

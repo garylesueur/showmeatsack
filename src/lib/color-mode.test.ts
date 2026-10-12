@@ -8,17 +8,18 @@ describe("colour mode persistence", () => {
     expect(isStoredColorMode("system")).toBe(false);
   });
 
-  it("shares the cookie across showmeatsack.com and s.showmeatsack.com", () => {
-    expect(colorModeCookieDomain("s.showmeatsack.com")).toBe("; Domain=.showmeatsack.com");
-    expect(colorModeCookieDomain("showmeatsack.com")).toBe("; Domain=.showmeatsack.com");
-    expect(colorModeCookieDomain("askmeatsack.com")).toBe("; Domain=.askmeatsack.com");
+  it("shares the cookie across show.imeatsack.com and s.imeatsack.com", () => {
+    expect(colorModeCookieDomain("s.imeatsack.com")).toBe("; Domain=.imeatsack.com");
+    expect(colorModeCookieDomain("show.imeatsack.com")).toBe("; Domain=.imeatsack.com");
+    expect(colorModeCookieDomain("ask.imeatsack.com")).toBe("; Domain=.imeatsack.com");
     expect(colorModeCookieDomain("localhost")).toBe("");
+    expect(colorModeCookieDomain("imeatsack.com.example.com")).toBe("");
   });
 
   it("writes a year-long SameSite cookie", () => {
-    const cookie = persistColorModeCookie("dark", "s.showmeatsack.com", "https:");
+    const cookie = persistColorModeCookie("dark", "s.imeatsack.com", "https:");
     expect(cookie).toContain("meatsack_color_mode=dark");
-    expect(cookie).toContain("Domain=.showmeatsack.com");
+    expect(cookie).toContain("Domain=.imeatsack.com");
     expect(cookie).toContain("SameSite=Lax");
     expect(cookie).toContain("Secure");
   });

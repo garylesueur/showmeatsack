@@ -70,7 +70,7 @@ export const AGENT_SAMPLE: [string, string][] = [
   ["text-emerald-300", "2592000"],
   ["text-machine-muted", "\n}\n\n"],
   ["text-machine-muted", "// → "],
-  ["text-emerald-300", '"https://s.showmeatsack.com/s/…"'],
+  ["text-emerald-300", '"https://s.imeatsack.com/s/…"'],
 ];
 
 /** Bar heights for the mock page in the person panel. */

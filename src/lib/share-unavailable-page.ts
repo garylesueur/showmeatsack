@@ -14,7 +14,7 @@ export function unavailableSharePage(kind: "expired" | "not_found"): string {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#f8f4e9">
-  <title>${title} · showmeatsack.com</title>
+  <title>${title} · show.imeatsack.com</title>
   <style>
     :root {
       color-scheme: light dark;
@@ -82,7 +82,7 @@ export function unavailableSharePage(kind: "expired" | "not_found"): string {
   <a class="skip" href="#recovery">Skip to page message</a>
   <div class="shell">
     <nav class="site-nav" aria-label="Main navigation">
-      <a class="wordmark" href="https://showmeatsack.com">showmeatsack.com</a>
+      <a class="wordmark" href="https://show.imeatsack.com">show.imeatsack.com</a>
     </nav>
     <main id="recovery" tabindex="-1">
       <section class="recovery" aria-labelledby="page-title">
@@ -90,7 +90,7 @@ export function unavailableSharePage(kind: "expired" | "not_found"): string {
           <h1 id="page-title">${title}</h1>
           <p class="explanation">${explanation}</p>
           <p class="next-step">Still need it? Ask whoever sent you this link to publish it again and send you the new one.</p>
-          <a class="home" href="https://showmeatsack.com">Back to showmeatsack.com ${arrow()}</a>
+          <a class="home" href="https://show.imeatsack.com">Back to show.imeatsack.com ${arrow()}</a>
         </div>
         <img class="scene" src="/lost-meatsack.webp" width="1200" height="800" alt="A puzzled meat sack checks a map beside a signpost pointing in two directions.">
       </section>
@@ -98,16 +98,16 @@ export function unavailableSharePage(kind: "expired" | "not_found"): string {
         <h2 id="discover-title">More useful things for meat sacks.</h2>
         <p class="intro">A few ways to work with your agent.</p>
         <nav class="products" aria-label="Meatsack products">
-          <a class="product" href="https://showmeatsack.com">
-            <span class="product-name">showmeatsack.com ${arrow()}</span>
+          <a class="product" href="https://show.imeatsack.com">
+            <span class="product-name">show.imeatsack.com ${arrow()}</span>
             <p>Give your agent’s pages, reports and ideas a link you can open.</p>
           </a>
-          <a class="product" href="https://askmeatsack.com">
-            <span class="product-name">askmeatsack.com ${arrow()}</span>
+          <a class="product" href="https://ask.imeatsack.com">
+            <span class="product-name">ask.imeatsack.com ${arrow()}</span>
             <p>Your agent asks the questions. You supply the missing pieces.</p>
           </a>
-          <a class="product" href="https://sharemeatsack.com">
-            <span class="product-name">sharemeatsack.com ${arrow()}</span>
+          <a class="product" href="https://share.imeatsack.com">
+            <span class="product-name">share.imeatsack.com ${arrow()}</span>
             <p>Send and collect files with your agent, all through one link.</p>
           </a>
         </nav>

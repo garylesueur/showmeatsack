@@ -14,9 +14,9 @@ const png = {
 
 describe("share Open Graph", () => {
   it("B17 — preview image URL is on that share, not the homepage", () => {
-    expect(shareOpenGraphUrls("https://showmeatsack.com", "shareid1")).toEqual({
-      pageUrl: "https://showmeatsack.com/s/shareid1/",
-      imageUrl: "https://showmeatsack.com/s/shareid1/opengraph-image",
+    expect(shareOpenGraphUrls("https://show.imeatsack.com", "shareid1")).toEqual({
+      pageUrl: "https://show.imeatsack.com/s/shareid1/",
+      imageUrl: "https://show.imeatsack.com/s/shareid1/opengraph-image",
     });
   });
 
@@ -31,11 +31,11 @@ describe("share Open Graph", () => {
     const html = withOpenGraphMeta("<h1>Hello</h1>", {
       title: "Hello",
       description: "A page",
-      imageUrl: "https://showmeatsack.com/s/shareid1/opengraph-image",
-      pageUrl: "https://showmeatsack.com/s/shareid1/",
+      imageUrl: "https://show.imeatsack.com/s/shareid1/opengraph-image",
+      pageUrl: "https://show.imeatsack.com/s/shareid1/",
     });
     expect(html).toContain('property="og:image"');
-    expect(html).toContain("https://showmeatsack.com/s/shareid1/opengraph-image");
+    expect(html).toContain("https://show.imeatsack.com/s/shareid1/opengraph-image");
     expect(html).toContain("<h1>Hello</h1>");
     expect(html).toContain('name="twitter:card"');
   });

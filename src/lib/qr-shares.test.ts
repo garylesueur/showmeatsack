@@ -17,13 +17,13 @@ describe("QR share lifecycle", () => {
       qr: { url: "https://example.com/first", title: "First & foremost" },
     });
     expect(first).toMatchObject({
-      viewUrl: "https://showmeatsack.com/s/shareid1/",
+      viewUrl: "https://show.imeatsack.com/s/shareid1/",
       status: "live",
     });
     const page = await shares.view("shareid1", "");
     const html = await responseForView(page, {
       shareId: "shareid1",
-      request: new Request("https://showmeatsack.com/s/shareid1/"),
+      request: new Request("https://show.imeatsack.com/s/shareid1/"),
     }).text();
     expect(html).toContain('property="og:title" content="First &amp; foremost"');
     expect(html).toContain('property="og:image:width" content="1024"');
@@ -37,7 +37,7 @@ describe("QR share lifecycle", () => {
       qr: { url: "https://example.com/second", style: "brand" },
     });
     expect(second).toMatchObject({
-      viewUrl: "https://showmeatsack.com/s/shareid1/",
+      viewUrl: "https://show.imeatsack.com/s/shareid1/",
       status: "live",
     });
     expect(second).toHaveProperty("expiresAt", (first as { expiresAt: string }).expiresAt);

@@ -148,7 +148,7 @@ graph TD
           responseForView(
             { kind },
             {
-              request: new Request("https://s.showmeatsack.com/s/missing/"),
+              request: new Request("https://s.imeatsack.com/s/missing/"),
               shareId: "missing",
             },
           ),
@@ -157,7 +157,7 @@ graph TD
     );
     for (const body of bodies) {
       expect(body).toContain("Ask whoever sent you this link to publish it again");
-      for (const product of ["showmeatsack.com", "askmeatsack.com", "sharemeatsack.com"]) {
+      for (const product of ["show.imeatsack.com", "ask.imeatsack.com", "share.imeatsack.com"]) {
         expect(body).toContain(`href="https://${product}"`);
       }
       expect(body).toContain('src="/lost-meatsack.webp"');
@@ -185,7 +185,7 @@ graph TD
         contentType: "text/html; charset=utf-8",
       },
       {
-        request: new Request("https://s.showmeatsack.com/s/shareid1/", {
+        request: new Request("https://s.imeatsack.com/s/shareid1/", {
           headers: { "user-agent": "Mozilla/5.0 Safari/605.1.15" },
         }),
         shareId: "shareid1",
@@ -206,7 +206,7 @@ graph TD
         contentType: "text/html; charset=utf-8",
       },
       {
-        request: new Request("https://s.showmeatsack.com/s/shareid1/", {
+        request: new Request("https://s.imeatsack.com/s/shareid1/", {
           headers: { "user-agent": "Slackbot-LinkExpanding 1.0" },
         }),
         shareId: "shareid1",
@@ -230,7 +230,7 @@ graph TD
         contentType: "text/css; charset=utf-8",
       },
       {
-        request: new Request("https://s.showmeatsack.com/s/shareid1/style.css", {
+        request: new Request("https://s.imeatsack.com/s/shareid1/style.css", {
           headers: { "user-agent": "Slackbot-LinkExpanding 1.0" },
         }),
         shareId: "shareid1",
@@ -243,7 +243,7 @@ graph TD
     const expired = responseForView(
       { kind: "expired" },
       {
-        request: new Request("https://s.showmeatsack.com/s/shareid1/", {
+        request: new Request("https://s.imeatsack.com/s/shareid1/", {
           headers: { "user-agent": "Slackbot-LinkExpanding 1.0" },
         }),
         shareId: "shareid1",
@@ -257,7 +257,7 @@ graph TD
     const missing = responseForView(
       { kind: "not_found" },
       {
-        request: new Request("https://s.showmeatsack.com/s/shareid1/", {
+        request: new Request("https://s.imeatsack.com/s/shareid1/", {
           headers: { "user-agent": "Slackbot-LinkExpanding 1.0" },
         }),
         shareId: "shareid1",

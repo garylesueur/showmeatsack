@@ -1,6 +1,6 @@
-# showmeatsack.com — repository instructions
+# show.imeatsack.com — repository instructions
 
-**Domain:** showmeatsack.com
+**Domain:** show.imeatsack.com
 
 Greenfield Next.js App Router project. TypeScript, Tailwind, pnpm. Merge gates live in `.engineering/config.yaml`.
 
@@ -17,15 +17,15 @@ pnpm test        # Vitest
 pnpm build       # Production build
 ```
 
-1Password holds three items in the **Agents** vault (`mep374l3cpdtzwibf5fswsimbi`, override with `OP_VAULT`): `showmeatsack.com Development`, `showmeatsack.com Preview`, and `showmeatsack.com Production`. Same field names, different values. Local commands use the Development item only. Preview and Production are pushed to Vercel; they are not for a laptop. Marketplace KV on Vercel can still inject `KV_REST_API_*` for that environment; put the matching values on that item if you want 1Password to be the source of truth. Leave Development Redis and R2 empty to stay on in-memory stores. `.env.development.tpl`, `.env.preview.tpl`, and `.env.production.tpl` hold `op://` references only. `.env.example` is the empty placeholder. Never print `.env` contents, never commit secrets.
+1Password holds three items in the **Agents** vault (`mep374l3cpdtzwibf5fswsimbi`, override with `OP_VAULT`): `kurrh2l5nm5jd2ajqchctrls4q`, `iwuprml52wmzuvgq4eg37pzrly`, and `gzow46cckd6yenaplpsv3mre6y`. Same field names, different values. Local commands use the Development item only. Preview and Production are pushed to Vercel; they are not for a laptop. Marketplace KV on Vercel can still inject `KV_REST_API_*` for that environment; put the matching values on that item if you want 1Password to be the source of truth. Leave Development Redis and R2 empty to stay on in-memory stores. `.env.development.tpl`, `.env.preview.tpl`, and `.env.production.tpl` hold `op://` references only. `.env.example` is the empty placeholder. Never print `.env` contents, never commit secrets.
 
 On Vercel, each environment needs its own Redis (`KV_REST_API_*` or Upstash) and its own R2 bucket (`R2_ACCOUNT_ID`, `R2_ACCESS_KEY_ID`, `R2_SECRET_ACCESS_KEY`, `R2_BUCKET_NAME`) so shares survive across instances. `BLOB_READ_WRITE_TOKEN` remains a fallback if R2 is unset.
 
 ## What this is
 
-An agent posts HTML, markdown, or a small static-site zip, and gets a showmeatsack.com view link to share. The same create call also returns a manage link to replace or delete that share. Anyone with the view link sees the page itself. Shares expire. Posting the view link to Slack or anywhere else is the calling agent’s job.
+An agent posts HTML, markdown, or a small static-site zip, and gets a show.imeatsack.com view link to share. The same create call also returns a manage link to replace or delete that share. Anyone with the view link sees the page itself. Shares expire. Posting the view link to Slack or anywhere else is the calling agent’s job.
 
-Always call the product **showmeatsack.com** in user-facing copy. The agent tool is named `showmeatsack.com`. View links are `https://s.showmeatsack.com/s/…`. The product origin stays `https://showmeatsack.com`. Add `s.showmeatsack.com` on the Vercel project so that host reaches this app.
+Always call the product **show.imeatsack.com** in user-facing copy. The agent tool is named `show.imeatsack.com`. View links are `https://s.imeatsack.com/s/…`. The product origin stays `https://show.imeatsack.com`. Add `s.imeatsack.com` on the Vercel project so that host reaches this app.
 
 ## Where things live
 

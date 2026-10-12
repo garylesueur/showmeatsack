@@ -23,13 +23,13 @@ function clearInstalledService() {
 }
 
 async function view(shareId: string, path?: string[]): Promise<Response> {
-  return GET(new Request(`https://showmeatsack.com/s/${shareId}/`), {
+  return GET(new Request(`https://show.imeatsack.com/s/${shareId}/`), {
     params: Promise.resolve({ shareId, path }),
   });
 }
 
 const checkRevision = () =>
-  HEAD(new Request("https://showmeatsack.com/s/shareid1/", { method: "HEAD" }), {
+  HEAD(new Request("https://show.imeatsack.com/s/shareid1/", { method: "HEAD" }), {
     params: Promise.resolve({ shareId: "shareid1" }),
   });
 
@@ -166,7 +166,7 @@ describe("GET /s/[shareId]", () => {
       now: () => new Date(nowMs),
       createId: () => "shareid1",
       createToken: () => "managetoken1",
-      publicBaseUrl: "https://showmeatsack.com",
+      publicBaseUrl: "https://show.imeatsack.com",
     });
     const globalForShares = globalThis as typeof globalThis & {
       showmeatsackShares?: typeof shares;
@@ -176,7 +176,7 @@ describe("GET /s/[shareId]", () => {
     nowMs += 61_000;
 
     const revision = await HEAD(
-      new Request("https://showmeatsack.com/s/shareid1/", { method: "HEAD" }),
+      new Request("https://show.imeatsack.com/s/shareid1/", { method: "HEAD" }),
       { params: Promise.resolve({ shareId: "shareid1" }) },
     );
     expect(revision.status).toBe(410);
@@ -211,13 +211,13 @@ describe("GET /s/[shareId]", () => {
     expect(css.headers.get("X-Content-Type-Options")).toBe("nosniff");
     expect(await css.text()).toBe("p{color:red}");
     const head = await HEAD(
-      new Request("https://showmeatsack.com/s/shareid1/style.css", { method: "HEAD" }),
+      new Request("https://show.imeatsack.com/s/shareid1/style.css", { method: "HEAD" }),
       { params: Promise.resolve({ shareId: "shareid1", path: ["style.css"] }) },
     );
     expect(head.status).toBe(200);
     expect(head.headers.get("Content-Type")).toBe(css.headers.get("Content-Type"));
     const missing = await HEAD(
-      new Request("https://showmeatsack.com/s/shareid1/missing.css", { method: "HEAD" }),
+      new Request("https://show.imeatsack.com/s/shareid1/missing.css", { method: "HEAD" }),
       { params: Promise.resolve({ shareId: "shareid1", path: ["missing.css"] }) },
     );
     expect(missing.status).toBe(404);

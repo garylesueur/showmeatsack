@@ -6,7 +6,7 @@
 
    Shared tokens and the seam animation come from meatsack-brand
    (`brand.generated.css`). This file only maps them into Tailwind and keeps
-   the show-only chart grow. askmeatsack.com is ember; this is kelp.
+   the show-only chart grow. ask.imeatsack.com is ember; this is kelp.
    --------------------------------------------------------------------------- */
 
 @theme inline {

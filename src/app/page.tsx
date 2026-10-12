@@ -7,8 +7,8 @@ import { CURSOR_PLUGIN_HREF, cursorInstallPageHref } from "@/lib/cursor-install"
 import { publicOrigin } from "@/lib/public-origin";
 
 const SIBLING = {
-  name: "askmeatsack.com",
-  href: "https://askmeatsack.com",
+  name: "ask.imeatsack.com",
+  href: "https://ask.imeatsack.com",
 };
 
 export default function Home() {
@@ -23,7 +23,7 @@ export default function Home() {
 
   return (
     <SiteShell
-      wordmark="showmeatsack.com"
+      wordmark="show.imeatsack.com"
       sibling={SIBLING}
       repoHref={CURSOR_PLUGIN_HREF}
       docs={[
@@ -50,7 +50,7 @@ export default function Home() {
 
         <Seam
           wireLabel="one link"
-          personLabel="s.showmeatsack.com"
+          personLabel="s.imeatsack.com"
           agent={AGENT_SAMPLE.map(([className, text], index) => (
             <span key={index} className={className}>
               {text}

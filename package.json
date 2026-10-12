@@ -17,7 +17,9 @@
     "sync:skill": "node scripts/sync-skill.mjs",
     "sync:brand": "node brand/scripts/sync-brand.mjs",
     "sync:icons": "node scripts/sync-icons.mjs",
-    "sync:table": "node scripts/sync-table-viewer.mjs"
+    "sync:table": "node scripts/sync-table-viewer.mjs",
+    "prepare:landing": "node scripts/prepare-imeatsack.mjs",
+    "submit:landing": "node scripts/submit-imeatsack-indexnow.mjs"
   },
   "dependencies": {
     "@aws-sdk/client-s3": "^3.1111.0",
