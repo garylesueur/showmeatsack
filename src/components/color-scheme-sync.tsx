@@ -1,0 +1,30 @@
+"use client";
+
+import { useEffect } from "react";
+
+function syncSystemDark(): void {
+  const root = document.documentElement;
+  if (root.dataset.colorMode === "light" || root.dataset.colorMode === "dark") {
+    return;
+  }
+  const systemDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+  root.style.colorScheme = systemDark ? "dark" : "light";
+  root.classList.toggle("dark", systemDark);
+  root.classList.toggle("light", !systemDark);
+  root.setAttribute("data-theme", systemDark ? "dark" : "light");
+}
+
+export function ColorSchemeSync() {
+  useEffect(() => {
+    syncSystemDark();
+    const mq = window.matchMedia("(prefers-color-scheme: dark)");
+    const onChange = () => {
+      syncSystemDark();
+    };
+    mq.addEventListener("change", onChange);
+    return () => {
+      mq.removeEventListener("change", onChange);
+    };
+  }, []);
+  return null;
+}

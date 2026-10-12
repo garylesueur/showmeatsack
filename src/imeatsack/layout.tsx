@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
-import { ColorModePicker } from "@/components/color-mode-picker";
+import { ColorSchemeSync } from "@/components/color-scheme-sync";
 import { COLOR_MODE_BOOT_SCRIPT } from "@/lib/color-mode";
 import { landingMetadata, landingJsonLd } from "@/lib/imeatsack-site";
 import "./globals.css";
@@ -27,9 +27,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
             __html: JSON.stringify(landingJsonLd).replace(/</g, "\\u003c"),
           }}
         />
-        <div className="fixed right-4 bottom-4 z-20">
-          <ColorModePicker />
-        </div>
+        <ColorSchemeSync />
         {children}
       </body>
     </html>

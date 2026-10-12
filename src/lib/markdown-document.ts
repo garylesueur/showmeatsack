@@ -277,61 +277,42 @@ input[type="checkbox"] { pointer-events: none; accent-color: var(--primary); }
 }
 .mode-picker {
   display: none;
-  position: sticky;
-  top: 0;
-  z-index: 2;
+  max-width: 52rem;
+  margin: 0 auto;
   justify-content: flex-end;
-  padding: 0.75rem 1rem 0;
-  background: linear-gradient(var(--background) 70%, transparent);
+  padding: 1rem 1.25rem 0;
 }
 html[data-theme] .mode-picker { display: flex; }
-.mode-picker fieldset {
-  display: inline-flex;
-  margin: 0;
-  padding: 0.15rem;
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  background: var(--card);
-  color: var(--muted-foreground);
-  font-size: 0.75rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-}
-.mode-picker label {
+.mode-picker button {
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
-  margin: 0;
-  padding: 0.35rem 0.7rem;
-  border-radius: 999px;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted-foreground);
   cursor: pointer;
 }
-.mode-picker input { position: absolute; opacity: 0; pointer-events: none; }
-.mode-picker label:has(input:checked) {
-  background: var(--muted);
-  color: var(--foreground);
-}
-.mode-picker label:focus-within {
-  outline: 2px solid var(--primary);
-  outline-offset: 2px;
-}
+.mode-picker svg { width: 20px; height: 20px; }
+.mode-picker button:hover { background: var(--muted); color: var(--foreground); }
+.mode-picker button:focus-visible { outline: 2px solid var(--primary); outline-offset: 2px; }
+.mode-picker [hidden] { display: none; }
 `.trim();
 
 const COLOR_MODE_PICKER_SCRIPT = `
 (function(){
   var KEY="meatsack:color-mode";
-  var form=document.querySelector("[data-color-mode-picker]");
-  if(!form) return;
-  function read(){
-    return document.documentElement.getAttribute("data-color-mode") || "auto";
-  }
+  var button=document.querySelector("[data-color-mode-toggle]");
+  if(!button) return;
   function persist(mode){
     try { localStorage.setItem(KEY, mode); } catch (e) {}
     var secure = location.protocol === "https:" ? "; Secure" : "";
     var domain = "";
     var host = location.hostname;
-    if (host === "show.imeatsack.com" || host.slice(-17) === ".show.imeatsack.com") domain = "; Domain=.show.imeatsack.com";
-    if (host === "ask.imeatsack.com" || host.slice(-16) === ".ask.imeatsack.com") domain = "; Domain=.ask.imeatsack.com";
+    if (host === "imeatsack.com" || host.endsWith(".imeatsack.com")) domain = "; Domain=.imeatsack.com";
     document.cookie = "meatsack_color_mode=" + mode + "; Path=/; Max-Age=31536000; SameSite=Lax" + secure + domain;
   }
   function apply(mode){
@@ -342,15 +323,20 @@ const COLOR_MODE_PICKER_SCRIPT = `
     root.classList.toggle("dark", dark);
     root.classList.toggle("light", !dark);
     root.style.colorScheme = dark ? "dark" : "light";
-    persist(mode);
-    form.querySelectorAll("input[name='color-mode']").forEach(function(input){
-      input.checked = input.value === mode;
-    });
+    updateIcon(dark);
   }
-  var current = read();
-  form.querySelectorAll("input[name='color-mode']").forEach(function(input){
-    input.checked = input.value === current;
-    input.addEventListener("change", function(){ apply(input.value); });
+  function updateIcon(dark){
+    var label = dark ? "Switch to light mode" : "Switch to dark mode";
+    button.setAttribute("aria-label", label);
+    button.title = label;
+    button.querySelector("[data-sun]").toggleAttribute("hidden", !dark);
+    button.querySelector("[data-moon]").toggleAttribute("hidden", dark);
+  }
+  updateIcon(document.documentElement.getAttribute("data-theme") === "dark");
+  button.addEventListener("click", function(){
+    var mode = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
+    apply(mode);
+    persist(mode);
   });
   window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", function(){
     if ((document.documentElement.getAttribute("data-color-mode") || "auto") === "auto") apply("auto");
@@ -463,14 +449,12 @@ export function wrapMarkdownDocument(bodyHtml: string, title: string): string {
   <style>${DOCUMENT_STYLES}</style>
 </head>
 <body>
-  <form class="mode-picker" data-color-mode-picker aria-label="Colour">
-    <fieldset>
-      <legend class="sr-only">Colour</legend>
-      <label><input type="radio" name="color-mode" value="light" />Light</label>
-      <label><input type="radio" name="color-mode" value="auto" checked />Auto</label>
-      <label><input type="radio" name="color-mode" value="dark" />Dark</label>
-    </fieldset>
-  </form>
+  <header class="mode-picker">
+    <button type="button" data-color-mode-toggle aria-label="Switch to dark mode" title="Switch to dark mode">
+      <svg data-moon viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20.9 13.1A9 9 0 0 1 10.9 3.1 9 9 0 1 0 20.9 13.1Z" /></svg>
+      <svg data-sun hidden viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4" /><path d="M12 2v2m0 16v2M2 12h2m16 0h2M4.93 4.93l1.42 1.42m11.3 11.3 1.42 1.42M4.93 19.07l1.42-1.42m11.3-11.3 1.42-1.42" /></svg>
+    </button>
+  </header>
   <main>${bodyHtml}</main>
   <script>${COLOR_MODE_PICKER_SCRIPT}</script>
   <script type="module">${MERMAID_BOOTSTRAP}</script>
