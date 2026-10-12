@@ -18,6 +18,16 @@ import type { TableManifest } from "../lib/table-workbook";
 const ROW_HEIGHT = 36;
 const HEADER_HEIGHT = 74;
 const count = (value: number) => value.toLocaleString();
+const embeddedManifest = document.getElementById("workbook-manifest")?.textContent;
+const initialManifest: TableManifest | undefined = embeddedManifest
+  ? JSON.parse(embeddedManifest)
+  : undefined;
+
+function linkedSheetIndex(manifest?: TableManifest): number {
+  const requested = new URLSearchParams(location.hash.slice(1)).get("sheet");
+  return Math.max(0, manifest?.sheets.findIndex((sheet) => sheet.name === requested) ?? 0);
+}
+
 async function loadJson<T>(path: string, signal?: AbortSignal): Promise<T> {
   const response = await fetch(path, { signal, cache: "no-store" });
   if (!response.ok)
@@ -28,17 +38,17 @@ async function loadJson<T>(path: string, signal?: AbortSignal): Promise<T> {
 }
 
 function Workbook() {
-  const [manifest, setManifest] = useState<TableManifest>();
+  const [manifest, setManifest] = useState(initialManifest);
   const [error, setError] = useState("");
-  const [sheetIndex, setSheetIndex] = useState(0);
+  const [sheetIndex, setSheetIndex] = useState(() => linkedSheetIndex(initialManifest));
   useEffect(() => {
+    // Older published pages still load their separate manifest.
+    if (initialManifest) return;
     const controller = new AbortController();
     loadJson<TableManifest>("manifest.json", controller.signal)
       .then((value) => {
         setManifest(value);
-        const requested = new URLSearchParams(location.hash.slice(1)).get("sheet");
-        const index = value.sheets.findIndex((sheet) => sheet.name === requested);
-        if (index >= 0) setSheetIndex(index);
+        setSheetIndex(linkedSheetIndex(value));
       })
       .catch((cause) => {
         if (!controller.signal.aborted) setError(cause.message);

@@ -143,6 +143,8 @@ and copying, and an original-file download. The active sheet can be linked by
 name in the URL fragment. Loaded sheets preserve their view state while switching
 tabs. Search/filter/sort apply to the entire active sheet, not just visible rows.
 Rows and unpinned columns are virtualized, and sheets load independently on demand.
+Newly published workbook pages include the sheet names and dimensions in the page,
+so opening the selected sheet does not wait for a separate manifest request.
 The viewer includes keyboard arrow navigation, focus indication, light/dark system
 themes, responsive controls, and loading/empty/error states. Cell content is text;
 it never runs as HTML. Duplicate headers remain separate columns. CSV identifiers
