@@ -84,12 +84,11 @@ describe("renderMarkdownDocument", () => {
     expect(page).not.toContain("color-scheme: light dark");
   });
 
-  it("B10 — a Light, Auto, and Dark control is on the page and remembered", () => {
+  it("B10 — an icon toggles the reader colours and remembers the choice", () => {
     const page = renderMarkdownDocument("# Isolation\n");
-    expect(page).toContain("data-color-mode-picker");
-    expect(page).toContain('value="light"');
-    expect(page).toContain('value="auto"');
-    expect(page).toContain('value="dark"');
+    expect(page).toContain('aria-label="Switch to dark mode"');
+    expect(page).toContain('type="button"');
+    expect(page).not.toContain('type="radio"');
     expect(page).toContain("meatsack:color-mode");
     expect(page).toContain("meatsack_color_mode");
   });

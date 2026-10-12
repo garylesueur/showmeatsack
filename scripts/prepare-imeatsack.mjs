@@ -50,6 +50,8 @@ await Promise.all(
     ["src/app/brand.generated.css", "src/app/brand.generated.css"],
     ["src/components/site-chrome.tsx", "src/components/site-chrome.tsx"],
     ["src/components/color-mode-picker.tsx", "src/components/color-mode-picker.tsx"],
+    ["src/components/color-mode-toggle.tsx", "src/components/color-mode-toggle.tsx"],
+    ["src/components/color-scheme-sync.tsx", "src/components/color-scheme-sync.tsx"],
     ["src/lib/color-mode.ts", "src/lib/color-mode.ts"],
     ["src/lib/imeatsack-site.ts", "src/lib/imeatsack-site.ts"],
     ["src/imeatsack/layout.tsx", "src/app/layout.tsx"],

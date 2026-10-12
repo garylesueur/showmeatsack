@@ -83,11 +83,11 @@ who arrives on a link to a heading lands at that heading. Coming back to the sam
 lands in the same place.
 
 ### B10 — It looks published, not dumped 🟡 partial
-> Comfortable reading width, Light/Auto/Dark, and remembered colour are in. The read/source switch and the origin mark are not.
+> Comfortable reading width, an icon to toggle light/dark, and remembered colour are in. The read/source switch and the origin mark are not.
 
 The document is set to a comfortable reading width, is legible on a phone, and
-follows the light or dark setting the reader already has — or Light, Auto, or Dark
-if they pick one. That choice is kept in the browser and reused on later documents.
+follows the system setting by default, with a sun/moon icon at the top right to switch
+between light and dark. That choice is kept in the browser and reused on later documents.
 The frame around it stays out of the way: the switch between reading and source, and
 one small mark saying where the page came from (B14). Nothing claims the content as
 ours.

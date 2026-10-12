@@ -2,7 +2,7 @@ import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { Geist, Geist_Mono } from "next/font/google";
-import { ColorModePicker } from "@/components/color-mode-picker";
+import { ColorSchemeSync } from "@/components/color-scheme-sync";
 import { SITE_DESCRIPTION, SITE_TAGLINE, SITE_TITLE, siteJsonLd } from "@/lib/agent-docs";
 import { COLOR_MODE_BOOT_SCRIPT } from "@/lib/color-mode";
 import { publicOrigin } from "@/lib/public-origin";
@@ -71,9 +71,7 @@ export default function RootLayout({ children }: Readonly<{ children: ReactNode 
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
-        <div className="fixed right-4 bottom-4 z-20">
-          <ColorModePicker />
-        </div>
+        <ColorSchemeSync />
         {children}
         <Analytics />
       </body>
