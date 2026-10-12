@@ -6,6 +6,10 @@ export function unavailableSharePage(kind: "expired" | "not_found"): string {
   const explanation = expired
     ? "Shared pages have a shelf life. This one has reached the end of its stay."
     : "We can’t find a page at this link. It may have reached the end of its shelf life, been removed, or the link may be incomplete.";
+  const illustration = expired ? "/expired-meatsack.webp" : "/lost-meatsack.webp";
+  const illustrationAlt = expired
+    ? "A meat sack sits beside an hourglass with all its sand settled in the bottom."
+    : "A puzzled meat sack checks a map beside a signpost pointing in two directions.";
 
   return `<!doctype html>
 <html lang="en-GB">
@@ -92,7 +96,7 @@ export function unavailableSharePage(kind: "expired" | "not_found"): string {
           <p class="next-step">Still need it? Ask whoever sent you this link to publish it again and send you the new one.</p>
           <a class="home" href="https://show.imeatsack.com">Back to show.imeatsack.com ${arrow()}</a>
         </div>
-        <img class="scene" src="/lost-meatsack.webp" width="1200" height="800" alt="A puzzled meat sack checks a map beside a signpost pointing in two directions.">
+        <img class="scene" src="${illustration}" width="1200" height="800" alt="${illustrationAlt}">
       </section>
       <section class="discover" aria-labelledby="discover-title">
         <h2 id="discover-title">More useful things for meat sacks.</h2>

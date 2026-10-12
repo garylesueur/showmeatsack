@@ -44,7 +44,7 @@ Using the manage token, the agent can delete the share. After that, the view lin
 
 If the agent does not set an expiry, the share lasts 30 days from create. The agent may choose a sooner expiry, never later than 30 days. After the expiry time, the view link no longer shows the uploaded page, without anyone acting. A new share is a new link.
 
-When expiry is known, the view link returns HTTP 410 with a branded “This share has expired” recovery page. It tells the visitor to ask the sender to publish again and send a new link.
+When expiry is known, the view link returns HTTP 410 with a branded “This share has expired” recovery page and an illustration of a meat sack beside an hourglass whose sand has run out. It tells the visitor to ask the sender to publish again and send a new link.
 
 ### B9 — A bad payload is refused 🟢 implemented
 
@@ -54,7 +54,7 @@ Create or replace is refused, and nothing is published or changed, when the payl
 
 An unknown share, a link whose secret does not match, an expired share, or a deleted share does not show another share’s page and does not accept replace or delete for another share.
 
-Unknown or deleted shares and missing or refused file paths return the same HTTP 404 recovery page: “This page has wandered off.” It explains that the page may no longer be available or the link may be incomplete, without claiming to know why. Both the 404 and 410 pages show the lost meat sack illustration, a link to the product homepage, and a product navigation section for show.imeatsack.com, ask.imeatsack.com and share.imeatsack.com. Homepage links use the full product origin so they work on the separate share host. Neither page contains share content or manage secrets, and both remain excluded from indexing.
+Unknown or deleted shares and missing or refused file paths return the same HTTP 404 recovery page: “This page has wandered off.” It explains that the page may no longer be available or the link may be incomplete, without claiming to know why, and shows the lost meat sack illustration. Both the 404 and 410 pages show a link to the product homepage and a product navigation section for show.imeatsack.com, ask.imeatsack.com and share.imeatsack.com. Homepage links use the full product origin so they work on the separate share host. Neither page contains share content or manage secrets, and both remain excluded from indexing.
 
 ### B11 — Tool and HTTP produce the same share 🟢 implemented
 

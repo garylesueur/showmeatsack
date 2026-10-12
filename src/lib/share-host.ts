@@ -50,8 +50,13 @@ export function shareHostDecision(input: {
     };
   }
 
-  // Recovery pages need this public illustration on the isolated share host.
-  if (onView && (isSharePath || input.pathname === "/lost-meatsack.webp")) {
+  // Recovery pages need their public illustrations on the isolated share host.
+  if (
+    onView &&
+    (isSharePath ||
+      input.pathname === "/lost-meatsack.webp" ||
+      input.pathname === "/expired-meatsack.webp")
+  ) {
     return { kind: "next" };
   }
 

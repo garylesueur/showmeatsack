@@ -61,7 +61,7 @@ describe("share host isolation", () => {
     ).toEqual({ kind: "next" });
   });
 
-  it("B14 — the unavailable-page illustration loads on the isolated view host", () => {
+  it("B14 — the unavailable-page illustrations load on the isolated view host", () => {
     const input = {
       host: "s.imeatsack.com",
       pathname: "/lost-meatsack.webp",
@@ -70,6 +70,9 @@ describe("share host isolation", () => {
       viewOrigin: view,
     };
     expect(shareHostDecision(input)).toEqual({ kind: "next" });
+    expect(shareHostDecision({ ...input, pathname: "/expired-meatsack.webp" })).toEqual({
+      kind: "next",
+    });
     expect(shareHostDecision({ ...input, pathname: "/brand/hero.jpg" })).toEqual({
       kind: "not_found",
     });

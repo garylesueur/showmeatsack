@@ -160,10 +160,13 @@ graph TD
       for (const product of ["show.imeatsack.com", "ask.imeatsack.com", "share.imeatsack.com"]) {
         expect(body).toContain(`href="https://${product}"`);
       }
-      expect(body).toContain('src="/lost-meatsack.webp"');
       expect(body).toContain('name="viewport"');
       expect(body).not.toContain('href="/"');
     }
+    expect(bodies[0]).toContain('src="/expired-meatsack.webp"');
+    expect(bodies[0]).not.toContain('src="/lost-meatsack.webp"');
+    expect(bodies[1]).toContain('src="/lost-meatsack.webp"');
+    expect(bodies[1]).not.toContain('src="/expired-meatsack.webp"');
   });
 
   it("does not put a manage secret into error pages", async () => {
