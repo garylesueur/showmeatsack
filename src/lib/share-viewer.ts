@@ -5,8 +5,8 @@ const VIEWER_MARKUP = `<style>
       * { box-sizing: border-box; }
       .badge { display:flex; flex-direction:column; align-items:flex-end; gap:8px; font:500 12px/1.4 system-ui,sans-serif; color:#173f38; }
       a,button { -webkit-tap-highlight-color:transparent; }
-      a { display:flex; align-items:center; gap:7px; min-height:40px; padding:4px 12px 4px 4px; border:1px solid #d8d2c6; border-radius:24px; background:#f6f1e7; box-shadow:0 3px 12px #28251f20; color:inherit; text-decoration:none; }
-      img { width:30px; height:30px; border-radius:50%; object-fit:cover; }
+      a { display:flex; align-items:center; justify-content:center; width:44px; height:44px; padding:3px; border:1px solid #d8d2c6; border-radius:50%; background:#f6f1e7; box-shadow:0 3px 12px #28251f20; color:inherit; text-decoration:none; }
+      img { width:36px; height:36px; border-radius:50%; object-fit:cover; transform:scaleX(-1); }
       a:hover { background:#ebe5d8; }
       a:focus-visible,button:focus-visible { outline:2px solid #287566; outline-offset:3px; }
       .notice { max-width:min(320px,calc(100vw - 24px)); padding:12px 14px; border:1px solid #d8d2c6; border-radius:12px; background:#f6f1e7; box-shadow:0 4px 16px #28251f26; }
@@ -14,7 +14,7 @@ const VIEWER_MARKUP = `<style>
       p { margin:0 0 8px; font-size:13px; }
       button { min-height:36px; padding:7px 12px; border:0; border-radius:6px; background:#287566; color:#fff; font:600 12px/1.4 system-ui,sans-serif; cursor:pointer; }
       button:hover { background:#173f38; }
-    </style><div class="badge"><div class="notice" hidden><p role="status" aria-live="polite"></p><button type="button">Refresh</button></div><a target="_blank" rel="noopener noreferrer" aria-label="Shared with show.imeatsack.com"><img alt="" width="30" height="30"><span>show.imeatsack.com</span></a></div>`;
+    </style><div class="badge"><div class="notice" hidden><p role="status" aria-live="polite"></p><button type="button">Refresh</button></div><a target="_blank" rel="noopener noreferrer" aria-label="Open show.imeatsack.com in a new tab"><img alt="" width="36" height="36"></a></div>`;
 
 // Kept inside a shadow root so an uploaded page's CSS cannot restyle the controls.
 const VIEWER_SCRIPT = String.raw`
@@ -24,7 +24,7 @@ const VIEWER_SCRIPT = String.raw`
     if (window.top !== window.self) return;
     const host = document.createElement('div');
     host.setAttribute('data-showmeatsack-viewer', '');
-    host.style.cssText = 'all:initial!important;position:fixed!important;right:max(12px,env(safe-area-inset-right))!important;bottom:max(12px,env(safe-area-inset-bottom))!important;z-index:2147483647!important;display:block!important;max-width:calc(100vw - 24px)!important;';
+    host.style.cssText = 'all:initial!important;position:fixed!important;left:auto!important;right:max(12px,env(safe-area-inset-right))!important;bottom:max(12px,env(safe-area-inset-bottom))!important;z-index:2147483647!important;display:block!important;max-width:calc(100vw - 24px)!important;';
     const root = host.attachShadow({ mode: 'open' });
     root.innerHTML = __MARKUP__;
     const link = root.querySelector('a');

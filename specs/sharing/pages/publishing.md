@@ -167,8 +167,9 @@ sorting for arbitrarily large datasets.
 ### B22 — Shared pages carry a small brand badge 🟢 implemented
 
 A person viewing a shared HTML or Markdown page sees a small floating badge in the
-bottom right, showing the meat sack character and **show.imeatsack.com**. The badge links
-to the product in a new tab. It hides after five seconds so it does not stay over
+bottom right, showing only the meat sack icon facing left, with no visible text.
+The badge links to **show.imeatsack.com** in a new tab and has an accessible name.
+It hides after five seconds so it does not stay over
 the page's content or controls. If the link has keyboard focus when the time is up,
 it stays visible until focus leaves it. Update and availability notices still appear
 after the badge has hidden. Its styles are isolated from the uploaded page, and it
