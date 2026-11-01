@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { SiteFooter, SiteNav } from "@/components/site-chrome";
 import { HeroSlideshow } from "./hero-slideshow";
+import { LANDING_SIGN_IN_HREF } from "@/lib/imeatsack-site";
 import styles from "./preview.module.css";
 
 // Ask and Share are generated for this preview; their prompts live in image-prompts.json.
@@ -55,7 +56,11 @@ function Arrow() {
 export function LandingPage({ preview = false }: { preview?: boolean }) {
   return (
     <div className={`mx-auto flex w-full max-w-5xl flex-1 flex-col px-6 sm:px-8 ${styles.page}`}>
-      <SiteNav homeHref={preview ? "/preview/imeatsack" : "/"} installHref="#connect" />
+      <SiteNav
+        homeHref={preview ? "/preview/imeatsack" : "/"}
+        installHref="#connect"
+        accountHref={LANDING_SIGN_IN_HREF}
+      />
       <main className="flex flex-1 flex-col">
         <header className={styles.hero}>
           <h1 className={styles.wordmark}>
