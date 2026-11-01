@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 export const LANDING_ORIGIN = "https://imeatsack.com";
 export const LANDING_NAME = "I, Meatsack";
 export const LANDING_TITLE = "I, Meatsack — Ask. Share. Show.";
+/** The landing release has no environment, so lanyard's sign-in is fixed here. */
+export const LANDING_SIGN_IN_HREF = "https://account.imeatsack.com/sign-in";
 export const LANDING_DESCRIPTION =
   "Give your AI agent a way to ask people questions, exchange files, and show its work. Meet Ask, Share and Show.";
 
