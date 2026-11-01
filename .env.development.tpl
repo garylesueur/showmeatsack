@@ -8,6 +8,8 @@
 
 PUBLIC_BASE_URL=http://localhost:3000
 VIEW_PUBLIC_BASE_URL=http://localhost:3000
+# lanyard sign-in origin (not secret), e.g. the account service's https origin. Empty keeps sign-in off.
+LANYARD_URL=
 KV_REST_API_URL=op://${OP_VAULT:-mep374l3cpdtzwibf5fswsimbi}/kurrh2l5nm5jd2ajqchctrls4q/KV_REST_API_URL
 KV_REST_API_TOKEN=op://${OP_VAULT:-mep374l3cpdtzwibf5fswsimbi}/kurrh2l5nm5jd2ajqchctrls4q/KV_REST_API_TOKEN
 R2_ACCOUNT_ID=op://${OP_VAULT:-mep374l3cpdtzwibf5fswsimbi}/kurrh2l5nm5jd2ajqchctrls4q/R2_ACCOUNT_ID

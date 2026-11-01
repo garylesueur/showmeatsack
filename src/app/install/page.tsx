@@ -4,6 +4,7 @@ import { PluginInstall } from "@/components/plugin-install";
 import { SiteShell } from "@/components/site-chrome";
 import { CURSOR_PLUGIN_HREF, cursorInstallPageHref } from "@/lib/cursor-install";
 import { PLUGIN_INSTALL } from "@/lib/plugin-install";
+import { lanyardSignInHref } from "@/lib/lanyard";
 import { publicOrigin } from "@/lib/public-origin";
 
 export const metadata: Metadata = {
@@ -22,6 +23,7 @@ export default function InstallPage() {
   return (
     <SiteShell
       product="show"
+      accountHref={lanyardSignInHref()}
       repoHref={CURSOR_PLUGIN_HREF}
       docs={[
         { label: "Install plugin", href: "/install" },

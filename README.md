@@ -148,6 +148,31 @@ remains a fallback if R2 is unset.
 `op://` references only. `.env.example` is the empty placeholder. Never print
 `.env` contents and never commit secrets.
 
+## Sign-in (lanyard)
+
+lanyard is the single sign-in for the estate; this service never runs a login
+screen. `LANYARD_URL` is the lanyard origin. It is **not** a secret and is
+empty in every template, so sign-in is off until you set it.
+
+With `LANYARD_URL` set:
+
+- Create (`POST /api/v1/shares`, and the tool's `create` over MCP) verifies an
+  `Authorization: Bearer` token with `POST {LANYARD_URL}/api/v1/verify` as
+  product `showmeatsack`. Accepted records the account on the new share; refused
+  returns `401 unauthorized` and publishes nothing. A recently verified token
+  keeps working for up to five minutes if lanyard is unreachable.
+- Create without a token still publishes anonymously. A Bearer value shaped like
+  a manage token is ignored on create, as before.
+- Replace, delete, and status use the manage token only and never call lanyard.
+- The home and install pages show **Sign in**, linking to
+  `{LANYARD_URL}/sign-in?product=showmeatsack`. View links never show it.
+
+With it unset, create ignores any Bearer header and the link is hidden. The
+verifier in `src/lib/lanyard/product-verifier.ts` is copied verbatim from
+lanyard; update it by copying again, not by editing. Those pages are rendered
+at build time, so change `LANYARD_URL` and redeploy. To set it on Vercel, pass
+it to the sync script: `LANYARD_URL=https://… pnpm env:vercel production`.
+
 ## Where things live
 
 | Path                            | What                                                         |

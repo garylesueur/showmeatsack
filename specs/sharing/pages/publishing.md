@@ -60,12 +60,29 @@ Unknown or deleted shares and missing or refused file paths return the same HTTP
 
 The show.imeatsack.com tool and HTTP take the same kind of payload and return the same view link, manage URL, manage token, expiry, and later the same replace, delete, and status result for that share.
 
-### B12 — Publishing needs an account 🔵 future
+### B12 — Publishing needs an account 🟡 partial
+
+> Partial: a lanyard token is accepted but not yet required. With `LANYARD_URL` set, create (HTTP
+> and the tool) verifies a Bearer token with lanyard and records the account on the new share; a
+> refused token gets `401 unauthorized` and nothing is published. A create with no token still
+> publishes anonymously, and nothing yet tells an agent where to authorise. With `LANYARD_URL`
+> unset, create ignores any Bearer header exactly as before.
 
 An agent must present a lanyard token to publish. A call without one is refused and told where
 to authorise, so an agent that can complete that journey recovers on its own. The token
 identifies the account the share belongs to. Opening a view link still needs nothing — a person
 sent a link never signs in.
+
+What ships today, on create only:
+
+- The token is the `Authorization: Bearer` header — on `POST /api/v1/shares`, or on the MCP
+  request for the tool's `create`. Replace, delete, and status never consult lanyard.
+- A Bearer value shaped like a manage token (32 base64url characters) is not sent to lanyard;
+  create treats it as anonymous, as it always has.
+- lanyard briefly unreachable: a token this instance verified in the last five minutes is still
+  accepted; any other token is refused. A create without a token is unaffected.
+- The account reference is stored on the share record only. It is never returned, and nothing
+  uses it to decide access.
 
 ### B13 — A path cannot leave the share 🟢 implemented
 
@@ -213,7 +230,7 @@ Shares published before version tracking was introduced are also checked for upd
 - Replace changes the files only. Expiry stays as it was at create.
 - After a successful replace, the next open of the view link shows the new page.
 - An expired view link shows a branded expiry recovery page. An unknown or deleted link shows the same generic missing-page recovery screen as a missing or refused file path. Both offer guidance, the homepage and the meatsack products. Neither reveals another share.
-- Publishing needs a lanyard token. Manage still needs that share’s own manage secret, sent as a bearer token; a lanyard token does not replace it. Viewing a public share needs nothing; only a private share (B19) ever asks the person who opens it for anything.
+- Publishing needs a lanyard token (B12; not yet enforced). Manage still needs that share’s own manage secret, sent as a bearer token; a lanyard token does not replace it. Viewing a public share needs nothing; only a private share (B19) ever asks the person who opens it for anything.
 - A share belongs to the account that published it. Deleting that account does not un-publish shares that are already live; they expire as they were going to.
 - Create from one account is limited. A refused create does not publish a page.
 - The home-page demo has no account, so it is limited by calling address instead, and it only
@@ -249,7 +266,7 @@ Shares published before version tracking was introduced are also checked for upd
 
 | Action | View link | Manage token (show.imeatsack.com tool or HTTP bearer) | lanyard token |
 | --- | --- | --- | --- |
-| Publish a new page | No | No | Yes (B12) |
+| Publish a new page | No | No | Yes (B12); optional today, and anonymous create still publishes |
 | See this share’s page and its files, in a browser or read back by an agent | Yes, that share only | No | No |
 | Replace this share | No | Yes, that share only | No |
 | Delete this share | No | Yes, that share only | No |

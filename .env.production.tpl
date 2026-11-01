@@ -3,6 +3,8 @@
 
 PUBLIC_BASE_URL=https://show.imeatsack.com
 VIEW_PUBLIC_BASE_URL=https://s.imeatsack.com
+# lanyard sign-in origin (not secret), e.g. the account service's https origin. Empty keeps sign-in off.
+LANYARD_URL=
 KV_REST_API_URL=op://${OP_VAULT:-mep374l3cpdtzwibf5fswsimbi}/gzow46cckd6yenaplpsv3mre6y/KV_REST_API_URL
 KV_REST_API_TOKEN=op://${OP_VAULT:-mep374l3cpdtzwibf5fswsimbi}/gzow46cckd6yenaplpsv3mre6y/KV_REST_API_TOKEN
 R2_ACCOUNT_ID=op://${OP_VAULT:-mep374l3cpdtzwibf5fswsimbi}/gzow46cckd6yenaplpsv3mre6y/R2_ACCOUNT_ID

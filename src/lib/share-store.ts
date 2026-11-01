@@ -14,6 +14,12 @@ export type ShareRecord = {
   deletedAt?: string;
   manageToken: string;
   preview?: SharePreview;
+  /**
+   * lanyard account reference of whoever created the share, when they
+   * presented an accepted lanyard token. Recorded only — nothing reads it for
+   * access, and it is never returned to callers. Absent on anonymous shares.
+   */
+  account?: string;
 };
 
 export type ShareStore = {
