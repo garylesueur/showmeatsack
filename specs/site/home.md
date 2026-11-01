@@ -49,10 +49,14 @@ Show at their canonical subdomains on desktop and mobile. The current product is
 underlined and identified with `aria-current`. GitHub, the author and the agent
 documents are in the footer.
 
-### B7 — Signing in is reachable, and obviously not required to look 🔵 future
+### B7 — Signing in is reachable, and obviously not required to look 🟢 implemented
 
 A person can get to their account from the page. Nothing about the page suggests they need an
 account to read it or to try it.
+
+The shared nav shows **Sign in**, linking to `{LANYARD_URL}/sign-in?product=showmeatsack`, on
+show.imeatsack.com pages that use it (home and install). It is hidden when `LANYARD_URL` is
+unset, and never appears on a view link — those pages carry no site chrome.
 
 ### B8 — The three products look like siblings 🔵 future
 

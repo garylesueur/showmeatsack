@@ -221,7 +221,10 @@ export function createShareService(deps: ShareServiceDeps) {
     return Array.isArray(files) ? { files } : files;
   }
 
-  async function create(raw: unknown): Promise<CreateShareResult | ShareServiceError> {
+  async function create(
+    raw: unknown,
+    creator: { account?: string } = {},
+  ): Promise<CreateShareResult | ShareServiceError> {
     const parsed = createShareSchema.safeParse(raw);
     if (!parsed.success) {
       const first = parsed.error.issues[0];
@@ -244,6 +247,7 @@ export function createShareService(deps: ShareServiceDeps) {
       expiresAt: new Date(now.getTime() + ttl * 1000).toISOString(),
       manageToken,
       ...(prepared.preview ? { preview: prepared.preview } : {}),
+      ...(creator.account ? { account: creator.account } : {}),
     };
     await writeFiles(deps.files, shareId, prepared.files);
     await deps.store.save(share);

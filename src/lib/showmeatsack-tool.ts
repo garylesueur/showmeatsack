@@ -1,6 +1,7 @@
 import { z } from "zod";
 import { limitCreateFromRequest } from "./create-rate-limit";
 import { incomingRequest } from "./incoming-request";
+import { UNAUTHORIZED, identifyCreator } from "./lanyard";
 import { SHARE_MAX_TTL_SECONDS, qrShareSchema, tablePayloadSchema } from "./schema";
 import { isShareServiceError, type ShareServiceError, type createShareService } from "./shares";
 
@@ -53,14 +54,23 @@ export function createShowmeatsackTool(shares: ShowmeatsackToolShares) {
             };
           }
         }
-        return await shares.create({
-          html: input.html,
-          markdown: input.markdown,
-          zipBase64: input.zipBase64,
-          qr: input.qr,
-          table: input.table,
-          expiresInSeconds: input.expiresInSeconds,
-        });
+        // The MCP request's own Authorization header is the lanyard token. The
+        // manage token for other actions travels in the arguments, never here.
+        const creator = await identifyCreator(request);
+        if (creator.kind === "refused") {
+          return { ...UNAUTHORIZED };
+        }
+        return await shares.create(
+          {
+            html: input.html,
+            markdown: input.markdown,
+            zipBase64: input.zipBase64,
+            qr: input.qr,
+            table: input.table,
+            expiresInSeconds: input.expiresInSeconds,
+          },
+          creator.kind === "account" ? { account: creator.account } : {},
+        );
       }
       if (!input.shareId) {
         return invalidAction("shareId is required.");

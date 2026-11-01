@@ -69,3 +69,17 @@ if [[ "${target}" == "production" ]]; then
   fi
   echo "set VIEW_PUBLIC_BASE_URL on Vercel production" >&2
 fi
+
+# LANYARD_URL is not a secret and lives in no 1Password item. Pass it from the
+# shell to set it (LANYARD_URL=https://… pnpm env:vercel production); leave it
+# unset and the Vercel value is left alone. Sign-in stays off until it is set.
+if [[ -n "${LANYARD_URL:-}" ]]; then
+  vercel env rm LANYARD_URL "${target}" --yes >/dev/null 2>&1 || true
+  if ! printf '%s' "${LANYARD_URL}" | vercel env add LANYARD_URL "${target}" >/dev/null; then
+    echo "failed to set LANYARD_URL on Vercel ${target}" >&2
+    exit 1
+  fi
+  echo "set LANYARD_URL on Vercel ${target}" >&2
+else
+  echo "skip LANYARD_URL (not set in this shell)" >&2
+fi

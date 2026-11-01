@@ -1,5 +1,6 @@
 import { getDefaultShareService, jsonError, jsonFromError } from "@/lib/app-shares";
 import { limitCreateFromRequest } from "@/lib/create-rate-limit";
+import { UNAUTHORIZED, identifyCreator } from "@/lib/lanyard";
 import { isShareServiceError } from "@/lib/shares";
 
 export async function POST(request: Request): Promise<Response> {
@@ -13,6 +14,11 @@ export async function POST(request: Request): Promise<Response> {
     );
   }
 
+  const creator = await identifyCreator(request);
+  if (creator.kind === "refused") {
+    return jsonError(UNAUTHORIZED.status, UNAUTHORIZED.code, UNAUTHORIZED.message);
+  }
+
   let body: unknown;
   try {
     body = await request.json();
@@ -20,7 +26,10 @@ export async function POST(request: Request): Promise<Response> {
     return jsonError(400, "invalid_json", "Body must be JSON");
   }
 
-  const result = await getDefaultShareService().create(body);
+  const result = await getDefaultShareService().create(
+    body,
+    creator.kind === "account" ? { account: creator.account } : {},
+  );
   if (isShareServiceError(result)) {
     return jsonFromError(result);
   }
